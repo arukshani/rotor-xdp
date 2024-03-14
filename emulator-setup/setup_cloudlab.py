@@ -152,19 +152,18 @@ if __name__ == '__main__':
     main()
 
     #First run this ++++++SECTION 1++++++++++++++++++++++++++++++++++++
-    # install_packges()
-    # copy_nodeinfo_to_tmp()
+    install_packges()
+    copy_nodeinfo_to_tmp()
 
     #Then run this +++++++SECTION 2++++++++++++++++++++++++++++++++++++
-    # create_ssh_config()
-    # export_environs()
-    # setup_workers()
-    # create_containers()
-    # change_iface_properties()
-    # get_worker_mac()
-    # write_veth_info()
+    create_ssh_config()
+    export_environs()
+    setup_workers()
+    create_containers()
+    change_iface_properties()
+    get_worker_mac()
+    write_veth_info()
     
-    #TODO: setting up arp
     copy_worker_info()
 
     #+++++++++++++ADDITIONAL FOR SPECIAL CASES+++++++++++++++++++++++++
