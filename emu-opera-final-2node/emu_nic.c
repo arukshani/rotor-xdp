@@ -67,6 +67,7 @@
 #include <linux/udp.h>
 #include <linux/tcp.h>
 
+#include "data_structures.h"
 #include "common_funcs.h"
 #include "map.h"
 #include "structures.h"
@@ -78,13 +79,6 @@
 #include "thread_functions_1.h"
 
 static int quit;
-long time_index = 0;
-__u32 t1ms;
-struct timespec now;
-uint64_t time_into_cycle_ns;
-uint8_t topo;
-uint64_t slot_time_ns = 1000000;  // 1 ms
-uint64_t cycle_time_ns = 2000000; // 2 ms
 
 static void signal_handler(int sig)
 {
@@ -105,9 +99,10 @@ long time_index = 0;
 __u32 t1ms;
 struct timespec now;
 uint64_t time_into_cycle_ns;
-// uint8_t topo;
+uint8_t topo;
 uint64_t slot_time_ns = 1000000;  // 1 ms
 uint64_t cycle_time_ns = 2000000; // 2 ms
+clockid_t clkid;
 
 static void
 print_port(u32 port_id)
@@ -202,6 +197,40 @@ print_port_stats_all(u64 ns_diff)
 	for (i = 0; i < n_ports; i++)
 		print_port_stats(i, ns_diff);
 	print_port_stats_trailer();
+}
+
+static clockid_t get_nic_clock_id(void)
+{
+	int fd;
+	// char *device = DEVICE;
+	clockid_t clkid;
+
+	fd = open(ptp_clock_name, O_RDWR);
+	if (fd < 0)
+	{
+		fprintf(stderr, "opening %s: %s\n", ptp_clock_name, strerror(errno));
+		return -1;
+	}
+
+	clkid = FD_TO_CLOCKID(fd);
+	if (CLOCK_INVALID == clkid)
+	{
+		fprintf(stderr, "failed to read clock id\n");
+		return -1;
+	}
+	return clkid;
+}
+
+static struct timespec get_nicclock(void)
+{
+	struct timespec ts;
+	clock_gettime(clkid, &ts);
+	return ts;
+}
+
+static unsigned long get_nsec(struct timespec *ts)
+{
+	return ts->tv_sec * 1000000000UL + ts->tv_nsec;
 }
 
 static void read_time()
@@ -441,6 +470,36 @@ int main(int argc, char **argv)
 			dest_index++;
 		}
 		fclose(file);
+	}
+
+	//+++++++++++++++++++++ROUTE++++++++++++++++++++++
+	route_table = newRouteMatrix(32, 32);
+	FILE *stream3 = fopen(route_filename, "r");
+	if (stream3)
+	{
+		size_t i, j;
+		char buffer[BUFSIZ], *ptr;
+		/*
+		 * Read each line from the file.
+		 */
+		for (i = 0; fgets(buffer, sizeof buffer, stream3); ++i)
+		{
+			int row = i + 1;
+			printf("~~~~~~~READ LINE %d ~~~~~~~~~~~~~~~~\n", row);
+			/*
+			 * Parse the comma-separated values from each line into 'array'.
+			 */
+			for (j = 0, ptr = buffer; j < 32; ++j, ++ptr)
+			{
+				int val = (int)strtol(ptr, &ptr, 10);
+				printf("%d,", val);
+				int col = j + 1;
+				// printf("row and col %d %d ,", row, col);
+				setRouteElement(route_table, row, col, val);
+			}
+			printf("\n");
+		}
+		fclose(stream3);
 	}
 
 	struct mpmc_queue return_path_veth_queue[13];

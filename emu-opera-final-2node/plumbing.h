@@ -53,8 +53,8 @@ static void load_xdp_program(void)
 		exit(EXIT_FAILURE);
 	}
 
-	// err = xdp_program__attach(xdp_prog[0], cfgs[0].ifindex, XDP_FLAGS_DRV_MODE, 0);
-	err = xdp_program__attach(xdp_prog[0], cfgs[0].ifindex, XDP_FLAGS_SKB_MODE, 0);
+	err = xdp_program__attach(xdp_prog[0], cfgs[0].ifindex, XDP_FLAGS_DRV_MODE, 0);
+	// err = xdp_program__attach(xdp_prog[0], cfgs[0].ifindex, XDP_FLAGS_SKB_MODE, 0);
 	if (err)
 	{
 		libxdp_strerror(err, errmsg, sizeof(errmsg));

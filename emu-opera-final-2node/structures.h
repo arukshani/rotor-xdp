@@ -311,9 +311,9 @@ static const struct sched_map {
 	{ NULL }
 };
 
-struct mac_addr {
-   unsigned char bytes[ETH_ALEN+1];
-};
+// struct mac_addr {
+//    unsigned char bytes[ETH_ALEN+1];
+// };
 
 struct gre_hdr
 {
