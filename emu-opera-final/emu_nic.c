@@ -706,15 +706,15 @@ int main(int argc, char **argv)
 	// while (time(NULL) - startTime < secs)
 	for ( ; !quit; ) 
 	{
-		// read_time();
-		u64 ns1, ns_diff;
-		sleep(1);
-		clock_gettime(CLOCK_MONOTONIC, &time_pps);
-		ns1 = time_pps.tv_sec * 1000000000UL + time_pps.tv_nsec;
-		ns_diff = ns1 - ns0;
-		ns0 = ns1;
+		read_time();
+		// u64 ns1, ns_diff;
+		// sleep(1);
+		// clock_gettime(CLOCK_MONOTONIC, &time_pps);
+		// ns1 = time_pps.tv_sec * 1000000000UL + time_pps.tv_nsec;
+		// ns_diff = ns1 - ns0;
+		// ns0 = ns1;
 
-		print_port_stats_all(ns_diff);
+		// print_port_stats_all(ns_diff);
 	}
 
 	/* Threads completion. */
