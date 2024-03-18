@@ -71,7 +71,6 @@
 #include "map.h"
 #include "structures.h"
 #include "mpmc_queue.h"
-// #include "mpsc.h"
 #include "memory.h"
 #include "plumbing.h"
 #include "mempool.h"
@@ -79,6 +78,13 @@
 #include "thread_functions_1.h"
 
 static int quit;
+long time_index = 0;
+__u32 t1ms;
+struct timespec now;
+uint64_t time_into_cycle_ns;
+uint8_t topo;
+uint64_t slot_time_ns = 1000000;  // 1 ms
+uint64_t cycle_time_ns = 2000000; // 2 ms
 
 static void signal_handler(int sig)
 {
@@ -198,13 +204,24 @@ print_port_stats_all(u64 ns_diff)
 	print_port_stats_trailer();
 }
 
+static void read_time()
+{
+	// struct timespec now = get_realtime();
+	now = get_nicclock();
+	unsigned long current_time_ns = get_nsec(&now);
+	t1ms = current_time_ns / 1000000; // number of 1's of milliseconds
+	time_into_cycle_ns = current_time_ns % cycle_time_ns;
+	topo = (time_into_cycle_ns / slot_time_ns) + 1;
+	// printf("topo: %d \n", topo);
+}
+
 int main(int argc, char **argv)
 {
 	struct in_addr *ifa_inaddr;
 	struct in_addr addr;
 	int s, n;
 
-	if (argc != 6)
+	if (argc != 7)
 	{
 		fprintf(stderr, "Usage: getifaddr <IP>\n");
 		return EXIT_FAILURE;
@@ -221,20 +238,26 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	char *run_time = argv[2];
+	char *route_filename = argv[2];
+	printf("%s\n", route_filename);
+
+	ptp_clock_name = argv[3];
+	printf("PTP Clock Name: %s\n", ptp_clock_name);
+
+	char *run_time = argv[4];
 	int running_time = atoi(run_time);
 	printf("Running time : %d \n", running_time);
 
-    char *num_nses = argv[3];
+    char *num_nses = argv[5];
 	int num_of_nses = atoi(num_nses);
 	printf("Number of Namespaces : %d \n", num_of_nses);
 
-	char *num_nic_qs = argv[4];
+	char *num_nic_qs = argv[6];
 	n_nic_ports = atoi(num_nic_qs);
 	printf("Number of NIC Queues : %d \n", n_nic_ports);
 
-	char *ns_ip_file = argv[5];
-	printf("%s\n", ns_ip_file);
+	// char *ns_ip_file = argv[7];
+	// printf("%s\n", ns_ip_file);
 
 	/* Walk through linked list, maintaining head pointer so we
 		can free list later */
@@ -256,35 +279,35 @@ int main(int argc, char **argv)
 	}
 
 	//ns_ip_table
-	mg_map_init(&ns_ip_table, sizeof(int), 32);
-	FILE *file_ns_ip = fopen(ns_ip_file, "r");
-	if (file_ns_ip)
-	{
-		char buffer[1024], *ptr;
-		int dest_index = 1;
-		while (fgets(buffer, 1024, file_ns_ip))
-		{
-			// printf("~~~~~~NODE~~~~~~~~~\n");
-			ptr = strtok(buffer, ",");
-			int col_index = 1;
-			while (ptr != NULL)
-			{
-				// printf("'%s'\n", ptr);
-				if (col_index == 1)
-				{
-					uint32_t dest = inet_addr(ptr);
-					struct ip_set local_ip_index = {.index = dest_index};
-					mg_map_add(&ns_ip_table, dest, &local_ip_index);
-					struct ip_set *dest_ip_index = mg_map_get(&ip_table, dest);
-					// printf("dest_ip_index after %d \n", dest_ip_index->index);
-				}
-				ptr = strtok(NULL, ",");
-				col_index++;
-			}
-			dest_index++;
-		}
-		fclose(file_ns_ip);
-	}
+	// mg_map_init(&ns_ip_table, sizeof(int), 32);
+	// FILE *file_ns_ip = fopen(ns_ip_file, "r");
+	// if (file_ns_ip)
+	// {
+	// 	char buffer[1024], *ptr;
+	// 	int dest_index = 1;
+	// 	while (fgets(buffer, 1024, file_ns_ip))
+	// 	{
+	// 		// printf("~~~~~~NODE~~~~~~~~~\n");
+	// 		ptr = strtok(buffer, ",");
+	// 		int col_index = 1;
+	// 		while (ptr != NULL)
+	// 		{
+	// 			// printf("'%s'\n", ptr);
+	// 			if (col_index == 1)
+	// 			{
+	// 				uint32_t dest = inet_addr(ptr);
+	// 				struct ip_set local_ip_index = {.index = dest_index};
+	// 				mg_map_add(&ns_ip_table, dest, &local_ip_index);
+	// 				struct ip_set *dest_ip_index = mg_map_get(&ip_table, dest);
+	// 				// printf("dest_ip_index after %d \n", dest_ip_index->index);
+	// 			}
+	// 			ptr = strtok(NULL, ",");
+	// 			col_index++;
+	// 		}
+	// 		dest_index++;
+	// 	}
+	// 	fclose(file_ns_ip);
+	// }
 
 	// printf(" hello %ld", sizeof(u64 *));
 	int i,y,x,z;
@@ -329,14 +352,6 @@ int main(int argc, char **argv)
 	{
 		thread_data[x].cpu_core_id = thread_core_id; 
 		thread_core_id = thread_core_id + 1;
-		if (thread_core_id == 36)
-		{
-			thread_core_id = 54;
-		}
-		// if (thread_core_id == 72)
-		// {
-		// 	thread_core_id = 36;
-		// }
 	}
 	
 
@@ -374,7 +389,7 @@ int main(int argc, char **argv)
 	}
 
 	printf("All ports created successfully.\n");
-	// clkid = get_nic_clock_id();
+	clkid = get_nic_clock_id();
 
 	//+++++++Source MAC and IP++++++++++++++
 	getMACAddress(nic_iface, out_eth_src);
@@ -397,7 +412,7 @@ int main(int argc, char **argv)
 			while (ptr != NULL)
 			{
 				// printf("'%s'\n", ptr);
-				if (col_index == 6)
+				if (col_index == 8)
 				{
 					uint32_t dest = inet_addr(ptr);
 					struct ip_set local_ip_index = {.index = dest_index};
@@ -429,27 +444,22 @@ int main(int argc, char **argv)
 	}
 
 	struct mpmc_queue return_path_veth_queue[13];
-	// struct mpmc_queue local_dest_queue[NUM_OF_PER_DEST_QUEUES];
-	// struct mpmc_queue non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
-	// struct mpscq *return_path_veth_queue[13];
-	// struct mpscq *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
-	// struct mpscq *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 	
 	// local queues
 	for (i = 0; i < NUM_OF_PER_DEST_QUEUES; i++)
 	{
-		// mpmc_queue_init(&local_dest_queue[i], MAX_BURST_TX_OBJS, &memtype_heap);
-		// local_per_dest_queue[i] = &local_dest_queue[i];
-		local_per_dest_queue[i] = ringbuf_create(MAX_BURST_TX_OBJS);
+		mpmc_queue_init(&local_dest_queue[i], MAX_BURST_TX_OBJS, &memtype_heap);
+		local_per_dest_queue[i] = &local_dest_queue[i];
 	}
 	
 
 	// non-local queues
 	for (i = 0; i < NUM_OF_PER_DEST_QUEUES; i++)
 	{
-		// mpmc_queue_init(&non_local_dest_queue[i], MAX_BURST_TX_OBJS, &memtype_heap);
-		// non_local_per_dest_queue[i] = &non_local_dest_queue[i];
-		non_local_per_dest_queue[i] = ringbuf_create(MAX_BURST_TX_OBJS);
+		mpmc_queue_init(&non_local_dest_queue[i], MAX_BURST_TX_OBJS, &memtype_heap);
+		non_local_per_dest_queue[i] = &non_local_dest_queue[i];
 	}
 
     
@@ -459,7 +469,6 @@ int main(int argc, char **argv)
 	{
 		mpmc_queue_init(&return_path_veth_queue[w], MAX_BURST_TX_OBJS, &memtype_heap);
 		veth_side_queue[w] = &return_path_veth_queue[w];
-		// veth_side_queue[w] = ringbuf_create(MAX_BURST_TX_OBJS);
 	}
 
 	/* NIC TX Threads. */
@@ -714,7 +723,7 @@ int main(int argc, char **argv)
 	remove_xdp_program_nic();
 	remove_xdp_program_veth();
 
-	// deleteRouteMatrix(route_table);
+	deleteRouteMatrix(route_table);
 	freeifaddrs(ifaddr);
 	mg_map_cleanup(&ip_table);
 	mg_map_cleanup(&mac_table);
@@ -722,7 +731,6 @@ int main(int argc, char **argv)
 	
     for (w = 0; w < veth_port_count; w++)
 	{
-		// ringbuf_free(veth_side_queue[w]);
 		int ret = mpmc_queue_destroy(veth_side_queue[w]);
 		if (ret)
 			printf("Failed to destroy queue: %d", ret);
@@ -730,15 +738,13 @@ int main(int argc, char **argv)
 
 	for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
 	{
-		ringbuf_free(local_per_dest_queue[w]);
-		ringbuf_free(non_local_per_dest_queue[w]);
-		// int ret = mpmc_queue_destroy(local_per_dest_queue[w]);
-		// if (ret)
-		// 	printf("Failed to destroy queue: %d", ret);
+		int ret = mpmc_queue_destroy(local_per_dest_queue[w]);
+		if (ret)
+			printf("Failed to destroy queue: %d", ret);
 
-		// ret = mpmc_queue_destroy(non_local_per_dest_queue[w]);
-		// if (ret)
-		// 	printf("Failed to destroy queue: %d", ret);
+		ret = mpmc_queue_destroy(non_local_per_dest_queue[w]);
+		if (ret)
+			printf("Failed to destroy queue: %d", ret);
 	}
 
 	return 0;

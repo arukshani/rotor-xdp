@@ -790,8 +790,7 @@ thread_func_veth(void *arg)
 	CPU_SET(t->cpu_core_id, &cpu_cores);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
 
-	// struct mpmc_queue *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
-	ringbuf_t *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 
 	int x = 0;
 	for (x = 0; x < NUM_OF_PER_DEST_QUEUES; x++)
@@ -847,26 +846,15 @@ thread_func_veth(void *arg)
 					// printf("ret_val->ring_buf_index: %d \n", ret_val->ring_buf_index);
 					if (local_dest_queue[ret_val->ring_buf_index] != NULL)
 					{
-						
-						// int ret = mpmc_queue_push(local_dest_queue[ret_val->ring_buf_index], (void *) btx);
-						// if (!ret) 
-						// {
-						// 	printf("local_dest_queue is full \n");
-						// 	//Release buffers to pool
-						// 	bcache_prod(port_rx->bc, brx->addr[j]);
-						// }
-
-						if (!ringbuf_is_full(local_dest_queue[ret_val->ring_buf_index]))
-						{
-							ringbuf_sp_enqueue(local_dest_queue[ret_val->ring_buf_index], (void *) btx);
-						} 
-						else 
+						// printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], ret_val->ring_buf_index);
+						// mpmc_queue_push(dest_queue, (void *) btx);
+						int ret = mpmc_queue_push(local_dest_queue[ret_val->ring_buf_index], (void *) btx);
+						if (!ret) 
 						{
 							printf("local_dest_queue is full \n");
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
 						}
-						
 					}
 					else
 					{
@@ -897,8 +885,7 @@ thread_func_veth_to_nic_tx(void *arg)
 	CPU_SET(t->cpu_core_id, &cpu_cores);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
 
-	// struct mpmc_queue *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
-	ringbuf_t *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 
 	int assigned_queue_count = t->assigned_queue_count;
 
@@ -921,34 +908,22 @@ thread_func_veth_to_nic_tx(void *arg)
 			int btx_index = 0;
 			if (local_dest_queue[k] != NULL)
 			{
-				// while ((mpmc_queue_available(local_dest_queue[k])) && (btx_index < MAX_BURST_TX))
-				// {
-				// 	void *obj2;
-				// 	if (mpmc_queue_pull(local_dest_queue[k], &obj2) != NULL) {
-				// 		struct burst_tx *btx2 = (struct burst_tx *)obj2;
-				// 		btx_collector->addr[btx_index] = btx2->addr[0];
-				// 		btx_collector->len[btx_index] = btx2->len[0];
-
-				// 		free(btx2);
-
-				// 		btx_index++;
-				// 		btx_collector->n_pkts = btx_index;
-				// 	}
-				// }
-				while ((!ringbuf_is_empty(local_dest_queue[k])) && (btx_index < MAX_BURST_TX))
+				while ((mpmc_queue_available(local_dest_queue[k])) && (btx_index < MAX_BURST_TX))
 				{
 					void *obj2;
-					ringbuf_sc_dequeue(local_dest_queue[k], &obj2);
-					struct burst_tx *btx2 = (struct burst_tx *)obj2;
-					btx_collector->addr[btx_index] = btx2->addr[0];
-					btx_collector->len[btx_index] = btx2->len[0];
+					if (mpmc_queue_pull(local_dest_queue[k], &obj2) != NULL) {
+						struct burst_tx *btx2 = (struct burst_tx *)obj2;
+						btx_collector->addr[btx_index] = btx2->addr[0];
+						btx_collector->len[btx_index] = btx2->len[0];
+						// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], k);
 
-					free(btx2);
+						free(btx2);
 
-					btx_index++;
-					btx_collector->n_pkts = btx_index;
+						btx_index++;
+						btx_collector->n_pkts = btx_index;
+					}
+					
 				}
-
 			} else {
 				printf("local_dest_queue is NULL \n");
 			}
@@ -978,8 +953,7 @@ thread_func_nic(void *arg)
 	CPU_SET(t->cpu_core_id, &cpu_cores);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
 
-	// struct mpmc_queue *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
-	ringbuf_t *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 
 	int assigned_queue_count = t->assigned_queue_count;
 
@@ -990,7 +964,6 @@ thread_func_nic(void *arg)
 	}
 
 	struct mpmc_queue *veth_side_queue[13]; 
-	// ringbuf_t *veth_side_queue[13]; 
     
 	for (w = 0; w < veth_port_count; w++)
 	{
@@ -1076,17 +1049,6 @@ thread_func_nic(void *arg)
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
 						}
-						
-						// if (!ringbuf_is_empty(veth_side_queue[ret_val->which_veth]))
-						// {
-						// 	ringbuf_sp_enqueue(veth_side_queue[ret_val->which_veth], (void *) btx);
-						// }
-						// else 
-						// {
-						// 	printf("veth_side_queue is full \n");
-						// 	//Release buffers to pool
-						// 	bcache_prod(port_rx->bc, brx->addr[j]);
-						// }
 					}
 					else
 					{
@@ -1122,8 +1084,8 @@ thread_func_nic_to_veth_tx(void *arg)
 	struct burst_tx_collector *btx_collector = &t->burst_tx_collector[0];
 
 	struct mpmc_queue *veth_side_queue = t->veth_side_queue_array[0];
-	// ringbuf_t *veth_side_queue = t->veth_side_queue_array[0];
 
+	
 	int track_veth_tx_port = 0;
     int num_veths = veth_port_count - 1;
 
@@ -1135,8 +1097,11 @@ thread_func_nic_to_veth_tx(void *arg)
 		//++++++++++++++++++++++DRAIN VETH1 SIDE QUEUE++++++++++++++++++++++++
 		if (veth_side_queue != NULL)
 		{
+            // printf("drain veth 0 tx\n");
+			// while ((!ringbuf_is_empty(veth_side_queue)) && (btx_index < MAX_BURST_TX))
 			while ((mpmc_queue_available(veth_side_queue)) && (btx_index < MAX_BURST_TX))
 			{
+				// printf("DRAIN VETH 0 SIDE QUEUE \n");
 				void *obj;
 				if (mpmc_queue_pull(veth_side_queue, &obj) != NULL) {
 					struct burst_tx *btx = (struct burst_tx *)obj;
@@ -1148,18 +1113,6 @@ thread_func_nic_to_veth_tx(void *arg)
 					btx_collector->n_pkts = btx_index;
 				}
 			}
-			// while ((!ringbuf_is_empty(veth_side_queue)) && (btx_index < MAX_BURST_TX))
-			// {
-			// 	void *obj;
-			// 	ringbuf_sc_dequeue(veth_side_queue, &obj);
-			// 	struct burst_tx *btx = (struct burst_tx *)obj;
-			// 	btx_collector->addr[btx_index] = btx->addr[0];
-			// 	btx_collector->len[btx_index] = btx->len[0];
-			// 	free(btx);
-
-			// 	btx_index++;
-			// 	btx_collector->n_pkts = btx_index;
-			// }
 		} 
 		else {
 			printf("veth side queue is null \n");

@@ -1,5 +1,4 @@
 
-#include "ringbuffer.h"
 
 typedef __u64 u64;
 typedef __u32 u32;
@@ -22,11 +21,11 @@ typedef __u8  u8;
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 #ifndef MAX_BURST_RX
-#define MAX_BURST_RX 20
+#define MAX_BURST_RX 32
 #endif
 
 #ifndef MAX_BURST_TX
-#define MAX_BURST_TX 20
+#define MAX_BURST_TX 32
 #endif
 
 #ifndef MAX_BURST_TX_OBJS
@@ -44,7 +43,7 @@ typedef __u8  u8;
 #define SCHED_PRI__DEFAULT	0
 
 #ifndef WORKER_INFO_CSV
-#define WORKER_INFO_CSV "/opt/opera-xdp/opera-setup-leed/configs/cr_worker_info.csv"
+#define WORKER_INFO_CSV "/tmp/all_worker_info.csv"
 #endif
 
 #ifndef OUTER_VETH_PREFIX
@@ -52,7 +51,7 @@ typedef __u8  u8;
 #endif
 
 #ifndef START_THREAD_CORE_ID
-#define START_THREAD_CORE_ID 19
+#define START_THREAD_CORE_ID 2
 #endif
 
 #ifndef MAX_PORTS
@@ -257,12 +256,9 @@ struct thread_data {
 	struct burst_tx_collector burst_tx_collector[MAX_PORTS_PER_THREAD];
 	u32 cpu_core_id;
 	int quit;
-	// struct mpmc_queue *local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
-	// struct mpmc_queue *non_local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue *local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue *non_local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue *veth_side_queue_array[13];
-	ringbuf_t *local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
-	ringbuf_t *non_local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
-	// ringbuf_t *veth_side_queue_array[13];
 	int assigned_queue_count;
 };
 
@@ -273,12 +269,8 @@ static int n_threads;
 
 
 struct mpmc_queue *veth_side_queue[13];
-// struct mpmc_queue *local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
-// struct mpmc_queue *non_local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
-
-// ringbuf_t *veth_side_queue[13];
-ringbuf_t *local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
-ringbuf_t *non_local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
+struct mpmc_queue *local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
+struct mpmc_queue *non_local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
 
 __u32 t1ms;
 
