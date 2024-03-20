@@ -379,7 +379,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 
 		struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
 		// if (src_ip != (inner_ip_hdr->daddr) || veth3_ip_addr != (inner_ip_hdr->daddr))
-		if (src_ip != (inner_ip_hdr->daddr))
+		if (src_ip != (outer_ip_hdr->daddr))
 		{
 			// printf("Not destined for local node \n");
 			// send it back out NIC
