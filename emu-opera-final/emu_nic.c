@@ -87,23 +87,6 @@ static void signal_handler(int sig)
 }
 
 
-// Telemetry
-uint32_t node_ip[20000];
-// char description[20000][100]; //strcpy(description[0], aString);
-int slot[20000]; // 0-from_veth, 1-intermediate_node, 2-to_veth
-struct timespec timestamp_arr[20000000];
-uint8_t topo_arr[20000];
-int next_node[20000];
-long time_index = 0;
-
-__u32 t1ms;
-struct timespec now;
-uint64_t time_into_cycle_ns;
-uint8_t topo;
-uint64_t slot_time_ns = 1000000;  // 1 ms
-uint64_t cycle_time_ns = 2000000; // 2 ms
-clockid_t clkid;
-
 static void
 print_port(u32 port_id)
 {
@@ -341,16 +324,17 @@ int main(int argc, char **argv)
 	// printf(" hello %ld", sizeof(u64 *));
 	int i,y,x,z;
 
+	n_ports = num_of_nses + n_nic_ports; // + for NIC queues
+
 	/* Parse args. */
 	memcpy(&bpool_params, &bpool_params_default,
 		   sizeof(struct bpool_params));
 	memcpy(&umem_cfg, &umem_cfg_default,
 		   sizeof(struct xsk_umem_config));
-	for (i = 0; i < MAX_PORTS; i++)
+	for (i = 0; i < n_ports; i++)
 		memcpy(&port_params[i], &port_params_default,
 			   sizeof(struct port_params));
 
-	n_ports = num_of_nses + n_nic_ports; // + for NIC queues
 	load_xdp_program();
 
     for (y = 0; y < n_nic_ports; y++)
@@ -502,7 +486,7 @@ int main(int argc, char **argv)
 		fclose(stream3);
 	}
 
-	struct mpmc_queue return_path_veth_queue[13];
+	struct mpmc_queue return_path_veth_queue[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 	
@@ -703,8 +687,8 @@ int main(int argc, char **argv)
 	u64 ns0;
 	clock_gettime(CLOCK_MONOTONIC, &time_pps);
 	ns0 = time_pps.tv_sec * 1000000000UL + time_pps.tv_nsec;
-	// while (time(NULL) - startTime < secs)
-	for ( ; !quit; ) 
+	while (time(NULL) - startTime < secs)
+	// for ( ; !quit; ) 
 	{
 		read_time();
 		// u64 ns1, ns_diff;

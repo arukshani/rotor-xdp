@@ -235,6 +235,248 @@ bool prefix(const char *pre, const char *str)
 //  Ethernet type of GRE encapsulated packet is ETH_P_TEB (gretap)
 //  outer eth
 //  outer ip
+//  gre
+//  inner eth
+//  inner ip
+//  payload
+static void process_rx_packet_old(void *data, struct port_params *params, uint32_t len, u64 addr, struct return_process_rx *return_val)
+{
+	// int is_veth = strcmp(params->iface, "veth1");
+	// int is_veth3 = strcmp(params->iface, "veth3");
+	int is_nic = strcmp(params->iface, nic_iface);
+
+	// if (is_veth == 0 || is_veth3 == 0)
+    if (prefix(OUTER_VETH_PREFIX, params->iface))
+	{
+		// printf("From VETH \n");
+		struct iphdr *outer_iphdr;
+		// struct iphdr encap_outer_iphdr;
+		struct ethhdr *outer_eth_hdr;
+
+		struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
+														  sizeof(struct ethhdr));
+		// __builtin_memcpy(&encap_outer_iphdr, inner_ip_hdr_tmp, sizeof(encap_outer_iphdr));
+		// encap_outer_iphdr.version = inner_ip_hdr_tmp->version;
+		// encap_outer_iphdr.ihl = inner_ip_hdr_tmp->ihl;
+		// encap_outer_iphdr.frag_off = inner_ip_hdr_tmp->frag_off;
+		// encap_outer_iphdr.check = inner_ip_hdr_tmp->check;
+		// encap_outer_iphdr.id = inner_ip_hdr_tmp->id;
+		// encap_outer_iphdr.tos = inner_ip_hdr_tmp->tos;
+		// encap_outer_iphdr.daddr = inner_ip_hdr_tmp->daddr;
+		// encap_outer_iphdr.saddr = inner_ip_hdr_tmp->saddr;
+		// encap_outer_iphdr.ttl = inner_ip_hdr_tmp->ttl;
+		
+		// encap_outer_iphdr.protocol = IPPROTO_GRE;
+
+		int olen = 0;
+		olen += ETH_HLEN;
+		olen += sizeof(struct gre_hdr);
+
+		// encap_outer_iphdr.tot_len = bpf_htons(olen + bpf_ntohs(inner_ip_hdr_tmp->tot_len));
+
+		int encap_size = 0; // outer_eth + outer_ip + gre
+		int encap_outer_eth_len = ETH_HLEN;
+		int encap_outer_ip_len = sizeof(struct iphdr);
+		int encap_gre_len = sizeof(struct gre_hdr);
+
+		encap_size += encap_outer_eth_len;
+		encap_size += encap_outer_ip_len;
+		encap_size += encap_gre_len;
+
+		int offset = 0 + encap_size;
+		u64 new_addr = addr + offset;
+		int new_len = len + encap_size;
+
+		u64 new_new_addr = xsk_umem__add_offset_to_addr(new_addr);
+		u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
+		memcpy(new_data, data, len);
+		// u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
+
+		struct ethhdr *eth = (struct ethhdr *)new_data;
+		struct iphdr *inner_ip_hdr = (struct iphdr *)(new_data +
+													  sizeof(struct ethhdr));
+
+		if (ntohs(eth->h_proto) != ETH_P_IP ||
+			len < (sizeof(*eth) + sizeof(*inner_ip_hdr)))
+		{
+			printf("not ETH_P_IP or size is not within the len \n");
+			return false;
+		}
+
+		outer_eth_hdr = (struct ethhdr *)data;
+		// __builtin_memcpy(outer_eth_hdr->h_source, out_eth_src, sizeof(outer_eth_hdr->h_source));
+		// memcpy(outer_eth_hdr->h_source, out_eth_src, sizeof(outer_eth_hdr->h_source));
+		ether_addr_copy_assignment(outer_eth_hdr->h_source, &out_eth_src);
+		struct ip_set *dest_ip_index = mg_map_get(&ip_table, inner_ip_hdr_tmp->daddr);
+		// printf("dest_ip_index = %d\n", dest_ip_index->index);
+		int mac_index;
+		getRouteElement(route_table, dest_ip_index->index, topo, &mac_index);
+		struct mac_addr *dest_mac_val = mg_map_get(&mac_table, mac_index);
+		// ringbuf_t *dest_queue = mg_map_get(&dest_queue_table, mac_index);
+		// printf("dest_ip_index = %d, mac_index=%d \n", dest_ip_index->index, mac_index);
+		return_val->ring_buf_index = dest_ip_index->index - 1;
+
+		// Telemetry
+		//  #if DEBUG == 1
+		//  	timestamp_arr[time_index] = now;
+		//  	node_ip[time_index] = src_ip;
+		//  	slot[time_index]=0;
+		//  	topo_arr[time_index] = topo;
+		//  	next_node[time_index] = mac_index;
+		//  	time_index++;
+		//  #endif
+
+		// For debug
+		// printf("mac_index = %d\n", mac_index);
+		// int i;
+		// for (i = 0; i < 6; ++i)
+		// 	printf(" %02x", (unsigned char) dest_mac_val->bytes[i]);
+		// puts("\n");
+
+		// __builtin_memcpy(outer_eth_hdr->h_dest, dest_mac_val->bytes, sizeof(outer_eth_hdr->h_dest));
+		ether_addr_copy_assignment(outer_eth_hdr->h_dest, dest_mac_val->bytes);
+
+		outer_eth_hdr->h_proto = htons(ETH_P_IP);
+
+		outer_iphdr = (struct iphdr *)(data +
+									   sizeof(struct ethhdr));
+		// __builtin_memcpy(outer_iphdr, &encap_outer_iphdr, sizeof(*outer_iphdr));
+		__builtin_memcpy(outer_iphdr, inner_ip_hdr_tmp, sizeof(*outer_iphdr));
+		// outer_iphdr->version = inner_ip_hdr_tmp->version;
+		// outer_iphdr->ihl = inner_ip_hdr_tmp->ihl;
+		// outer_iphdr->frag_off = inner_ip_hdr_tmp->frag_off;
+		// outer_iphdr->check = inner_ip_hdr_tmp->check;
+		// outer_iphdr->id = inner_ip_hdr_tmp->id;
+		// outer_iphdr->tos = inner_ip_hdr_tmp->tos;
+		// outer_iphdr->daddr = inner_ip_hdr_tmp->daddr;
+		// outer_iphdr->saddr = inner_ip_hdr_tmp->saddr;
+		// outer_iphdr->ttl = inner_ip_hdr_tmp->ttl;
+		outer_iphdr->protocol = IPPROTO_GRE;
+		outer_iphdr->tot_len = bpf_htons(olen + bpf_ntohs(inner_ip_hdr_tmp->tot_len));
+
+		struct gre_hdr *gre_hdr;
+		gre_hdr = (struct gre_hdr *)(data +
+									 sizeof(struct ethhdr) + sizeof(struct iphdr));
+
+		gre_hdr->proto = bpf_htons(ETH_P_TEB);
+		if (strcmp(params->iface, "vethout2") == 0) {
+			gre_hdr->flags = 0;
+		} else if (strcmp(params->iface, "vethout3") == 0) {
+			gre_hdr->flags = 1;
+		} 
+
+		// return_val->dest_queue = dest_queue;
+		return_val->new_len = new_len;
+
+		// printf("From VETH packet received\n");
+		// return return_val;
+	}
+	else if (is_nic == 0)
+	{
+// #if DEBUG_PAUSE_Q == 1
+// 		timestamp_arr[time_index] = now;
+// 		time_index++;
+// #endif
+		// printf("From NIC \n");
+		struct ethhdr *eth = (struct ethhdr *)data;
+		struct iphdr *outer_ip_hdr = (struct iphdr *)(data +
+													  sizeof(struct ethhdr));
+		struct gre_hdr *greh = (struct gre_hdr *)(outer_ip_hdr + 1);
+
+		// if (ntohs(eth->h_proto) != ETH_P_IP || outer_ip_hdr->protocol != IPPROTO_GRE ||
+		// 			ntohs(greh->proto) != ETH_P_TEB)
+		// {
+		// 	printf("not a GRE packet \n");
+		// 	return false;
+		// }
+		struct ethhdr *inner_eth = (struct ethhdr *)(greh + 1);
+		// if (ntohs(inner_eth->h_proto) != ETH_P_IP) {
+		// 	printf("inner eth proto is not ETH_P_IP %x \n", inner_eth->h_proto);
+		//     return false;
+		// }
+
+		struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
+		// if (src_ip != (inner_ip_hdr->daddr) || veth3_ip_addr != (inner_ip_hdr->daddr))
+		if (src_ip != (inner_ip_hdr->daddr))
+		{
+			// printf("Not destined for local node \n");
+			// send it back out NIC
+			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, inner_ip_hdr->daddr);
+			int next_mac_index;
+			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
+			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
+			// __builtin_memcpy(eth->h_dest, next_dest_mac_val->bytes, sizeof(eth->h_dest));
+			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
+			// __builtin_memcpy(eth->h_source, out_eth_src, sizeof(eth->h_source));
+			// memcpy(eth->h_source, out_eth_src, sizeof(eth->h_source));
+			ether_addr_copy_assignment(eth->h_source, &out_eth_src);
+			return_val->ring_buf_index = next_dest_ip_index->index - 1;
+
+			// Telemetry
+			//  #if DEBUG == 1
+			//  	timestamp_arr[time_index] = now;
+			//  	node_ip[time_index] = src_ip;
+			//  	slot[time_index]=1;
+			//  	topo_arr[time_index] = topo;
+			//  	next_node[time_index] = next_mac_index;
+			//  	time_index++;
+			//  #endif
+
+			// Debug
+			//  printf("next_mac_index = %d\n", next_mac_index);
+			//  int i;
+			//  for (i = 0; i < 6; ++i)
+			//  	printf(" %02x", (unsigned char) next_dest_mac_val->bytes[i]);
+			//  puts("\n");
+
+			return_val->new_len = 1; // indicates that packet should go back out through NIC
+			// return return_val;
+		}
+		else
+		{
+			// printf("Destined for local node \n");
+
+			// if (greh->flags == 0) {
+			// 	return_val->which_veth = 0;
+			// } else if (greh->flags == 1) {
+			// 	return_val->which_veth = 1;
+			// }
+
+			return_val->which_veth = greh->flags;
+
+			// send it to local veth
+			void *cutoff_pos = greh + 1;
+			int cutoff_len = (int)(cutoff_pos - data);
+			int new_len = len - cutoff_len;
+
+			int offset = 0 + cutoff_len;
+			u64 inner_eth_start_addr = addr + offset;
+
+			u8 *new_data = xsk_umem__get_data(params->bp->addr, inner_eth_start_addr);
+			memcpy(xsk_umem__get_data(params->bp->addr, addr), new_data, new_len);
+
+			// Telemetry
+			//  #if DEBUG == 1
+			//  	timestamp_arr[time_index] = now;
+			//  	node_ip[time_index] = src_ip;
+			//  	slot[time_index]=2;
+			//  	topo_arr[time_index] = topo;
+			//  	next_node[time_index] = 0;
+			//  	time_index++;
+			//  #endif
+
+			return_val->new_len = new_len;
+			// return return_val;
+		}
+	}
+
+	// return return_val;
+}
+
+// Header structure of GRE tap packet:
+//  Ethernet type of GRE encapsulated packet is ETH_P_TEB (gretap)
+//  outer eth
+//  outer ip
 //  outer udp (new for corundum to help with RSS)
 //  gre
 //  inner eth
@@ -831,7 +1073,7 @@ thread_func_veth(void *arg)
 			u8 *pkt = xsk_umem__get_data(port_rx->params.bp->addr,
 										addr);
 
-			process_rx_packet(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
+			process_rx_packet_old(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
 
 			struct burst_tx *btx = calloc(1, sizeof(struct burst_tx));
 			if (btx != NULL)
@@ -1004,8 +1246,8 @@ thread_func_nic(void *arg)
 				//Free packets without processing (for debuggin) 
 				// bcache_prod(port_rx->bc, brx->addr[j]);
 
-				// process_rx_packet(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
-				process_rx_packet_with_filter(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
+				process_rx_packet_old(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
+				// process_rx_packet_with_filter(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
 				// Needs to send packet back out NIC
 		
 				struct burst_tx *btx = calloc(1, sizeof(struct burst_tx));

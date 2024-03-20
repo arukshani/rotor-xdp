@@ -320,3 +320,20 @@ struct gre_hdr
 	__be16 flags;
 	__be16 proto;
 } __attribute__((packed));
+
+// Telemetry
+uint32_t node_ip[20000];
+// char description[20000][100]; //strcpy(description[0], aString);
+int slot[20000]; // 0-from_veth, 1-intermediate_node, 2-to_veth
+struct timespec timestamp_arr[20000000];
+uint8_t topo_arr[20000];
+int next_node[20000];
+long time_index = 0;
+
+__u32 t1ms;
+struct timespec now;
+uint64_t time_into_cycle_ns;
+uint8_t topo;
+uint64_t slot_time_ns = 1000000;  // 1 ms
+uint64_t cycle_time_ns = 2000000; // 2 ms
+clockid_t clkid;
