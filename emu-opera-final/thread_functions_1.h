@@ -359,7 +359,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 // 		timestamp_arr[time_index] = now;
 // 		time_index++;
 // #endif
-		// printf("From NIC \n");
+		printf("From NIC \n");
 		struct ethhdr *eth = (struct ethhdr *)data;
 		struct iphdr *outer_ip_hdr = (struct iphdr *)(data +
 													  sizeof(struct ethhdr));
@@ -383,7 +383,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		{
 			// printf("Not destined for local node \n");
 			// send it back out NIC
-			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, inner_ip_hdr->daddr);
+			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, outer_ip_hdr->daddr);
 			int next_mac_index;
 			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
 			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
