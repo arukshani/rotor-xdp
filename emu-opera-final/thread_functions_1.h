@@ -241,8 +241,6 @@ bool prefix(const char *pre, const char *str)
 //  payload
 static void process_rx_packet_old(void *data, struct port_params *params, uint32_t len, u64 addr, struct return_process_rx *return_val)
 {
-	// int is_veth = strcmp(params->iface, "veth1");
-	// int is_veth3 = strcmp(params->iface, "veth3");
 	int is_nic = strcmp(params->iface, nic_iface);
 
 	// if (is_veth == 0 || is_veth3 == 0)
@@ -255,18 +253,6 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 
 		struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
 														  sizeof(struct ethhdr));
-		// __builtin_memcpy(&encap_outer_iphdr, inner_ip_hdr_tmp, sizeof(encap_outer_iphdr));
-		// encap_outer_iphdr.version = inner_ip_hdr_tmp->version;
-		// encap_outer_iphdr.ihl = inner_ip_hdr_tmp->ihl;
-		// encap_outer_iphdr.frag_off = inner_ip_hdr_tmp->frag_off;
-		// encap_outer_iphdr.check = inner_ip_hdr_tmp->check;
-		// encap_outer_iphdr.id = inner_ip_hdr_tmp->id;
-		// encap_outer_iphdr.tos = inner_ip_hdr_tmp->tos;
-		// encap_outer_iphdr.daddr = inner_ip_hdr_tmp->daddr;
-		// encap_outer_iphdr.saddr = inner_ip_hdr_tmp->saddr;
-		// encap_outer_iphdr.ttl = inner_ip_hdr_tmp->ttl;
-		
-		// encap_outer_iphdr.protocol = IPPROTO_GRE;
 
 		int olen = 0;
 		olen += ETH_HLEN;
@@ -290,7 +276,6 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		u64 new_new_addr = xsk_umem__add_offset_to_addr(new_addr);
 		u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
 		memcpy(new_data, data, len);
-		// u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
 
 		struct ethhdr *eth = (struct ethhdr *)new_data;
 		struct iphdr *inner_ip_hdr = (struct iphdr *)(new_data +
@@ -303,16 +288,25 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			return false;
 		}
 
+		char dest_char[16];
+		unsigned char bytes[4];
+		bytes[0] = inner_ip_hdr_tmp->daddr & 0xFF;
+		bytes[1] = (inner_ip_hdr_tmp->daddr >> 8) & 0xFF;
+		bytes[2] = (inner_ip_hdr_tmp->daddr >> 16) & 0xFF;
+		bytes[3] = (inner_ip_hdr_tmp->daddr >> 24) & 0xFF;  
+		snprintf(dest_char, 16, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], 1); 
+		struct sockaddr_in construct_dest_ip;
+		inet_aton(dest_char, &construct_dest_ip.sin_addr);
+
+
 		outer_eth_hdr = (struct ethhdr *)data;
-		// __builtin_memcpy(outer_eth_hdr->h_source, out_eth_src, sizeof(outer_eth_hdr->h_source));
-		// memcpy(outer_eth_hdr->h_source, out_eth_src, sizeof(outer_eth_hdr->h_source));
 		ether_addr_copy_assignment(outer_eth_hdr->h_source, &out_eth_src);
-		struct ip_set *dest_ip_index = mg_map_get(&ip_table, inner_ip_hdr_tmp->daddr);
+		// struct ip_set *dest_ip_index = mg_map_get(&ip_table, inner_ip_hdr_tmp->daddr);
+		struct ip_set *dest_ip_index = mg_map_get(&ip_table, construct_dest_ip.sin_addr.s_addr);
 		// printf("dest_ip_index = %d\n", dest_ip_index->index);
 		int mac_index;
 		getRouteElement(route_table, dest_ip_index->index, topo, &mac_index);
 		struct mac_addr *dest_mac_val = mg_map_get(&mac_table, mac_index);
-		// ringbuf_t *dest_queue = mg_map_get(&dest_queue_table, mac_index);
 		// printf("dest_ip_index = %d, mac_index=%d \n", dest_ip_index->index, mac_index);
 		return_val->ring_buf_index = dest_ip_index->index - 1;
 
@@ -327,30 +321,22 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		//  #endif
 
 		// For debug
+		// printf("topo = %d\n", topo);
 		// printf("mac_index = %d\n", mac_index);
 		// int i;
 		// for (i = 0; i < 6; ++i)
 		// 	printf(" %02x", (unsigned char) dest_mac_val->bytes[i]);
 		// puts("\n");
 
-		// __builtin_memcpy(outer_eth_hdr->h_dest, dest_mac_val->bytes, sizeof(outer_eth_hdr->h_dest));
 		ether_addr_copy_assignment(outer_eth_hdr->h_dest, dest_mac_val->bytes);
 
 		outer_eth_hdr->h_proto = htons(ETH_P_IP);
 
 		outer_iphdr = (struct iphdr *)(data +
 									   sizeof(struct ethhdr));
-		// __builtin_memcpy(outer_iphdr, &encap_outer_iphdr, sizeof(*outer_iphdr));
+		
 		__builtin_memcpy(outer_iphdr, inner_ip_hdr_tmp, sizeof(*outer_iphdr));
-		// outer_iphdr->version = inner_ip_hdr_tmp->version;
-		// outer_iphdr->ihl = inner_ip_hdr_tmp->ihl;
-		// outer_iphdr->frag_off = inner_ip_hdr_tmp->frag_off;
-		// outer_iphdr->check = inner_ip_hdr_tmp->check;
-		// outer_iphdr->id = inner_ip_hdr_tmp->id;
-		// outer_iphdr->tos = inner_ip_hdr_tmp->tos;
-		// outer_iphdr->daddr = inner_ip_hdr_tmp->daddr;
-		// outer_iphdr->saddr = inner_ip_hdr_tmp->saddr;
-		// outer_iphdr->ttl = inner_ip_hdr_tmp->ttl;
+		
 		outer_iphdr->protocol = IPPROTO_GRE;
 		outer_iphdr->tot_len = bpf_htons(olen + bpf_ntohs(inner_ip_hdr_tmp->tot_len));
 
@@ -365,11 +351,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			gre_hdr->flags = 1;
 		} 
 
-		// return_val->dest_queue = dest_queue;
 		return_val->new_len = new_len;
-
-		// printf("From VETH packet received\n");
-		// return return_val;
 	}
 	else if (is_nic == 0)
 	{

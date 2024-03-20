@@ -469,19 +469,19 @@ int main(int argc, char **argv)
 		for (i = 0; fgets(buffer, sizeof buffer, stream3); ++i)
 		{
 			int row = i + 1;
-			printf("~~~~~~~READ LINE %d ~~~~~~~~~~~~~~~~\n", row);
+			// printf("~~~~~~~READ LINE %d ~~~~~~~~~~~~~~~~\n", row);
 			/*
 			 * Parse the comma-separated values from each line into 'array'.
 			 */
 			for (j = 0, ptr = buffer; j < 32; ++j, ++ptr)
 			{
 				int val = (int)strtol(ptr, &ptr, 10);
-				printf("%d,", val);
+				// printf("%d,", val);
 				int col = j + 1;
 				// printf("row and col %d %d ,", row, col);
 				setRouteElement(route_table, row, col, val);
 			}
-			printf("\n");
+			// printf("\n");
 		}
 		fclose(stream3);
 	}
