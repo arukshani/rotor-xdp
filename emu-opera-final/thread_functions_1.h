@@ -360,7 +360,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 // 		timestamp_arr[time_index] = now;
 // 		time_index++;
 // #endif
-		printf("From NIC \n");
+		// printf("From NIC \n");
 		struct ethhdr *eth = (struct ethhdr *)data;
 		struct iphdr *outer_ip_hdr = (struct iphdr *)(data +
 													  sizeof(struct ethhdr));
@@ -380,18 +380,18 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 
 		// struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
 		// if (src_ip != (inner_ip_hdr->daddr) || veth3_ip_addr != (inner_ip_hdr->daddr))
-		printf("outer_ip_hdr->daddr: %d \n", outer_ip_hdr->daddr);
+		// printf("outer_ip_hdr->daddr: %d \n", outer_ip_hdr->daddr);
 		if (src_ip != (outer_ip_hdr->daddr))
 		{
 			printf("Not destined for local node \n");
 			// send it back out NIC
-			// struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, outer_ip_hdr->daddr);
-			// int next_mac_index;
-			// getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
-			// struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
-			// ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
-			// ether_addr_copy_assignment(eth->h_source, &out_eth_src);
-			// return_val->ring_buf_index = next_dest_ip_index->index - 1;
+			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, outer_ip_hdr->daddr);
+			int next_mac_index;
+			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
+			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
+			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
+			ether_addr_copy_assignment(eth->h_source, &out_eth_src);
+			return_val->ring_buf_index = next_dest_ip_index->index - 1;
 
 			// Telemetry
 			//  #if DEBUG == 1
@@ -414,7 +414,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		}
 		else
 		{
-			printf("Destined for local node \n");
+			// printf("Destined for local node \n");
 
 			// if (greh->flags == 0) {
 			// 	return_val->which_veth = 0;
@@ -1070,7 +1070,7 @@ thread_func_veth(void *arg)
 					// printf("ret_val->ring_buf_index: %d \n", ret_val->ring_buf_index);
 					if (local_dest_queue[ret_val->ring_buf_index] != NULL)
 					{
-						printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], ret_val->ring_buf_index);
+						// printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], ret_val->ring_buf_index);
 						// mpmc_queue_push(dest_queue, (void *) btx);
 						int ret = mpmc_queue_push(local_dest_queue[ret_val->ring_buf_index], (void *) btx);
 						if (!ret) 
@@ -1142,7 +1142,7 @@ thread_func_veth_to_nic_tx(void *arg)
 							struct burst_tx *btx2 = (struct burst_tx *)obj2;
 							btx_collector->addr[btx_index] = btx2->addr[0];
 							btx_collector->len[btx_index] = btx2->len[0];
-							printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
+							// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
 
 							free(btx2);
 
