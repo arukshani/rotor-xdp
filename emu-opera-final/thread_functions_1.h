@@ -371,28 +371,26 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		// 	printf("not a GRE packet \n");
 		// 	return false;
 		// }
-		struct ethhdr *inner_eth = (struct ethhdr *)(greh + 1);
+		// struct ethhdr *inner_eth = (struct ethhdr *)(greh + 1);
 		// if (ntohs(inner_eth->h_proto) != ETH_P_IP) {
 		// 	printf("inner eth proto is not ETH_P_IP %x \n", inner_eth->h_proto);
 		//     return false;
 		// }
 
-		struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
+		// struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
 		// if (src_ip != (inner_ip_hdr->daddr) || veth3_ip_addr != (inner_ip_hdr->daddr))
+		printf("outer_ip_hdr->daddr: %d \n", outer_ip_hdr->daddr);
 		if (src_ip != (outer_ip_hdr->daddr))
 		{
 			printf("Not destined for local node \n");
 			// send it back out NIC
-			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, outer_ip_hdr->daddr);
-			int next_mac_index;
-			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
-			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
-			// __builtin_memcpy(eth->h_dest, next_dest_mac_val->bytes, sizeof(eth->h_dest));
-			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
-			// __builtin_memcpy(eth->h_source, out_eth_src, sizeof(eth->h_source));
-			// memcpy(eth->h_source, out_eth_src, sizeof(eth->h_source));
-			ether_addr_copy_assignment(eth->h_source, &out_eth_src);
-			return_val->ring_buf_index = next_dest_ip_index->index - 1;
+			// struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, outer_ip_hdr->daddr);
+			// int next_mac_index;
+			// getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
+			// struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
+			// ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
+			// ether_addr_copy_assignment(eth->h_source, &out_eth_src);
+			// return_val->ring_buf_index = next_dest_ip_index->index - 1;
 
 			// Telemetry
 			//  #if DEBUG == 1
@@ -412,7 +410,6 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			//  puts("\n");
 
 			return_val->new_len = 1; // indicates that packet should go back out through NIC
-			// return return_val;
 		}
 		else
 		{
