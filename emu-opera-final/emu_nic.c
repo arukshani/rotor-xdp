@@ -606,7 +606,7 @@ int main(int argc, char **argv)
 	int veth_tx_threads_start_index = veth_rx_threads_end_point;
 	start_index_for_veth_ports  = n_nic_ports;
 	// int k = 0; 
-	int m = 0;
+	// int m = 0;
 	//veth tx threads
 	for (i = veth_tx_threads_start_index; i < n_threads; i++)
 	{
@@ -614,8 +614,12 @@ int main(int argc, char **argv)
 
 		t->ports_tx[0] = ports[start_index_for_veth_ports]; //veth
 		start_index_for_veth_ports = start_index_for_veth_ports + 1;
-		t->veth_side_queue_array[0] = veth_side_queue[m];
-		m = m + 1;
+
+		int g = 0;
+		for (g = 0; g < veth_port_count; g++)
+        {
+            t->veth_side_queue_array[g] = veth_side_queue[g];
+        }
 		t->n_ports_rx = 1;
 	}
 

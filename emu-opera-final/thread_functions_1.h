@@ -381,7 +381,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		// if (src_ip != (inner_ip_hdr->daddr) || veth3_ip_addr != (inner_ip_hdr->daddr))
 		if (src_ip != (outer_ip_hdr->daddr))
 		{
-			// printf("Not destined for local node \n");
+			printf("Not destined for local node \n");
 			// send it back out NIC
 			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, outer_ip_hdr->daddr);
 			int next_mac_index;
@@ -416,7 +416,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		}
 		else
 		{
-			// printf("Destined for local node \n");
+			printf("Destined for local node \n");
 
 			// if (greh->flags == 0) {
 			// 	return_val->which_veth = 0;
@@ -1144,7 +1144,7 @@ thread_func_veth_to_nic_tx(void *arg)
 							struct burst_tx *btx2 = (struct burst_tx *)obj2;
 							btx_collector->addr[btx_index] = btx2->addr[0];
 							btx_collector->len[btx_index] = btx2->len[0];
-							printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], k);
+							printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
 
 							free(btx2);
 
