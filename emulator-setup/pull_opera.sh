@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/opt/rotor-xdp
-git pull origin master
+cd /opt/rotor-xdp
+git pull origin main
