@@ -21,11 +21,11 @@ typedef __u8  u8;
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 #ifndef MAX_BURST_RX
-#define MAX_BURST_RX 32
+#define MAX_BURST_RX 12
 #endif
 
 #ifndef MAX_BURST_TX
-#define MAX_BURST_TX 32
+#define MAX_BURST_TX 12
 #endif
 
 #ifndef MAX_BURST_TX_OBJS
