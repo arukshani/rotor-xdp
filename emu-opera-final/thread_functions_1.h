@@ -1062,6 +1062,8 @@ thread_func_veth(void *arg)
 			{
 				btx->addr[0] = brx->addr[j];
 				btx->len[0] = ret_val->new_len;
+
+				// printf("packet len %d \n", ret_val->new_len);
 				
 				if (ret_val->new_len !=0) 
 				{
@@ -1070,7 +1072,7 @@ thread_func_veth(void *arg)
 					// printf("ret_val->ring_buf_index: %d \n", ret_val->ring_buf_index);
 					if (local_dest_queue[ret_val->ring_buf_index] != NULL)
 					{
-						// printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], ret_val->ring_buf_index);
+						printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], ret_val->ring_buf_index);
 						// mpmc_queue_push(dest_queue, (void *) btx);
 						int ret = mpmc_queue_push(local_dest_queue[ret_val->ring_buf_index], (void *) btx);
 						if (!ret) 
@@ -1114,7 +1116,7 @@ thread_func_veth_to_nic_tx(void *arg)
 	int assigned_queue_count = t->assigned_queue_count;
 
 	int w;
-	for (w = 0; w < assigned_queue_count; w++)
+	for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
 	{
 			local_dest_queue[w] = t->local_dest_queue_array[w];
 	}
@@ -1129,35 +1131,39 @@ thread_func_veth_to_nic_tx(void *arg)
 		{
 			struct port *port_tx = t->ports_tx[k];
 		
-			int btx_index = 0;
-			if (local_dest_queue[k] != NULL)
+			int w;
+			for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
 			{
-				while ((mpmc_queue_available(local_dest_queue[k])) && (btx_index < MAX_BURST_TX))
+				int btx_index = 0;
+				if (local_dest_queue[w] != NULL)
 				{
-					void *obj2;
-					if (mpmc_queue_pull(local_dest_queue[k], &obj2) != NULL) {
-						struct burst_tx *btx2 = (struct burst_tx *)obj2;
-						btx_collector->addr[btx_index] = btx2->addr[0];
-						btx_collector->len[btx_index] = btx2->len[0];
-						// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], k);
+					while ((mpmc_queue_available(local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
+					{
+						void *obj2;
+						if (mpmc_queue_pull(local_dest_queue[w], &obj2) != NULL) {
+							struct burst_tx *btx2 = (struct burst_tx *)obj2;
+							btx_collector->addr[btx_index] = btx2->addr[0];
+							btx_collector->len[btx_index] = btx2->len[0];
+							printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], k);
 
-						free(btx2);
+							free(btx2);
 
-						btx_index++;
-						btx_collector->n_pkts = btx_index;
+							btx_index++;
+							btx_collector->n_pkts = btx_index;
+						}
+						
 					}
-					
+				} else {
+					printf("local_dest_queue is NULL \n");
 				}
-			} else {
-				printf("local_dest_queue is NULL \n");
+				if (btx_index)
+				{
+					// printf("There are packets from queue %d to nic tx \n", k);
+					port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+				} 
+			
+				btx_collector->n_pkts = 0;
 			}
-			if (btx_index)
-			{
-				// printf("There are packets from queue %d to nic tx \n", k);
-				port_tx_burst_collector(port_tx, btx_collector, 0, 0);
-			} 
-		
-			btx_collector->n_pkts = 0;
 
 		}
 	}
@@ -1182,7 +1188,7 @@ thread_func_nic(void *arg)
 	int assigned_queue_count = t->assigned_queue_count;
 
 	int w;
-	for (w = 0; w < assigned_queue_count; w++)
+	for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
 	{
 			non_local_dest_queue[w] = t->non_local_dest_queue_array[w];
 	}

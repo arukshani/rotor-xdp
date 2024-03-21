@@ -519,9 +519,10 @@ int main(int argc, char **argv)
 	// int total_nic_threads = TOTAL_NIC_THREADS;
     int nic_tx_thread_count = n_nic_ports;
 	int total_nic_threads = n_nic_ports * 2;
-
+	int v = 0;
 	int queue_index = 0;
 	int assigned_queue_count = n_nic_ports/nic_tx_thread_count;
+	// int assigned_queue_count = NUM_OF_PER_DEST_QUEUES;
 	for (i = 0; i < nic_tx_thread_count; i++)
 	{
 		struct thread_data *t = &thread_data[i];
@@ -531,11 +532,15 @@ int main(int argc, char **argv)
 		for (k = 0; k < assigned_queue_count; k++)
 		{
 			t->ports_tx[k] = ports[queue_index];
-			t->local_dest_queue_array[k] = local_per_dest_queue[queue_index];
 			// printf("NIC TX: port & queue %d : thread %d: \n", queue_index, i);
 			queue_index++;
 		}
 		t->assigned_queue_count = assigned_queue_count;
+
+		for (v=0; v < NUM_OF_PER_DEST_QUEUES; v++) 
+		{
+			t->local_dest_queue_array[v] = local_per_dest_queue[v];
+		}
     
 		t->n_ports_rx = 1;
 	}
@@ -548,6 +553,7 @@ int main(int argc, char **argv)
     int j = 0;
 	queue_index = 0;
 	assigned_queue_count = n_nic_ports/nic_rx_thread_count;
+	// assigned_queue_count = NUM_OF_PER_DEST_QUEUES;
 	for (i = nic_tx_thread_count; i < total_nic_threads; i++)
 	{
 		struct thread_data *t = &thread_data[i];
@@ -556,11 +562,15 @@ int main(int argc, char **argv)
 		for (k = 0; k < assigned_queue_count; k++)
 		{
 			t->ports_rx[k] = ports[queue_index]; //NIC
-			t->non_local_dest_queue_array[k] = non_local_per_dest_queue[queue_index];
 			queue_index++;
 		}
 		
 		t->assigned_queue_count = assigned_queue_count;
+
+		for (v=0; v < NUM_OF_PER_DEST_QUEUES; v++) 
+		{
+			t->non_local_dest_queue_array[v] = non_local_per_dest_queue[v];
+		}
         
 		//This is because any nic port can receive packets. Only requirement is that packets from same 
 		// namespaces shouldn't be handled by more than one thread. Since we only run one application
@@ -577,7 +587,6 @@ int main(int argc, char **argv)
 	//VETH RX THREADS
 	int veth_rx_threads_start_index = total_nic_threads;
 	int veth_rx_threads_end_point = total_nic_threads + veth_port_count;
-	int v = 0;
 	start_index_for_veth_ports  = n_nic_ports;
 	for (i = veth_rx_threads_start_index; i < veth_rx_threads_end_point; i++)
 	{

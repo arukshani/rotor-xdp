@@ -259,7 +259,7 @@ struct thread_data {
 	struct mpmc_queue *local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue *non_local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue *veth_side_queue_array[13];
-	int assigned_queue_count;
+	int assigned_queue_count; // this is actually assigned nic port count
 };
 
 static pthread_t threads[MAX_THREADS];
