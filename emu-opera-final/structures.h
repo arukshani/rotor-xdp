@@ -33,7 +33,7 @@ typedef __u8  u8;
 #endif
 
 #ifndef NUM_OF_PER_DEST_QUEUES
-#define NUM_OF_PER_DEST_QUEUES 16
+#define NUM_OF_PER_DEST_QUEUES 2
 #endif
 
 #ifndef TOTAL_NIC_THREADS
