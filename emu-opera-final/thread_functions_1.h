@@ -339,6 +339,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		
 		outer_iphdr->protocol = IPPROTO_GRE;
 		outer_iphdr->tot_len = bpf_htons(olen + bpf_ntohs(inner_ip_hdr_tmp->tot_len));
+		outer_iphdr->daddr = construct_dest_ip.sin_addr.s_addr;
 
 		struct gre_hdr *gre_hdr;
 		gre_hdr = (struct gre_hdr *)(data +
