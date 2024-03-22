@@ -747,18 +747,18 @@ int main(int argc, char **argv)
 	// 	fclose(fpt);
 	// #endif
 
-#if DEBUG_PAUSE_Q == 1
-	int z;
-	FILE *fpt;
-	fpt = fopen("/tmp/opera_data.csv", "w+");
-	fprintf(fpt, "time_ns,time_part_sec,time_part_nsec\n");
-	for (z = 0; z < time_index; z++)
-	{
-		unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-		fprintf(fpt, "%ld,%ld,%ld\n", now_ns, timestamp_arr[z].tv_sec, timestamp_arr[z].tv_nsec);
-	}
-	fclose(fpt);
-#endif
+// #if DEBUG_PAUSE_Q == 1
+// 	int z;
+// 	FILE *fpt;
+// 	fpt = fopen("/tmp/opera_data.csv", "w+");
+// 	fprintf(fpt, "time_ns,time_part_sec,time_part_nsec\n");
+// 	for (z = 0; z < time_index; z++)
+// 	{
+// 		unsigned long now_ns = get_nsec(&timestamp_arr[z]);
+// 		fprintf(fpt, "%ld,%ld,%ld\n", now_ns, timestamp_arr[z].tv_sec, timestamp_arr[z].tv_nsec);
+// 	}
+// 	fclose(fpt);
+// #endif
 
 	for (i = 0; i < n_threads; i++)
 	{

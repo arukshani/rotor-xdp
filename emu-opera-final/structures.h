@@ -7,7 +7,7 @@ typedef __u8  u8;
 
 // #define DEBUG 0
 
-#define DEBUG_PAUSE_Q 0
+// #define DEBUG_PAUSE_Q 0
 
 #ifndef CLOCK_INVALID
 #define CLOCK_INVALID -1
@@ -335,5 +335,5 @@ struct timespec now;
 uint64_t time_into_cycle_ns;
 uint8_t topo;
 uint64_t slot_time_ns = 1000000;  // 1 ms
-uint64_t cycle_time_ns = 2000000; // 2 ms
+uint64_t cycle_time_ns = 32000000; // 32 ms
 clockid_t clkid;
