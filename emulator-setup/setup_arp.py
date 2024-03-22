@@ -46,5 +46,5 @@ if __name__ == '__main__':
     # args = parse_args()
     # print('Arguments: {}'.format(args.ip_of_node))
     
-    # copy_nsinfo_to_master()
+    copy_nsinfo_to_master()
     add_arp_records()
