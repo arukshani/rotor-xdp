@@ -21,11 +21,11 @@ typedef __u8  u8;
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 #ifndef MAX_BURST_RX
-#define MAX_BURST_RX 12
+#define MAX_BURST_RX 20
 #endif
 
 #ifndef MAX_BURST_TX
-#define MAX_BURST_TX 12
+#define MAX_BURST_TX 20
 #endif
 
 #ifndef MAX_BURST_TX_OBJS
@@ -161,7 +161,7 @@ struct bcache {
  * Process
  */
 static const struct bpool_params bpool_params_default = {
-	.n_buffers = 64 * 1024 * 4,
+	.n_buffers = 64 * 1024 * 8,
 	// .n_buffers = 128 * 1024 * 4,
 	.buffer_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
 	.mmap_flags = 0,
