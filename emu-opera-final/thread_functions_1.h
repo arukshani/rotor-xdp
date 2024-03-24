@@ -366,23 +366,25 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 													  sizeof(struct ethhdr));
 		struct gre_hdr *greh = (struct gre_hdr *)(outer_ip_hdr + 1);
 
-		// if (ntohs(eth->h_proto) != ETH_P_IP || outer_ip_hdr->protocol != IPPROTO_GRE ||
-		// 			ntohs(greh->proto) != ETH_P_TEB)
-		// {
-		// 	printf("not a GRE packet \n");
-		// 	return false;
-		// }
+		if (ntohs(eth->h_proto) != ETH_P_IP || outer_ip_hdr->protocol != IPPROTO_GRE ||
+					ntohs(greh->proto) != ETH_P_TEB)
+		{
+			printf("not a GRE packet \n");
+			return false;
+		}
 		struct ethhdr *inner_eth = (struct ethhdr *)(greh + 1);
-		// if (ntohs(inner_eth->h_proto) != ETH_P_IP) {
-		// 	printf("inner eth proto is not ETH_P_IP %x \n", inner_eth->h_proto);
-		//     return false;
-		// }
+		if (ntohs(inner_eth->h_proto) != ETH_P_IP) {
+			printf("inner eth proto is not ETH_P_IP %x \n", inner_eth->h_proto);
+		    return false;
+		}
 
 		struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
 		// if (src_ip != (inner_ip_hdr->daddr) || veth3_ip_addr != (inner_ip_hdr->daddr))
 		// printf("outer_ip_hdr->daddr: %d \n", outer_ip_hdr->daddr);
 		if (src_ip != (outer_ip_hdr->daddr))
 		{
+			printf("Not destined for local node \n");
+			
 			char dest_char[16];
 			unsigned char bytes[4];
 			bytes[0] = inner_ip_hdr->daddr & 0xFF;
@@ -392,11 +394,13 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			snprintf(dest_char, 16, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], 1); 
 			struct sockaddr_in construct_dest_ip;
 			inet_aton(dest_char, &construct_dest_ip.sin_addr);
-			// printf("Not destined for local node \n");
+			
 			// send it back out NIC
 			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, construct_dest_ip.sin_addr.s_addr);
 			int next_mac_index;
 			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
+			printf("next_dest_ip_index = %d, next_mac_index=%d \n", next_dest_ip_index->index, next_mac_index);
+
 			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
 			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
 			ether_addr_copy_assignment(eth->h_source, &out_eth_src);
