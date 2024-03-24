@@ -521,6 +521,7 @@ thread_func_veth(void *arg)
 			u8 *pkt = xsk_umem__get_data(port_rx->params.bp->addr,
 										addr);
 
+			printf("params->iface : %s", params->iface);
 			process_rx_packet_old(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
 
 			struct burst_tx *btx = calloc(1, sizeof(struct burst_tx));
