@@ -242,6 +242,7 @@ bool prefix(const char *pre, const char *str)
 static void process_rx_packet_old(void *data, struct port_params *params, uint32_t len, u64 addr, struct return_process_rx *return_val)
 {
 	int is_nic = strcmp(params->iface, nic_iface);
+	printf("params->iface %s \n", params->iface);
 
 	// if (is_veth == 0 || is_veth3 == 0)
     if (prefix(OUTER_VETH_PREFIX, params->iface))
@@ -521,7 +522,6 @@ thread_func_veth(void *arg)
 			u8 *pkt = xsk_umem__get_data(port_rx->params.bp->addr,
 										addr);
 
-			printf("params->iface : %s", port_rx->params->iface);
 			process_rx_packet_old(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
 
 			struct burst_tx *btx = calloc(1, sizeof(struct burst_tx));
