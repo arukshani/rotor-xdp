@@ -400,7 +400,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
 			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
 			ether_addr_copy_assignment(eth->h_source, &out_eth_src);
-			outer_iphdr->daddr = construct_dest_ip.sin_addr.s_addr;
+			outer_ip_hdr->daddr = construct_dest_ip.sin_addr.s_addr;
 			return_val->ring_buf_index = next_dest_ip_index->index - 1;
 
 			// Telemetry
