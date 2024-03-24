@@ -246,7 +246,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 	// if (is_veth == 0 || is_veth3 == 0)
     if (prefix(OUTER_VETH_PREFIX, params->iface))
 	{
-		// printf("From VETH \n");
+		printf("From VETH \n");
 		struct iphdr *outer_iphdr;
 		// struct iphdr encap_outer_iphdr;
 		struct ethhdr *outer_eth_hdr;
@@ -360,7 +360,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 // 		timestamp_arr[time_index] = now;
 // 		time_index++;
 // #endif
-		// printf("From NIC \n");
+		printf("From NIC \n");
 		struct ethhdr *eth = (struct ethhdr *)data;
 		struct iphdr *outer_ip_hdr = (struct iphdr *)(data +
 													  sizeof(struct ethhdr));
@@ -383,7 +383,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		// printf("outer_ip_hdr->daddr: %d \n", outer_ip_hdr->daddr);
 		if (src_ip != (outer_ip_hdr->daddr))
 		{
-			// printf("Not destined for local node \n");
+			printf("Not destined for local node \n");
 
 			char dest_char[16];
 			unsigned char bytes[4];
@@ -428,7 +428,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		}
 		else
 		{
-			// printf("Destined for local node \n");
+			printf("Destined for local node \n");
 
 			// if (greh->flags == 0) {
 			// 	return_val->which_veth = 0;
