@@ -383,8 +383,8 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		// printf("outer_ip_hdr->daddr: %d \n", outer_ip_hdr->daddr);
 		if (src_ip != (outer_ip_hdr->daddr))
 		{
-			printf("Not destined for local node \n");
-			
+			// printf("Not destined for local node \n");
+
 			char dest_char[16];
 			unsigned char bytes[4];
 			bytes[0] = inner_ip_hdr->daddr & 0xFF;
@@ -399,7 +399,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, construct_dest_ip.sin_addr.s_addr);
 			int next_mac_index;
 			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
-			printf("next_dest_ip_index = %d, next_mac_index=%d \n", next_dest_ip_index->index, next_mac_index);
+			// printf("next_dest_ip_index = %d, next_mac_index=%d \n", next_dest_ip_index->index, next_mac_index);
 
 			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
 			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
