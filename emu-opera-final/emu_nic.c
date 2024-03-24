@@ -541,6 +541,11 @@ int main(int argc, char **argv)
 		{
 			t->local_dest_queue_array[v] = local_per_dest_queue[v];
 		}
+
+		for (v=0; v < NUM_OF_PER_DEST_QUEUES; v++) 
+		{
+			t->non_local_dest_queue_array[v] = non_local_per_dest_queue[v];
+		}
     
 		t->n_ports_rx = 1;
 	}

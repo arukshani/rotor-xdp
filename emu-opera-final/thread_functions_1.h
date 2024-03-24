@@ -372,25 +372,35 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		// 	printf("not a GRE packet \n");
 		// 	return false;
 		// }
-		// struct ethhdr *inner_eth = (struct ethhdr *)(greh + 1);
+		struct ethhdr *inner_eth = (struct ethhdr *)(greh + 1);
 		// if (ntohs(inner_eth->h_proto) != ETH_P_IP) {
 		// 	printf("inner eth proto is not ETH_P_IP %x \n", inner_eth->h_proto);
 		//     return false;
 		// }
 
-		// struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
+		struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
 		// if (src_ip != (inner_ip_hdr->daddr) || veth3_ip_addr != (inner_ip_hdr->daddr))
 		// printf("outer_ip_hdr->daddr: %d \n", outer_ip_hdr->daddr);
 		if (src_ip != (outer_ip_hdr->daddr))
 		{
+			char dest_char[16];
+			unsigned char bytes[4];
+			bytes[0] = inner_ip_hdr->daddr & 0xFF;
+			bytes[1] = (inner_ip_hdr->daddr >> 8) & 0xFF;
+			bytes[2] = (inner_ip_hdr->daddr >> 16) & 0xFF;
+			bytes[3] = (inner_ip_hdr->daddr >> 24) & 0xFF;  
+			snprintf(dest_char, 16, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], 1); 
+			struct sockaddr_in construct_dest_ip;
+			inet_aton(dest_char, &construct_dest_ip.sin_addr);
 			// printf("Not destined for local node \n");
 			// send it back out NIC
-			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, outer_ip_hdr->daddr);
+			struct ip_set *next_dest_ip_index = mg_map_get(&ip_table, construct_dest_ip.sin_addr.s_addr);
 			int next_mac_index;
 			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
 			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
 			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
 			ether_addr_copy_assignment(eth->h_source, &out_eth_src);
+			outer_iphdr->daddr = construct_dest_ip.sin_addr.s_addr;
 			return_val->ring_buf_index = next_dest_ip_index->index - 1;
 
 			// Telemetry
@@ -564,6 +574,7 @@ thread_func_veth_to_nic_tx(void *arg)
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
 
 	struct mpmc_queue *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 
 	int assigned_queue_count = t->assigned_queue_count;
 
@@ -571,6 +582,11 @@ thread_func_veth_to_nic_tx(void *arg)
 	for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
 	{
 			local_dest_queue[w] = t->local_dest_queue_array[w];
+	}
+
+	for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
+	{
+			non_local_dest_queue[w] = t->non_local_dest_queue_array[w];
 	}
 
 	//TODO: Fix this so that each nic port has its own burst_tx_collector
@@ -584,6 +600,41 @@ thread_func_veth_to_nic_tx(void *arg)
 			struct port *port_tx = t->ports_tx[k];
 		
 			int w;
+
+			for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
+			{
+				int btx_index = 0;
+				if (non_local_dest_queue[w] != NULL)
+				{
+					while ((mpmc_queue_available(non_local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
+					{
+						void *obj2;
+						if (mpmc_queue_pull(non_local_dest_queue[w], &obj2) != NULL) {
+							struct burst_tx *btx2 = (struct burst_tx *)obj2;
+							btx_collector->addr[btx_index] = btx2->addr[0];
+							btx_collector->len[btx_index] = btx2->len[0];
+							// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
+
+							free(btx2);
+
+							btx_index++;
+							btx_collector->n_pkts = btx_index;
+						}
+						
+					}
+				} else {
+					printf("local_dest_queue is NULL \n");
+				}
+				if (btx_index)
+				{
+					// printf("There are packets from queue %d to nic tx \n", k);
+					port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+				} 
+			
+				btx_collector->n_pkts = 0;
+			}
+
+
 			for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
 			{
 				int btx_index = 0;
@@ -693,28 +744,21 @@ thread_func_nic(void *arg)
 				struct burst_tx *btx = calloc(1, sizeof(struct burst_tx));
 				if (ret_val->new_len == 1)
 				{
-					printf("TODO: NON Local queues implement later \n");
-					// btx->addr[0] = brx->addr[j];
-					// btx->len[0] = brx->len[j];
-					// btx->n_pkts++;
-					// ringbuf_t *dest_queue = ring_buff_non_local[ret_val->ring_buf_index];
-					// // queue packet in non-local queue
-					// if (dest_queue != NULL)
-					// {
-					// 	if (!ringbuf_is_full(dest_queue))
-					// 	{
-					// 		// printf("queue packet %lld \n", btx->addr[0]);
-					// 		ringbuf_sp_enqueue(dest_queue, btx);
-					// 	}
-					// 	else
-					// 	{
-					// 		printf("NON-LCOAL QUEUE IS FULL \n");
-					// 	}
-					// }
-					// else
-					// {
-					// 	printf("TODO: There is no non-local queue to push the packet \n");
-					// }
+					// printf("TODO: NON Local queues implement later \n");
+					btx->addr[0] = brx->addr[j];
+					btx->len[0] = brx->len[j];
+					btx->n_pkts++;
+					
+					if (non_local_dest_queue[ret_val->ring_buf_index] != NULL)
+					{
+						int ret = mpmc_queue_push(non_local_dest_queue[ret_val->ring_buf_index], (void *) btx);
+						if (!ret) 
+						{
+							printf("non local_dest_queue is full \n");
+							//Release buffers to pool
+							bcache_prod(port_rx->bc, brx->addr[j]);
+						}
+					}
 				} else
 				{
 					
