@@ -429,7 +429,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		}
 		else
 		{
-			printf("Destined for local node \n");
+			// printf("Destined for local node \n");
 
 			// if (greh->flags == 0) {
 			// 	return_val->which_veth = 0;
