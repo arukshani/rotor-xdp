@@ -242,7 +242,7 @@ bool prefix(const char *pre, const char *str)
 static void process_rx_packet_old(void *data, struct port_params *params, uint32_t len, u64 addr, struct return_process_rx *return_val)
 {
 	int is_nic = strcmp(params->iface, nic_iface);
-	printf("params->iface %s \n", params->iface);
+	// printf("params->iface %s \n", params->iface);
 
 	// if (is_veth == 0 || is_veth3 == 0)
     if (prefix(OUTER_VETH_PREFIX, params->iface))
@@ -429,7 +429,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		}
 		else
 		{
-			// printf("Destined for local node \n");
+			printf("Destined for local node \n");
 
 			// if (greh->flags == 0) {
 			// 	return_val->which_veth = 0;
@@ -816,6 +816,12 @@ thread_func_nic_to_veth_tx(void *arg)
 
 	struct mpmc_queue *veth_side_queue = t->veth_side_queue_array[0];
 
+	// struct mpmc_queue *veth_side_queue[13]; 
+    
+	// for (w = 0; w < veth_port_count; w++)
+	// {
+	// 	veth_side_queue[w] = t->veth_side_queue_array[w];
+	// }
 	
 	int track_veth_tx_port = 0;
     int num_veths = veth_port_count - 1;

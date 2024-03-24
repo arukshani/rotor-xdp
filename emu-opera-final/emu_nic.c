@@ -613,18 +613,19 @@ int main(int argc, char **argv)
 	// int k = 0; 
 	// int m = 0;
 	//veth tx threads
+	int g = 0;
 	for (i = veth_tx_threads_start_index; i < n_threads; i++)
 	{
 		struct thread_data *t = &thread_data[i];
 
 		t->ports_tx[0] = ports[start_index_for_veth_ports]; //veth
 		start_index_for_veth_ports = start_index_for_veth_ports + 1;
-
-		int g = 0;
-		for (g = 0; g < veth_port_count; g++)
-        {
-            t->veth_side_queue_array[g] = veth_side_queue[g];
-        }
+		t->veth_side_queue_array[0] = veth_side_queue[g];
+		g++;
+		// for (g = 0; g < veth_port_count; g++)
+        // {
+        //     t->veth_side_queue_array[0] = veth_side_queue[g];
+        // }
 		t->n_ports_rx = 1;
 	}
 
