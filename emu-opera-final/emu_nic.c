@@ -741,7 +741,7 @@ int main(int argc, char **argv)
 	// printf("time_index: %ld \n", time_index);
 
 	#if DEBUG == 1
-		int z;
+		// int z;
 		FILE *fpt;
 		fpt = fopen("/tmp/opera_emu_data.csv", "w+");
 		fprintf(fpt,"node_ip,slot,topo_arr,next_node,time_ns,time_part_sec,time_part_nsec\n");
