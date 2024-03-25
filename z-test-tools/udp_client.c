@@ -84,18 +84,18 @@ int main(int argc, char **argv) {
     int portno, n;
     
     // struct hostent *server;
-    char *src_hostip;
+    // char *src_hostip;
     char *dst_hostip;
     char buf[BUFSIZE];
 
     /* check command line arguments */
-    if (argc != 4) {
-       fprintf(stderr,"usage: %s <src_hostip> <dst_hostip> <port>\n", argv[0]);
+    if (argc != 3) {
+       fprintf(stderr,"usage: %s <dst_hostip> <port>\n", argv[0]);
        exit(0);
     }
-    src_hostip = argv[1];
-    dst_hostip = argv[2];
-    portno = atoi(argv[3]);
+    // src_hostip = argv[1];
+    dst_hostip = argv[1];
+    portno = atoi(argv[2]);
 
     /* socket: create the socket */
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
