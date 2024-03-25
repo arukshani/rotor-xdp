@@ -5,7 +5,7 @@ typedef __u32 u32;
 typedef __u16 u16;
 typedef __u8  u8;
 
-#define DEBUG 1
+#define DEBUG 0
 
 // #define DEBUG_PAUSE_Q 0
 
