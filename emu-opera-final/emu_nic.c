@@ -740,18 +740,17 @@ int main(int argc, char **argv)
 
 	// printf("time_index: %ld \n", time_index);
 
-	// #if DEBUG == 1
-	// 	printf("debug");
-	// 	int z;
-	// 	FILE *fpt;
-	// 	fpt = fopen("/tmp/opera_data.csv", "w+");
-	// 	fprintf(fpt,"node_ip,slot,topo_arr,next_node,time_ns,time_part_sec,time_part_nsec\n");
-	// 	for (z = 0; z < time_index; z++ ) {
-	// 		unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-	// 		fprintf(fpt,"%d,%d,%d,%d,%ld,%ld,%ld\n",node_ip[z],slot[z],topo_arr[z],next_node[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec);
-	// 	}
-	// 	fclose(fpt);
-	// #endif
+	#if DEBUG == 1
+		int z;
+		FILE *fpt;
+		fpt = fopen("/tmp/opera_emu_data.csv", "w+");
+		fprintf(fpt,"node_ip,slot,topo_arr,next_node,time_ns,time_part_sec,time_part_nsec\n");
+		for (z = 0; z < time_index; z++ ) {
+			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
+			fprintf(fpt,"%d,%d,%d,%d,%ld,%ld,%ld\n",node_ip[z],slot[z],topo_arr[z],next_node[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec);
+		}
+		fclose(fpt);
+	#endif
 
 // #if DEBUG_PAUSE_Q == 1
 // 	int z;
