@@ -7,10 +7,12 @@ CC = gcc
 OPTS = -pthread -g -Wall
 
 # the build target executable:
-TARGET = udp_client
-# TARGET = udp_server
+target1 = udp_client
+target2 = udp_server
 
-default: $(TARGET)
+all: target1 target2
+
+default: $(target1)
 
 clean:
-	$(RM) count *.o *.gch *~ ../*.gch $(TARGET)
+	$(RM) count *.o *.gch *~ ../*.gch $(target1)
