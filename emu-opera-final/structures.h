@@ -5,7 +5,7 @@ typedef __u32 u32;
 typedef __u16 u16;
 typedef __u8  u8;
 
-// #define DEBUG 0
+#define DEBUG 1
 
 // #define DEBUG_PAUSE_Q 0
 
@@ -322,12 +322,12 @@ struct gre_hdr
 } __attribute__((packed));
 
 // Telemetry
-uint32_t node_ip[20000];
-// char description[20000][100]; //strcpy(description[0], aString);
-int slot[20000]; // 0-from_veth, 1-intermediate_node, 2-to_veth
+uint32_t node_ip[200000];
+// char description[200000][100]; //strcpy(description[0], aString);
+int slot[200000]; // 0-from_veth, 1-intermediate_node, 2-to_veth
 struct timespec timestamp_arr[20000000];
-uint8_t topo_arr[20000];
-int next_node[20000];
+uint8_t topo_arr[200000];
+int next_node[200000];
 long time_index = 0;
 
 __u32 t1ms;

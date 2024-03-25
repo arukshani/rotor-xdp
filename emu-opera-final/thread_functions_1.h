@@ -312,14 +312,14 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		return_val->ring_buf_index = dest_ip_index->index - 1;
 
 		// Telemetry
-		//  #if DEBUG == 1
-		//  	timestamp_arr[time_index] = now;
-		//  	node_ip[time_index] = src_ip;
-		//  	slot[time_index]=0;
-		//  	topo_arr[time_index] = topo;
-		//  	next_node[time_index] = mac_index;
-		//  	time_index++;
-		//  #endif
+		 #if DEBUG == 1
+		 	timestamp_arr[time_index] = now;
+		 	node_ip[time_index] = src_ip;
+		 	slot[time_index]=0;
+		 	topo_arr[time_index] = topo;
+		 	next_node[time_index] = mac_index;
+		 	time_index++;
+		 #endif
 
 		// For debug
 		// printf("topo = %d\n", topo);
@@ -409,14 +409,14 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			return_val->ring_buf_index = next_dest_ip_index->index - 1;
 
 			// Telemetry
-			//  #if DEBUG == 1
-			//  	timestamp_arr[time_index] = now;
-			//  	node_ip[time_index] = src_ip;
-			//  	slot[time_index]=1;
-			//  	topo_arr[time_index] = topo;
-			//  	next_node[time_index] = next_mac_index;
-			//  	time_index++;
-			//  #endif
+			 #if DEBUG == 1
+			 	timestamp_arr[time_index] = now;
+			 	node_ip[time_index] = src_ip;
+			 	slot[time_index]=1;
+			 	topo_arr[time_index] = topo;
+			 	next_node[time_index] = next_mac_index;
+			 	time_index++;
+			 #endif
 
 			// Debug
 			//  printf("next_mac_index = %d\n", next_mac_index);
@@ -451,14 +451,14 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			memcpy(xsk_umem__get_data(params->bp->addr, addr), new_data, new_len);
 
 			// Telemetry
-			//  #if DEBUG == 1
-			//  	timestamp_arr[time_index] = now;
-			//  	node_ip[time_index] = src_ip;
-			//  	slot[time_index]=2;
-			//  	topo_arr[time_index] = topo;
-			//  	next_node[time_index] = 0;
-			//  	time_index++;
-			//  #endif
+			 #if DEBUG == 1
+			 	timestamp_arr[time_index] = now;
+			 	node_ip[time_index] = src_ip;
+			 	slot[time_index]=2;
+			 	topo_arr[time_index] = topo;
+			 	next_node[time_index] = 0;
+			 	time_index++;
+			 #endif
 
 			return_val->new_len = new_len;
 			// return return_val;
