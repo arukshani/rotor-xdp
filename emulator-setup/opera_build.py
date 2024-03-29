@@ -12,6 +12,13 @@ def start_opera_nic():
         remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./start_opera.sh {} {} {}'.format(row[5], row[6], row[0], row[6], row[4])
         proc = subprocess.run(remoteCmd, shell=True)
 
+def kill_opera_nic():
+    worker_info = pd.read_csv('/tmp/all_worker_info.csv', header=None)
+    for index, row in worker_info.iterrows():
+        print("===================KILL OPERA NIC==={}=======================".format(row[7]))
+        remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./kill_opera.sh {} {} {}'.format(row[5], row[6], row[0], row[6], row[4])
+        proc = subprocess.run(remoteCmd, shell=True)
+
 def pull_changes():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
@@ -51,12 +58,16 @@ def main(args):
     if(args.start):
         start_opera_nic()
 
+    if(args.kill):
+        kill_opera_nic()
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Start and stop PTP on worker nodes')
     parser.add_argument('--make', '-m', action='store_true')
     parser.add_argument('--clean', '-c', action='store_true')
     parser.add_argument('--pull', '-p', action='store_true')
     parser.add_argument('--start', '-s', action='store_true')
+    parser.add_argument('--kill', '-k', action='store_true')
     args = parser.parse_args()
     return args
     
