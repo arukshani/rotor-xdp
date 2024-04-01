@@ -13,6 +13,25 @@ from datetime import datetime
 USER = os.environ['USER']
 IDENTITY_FILE = '/users/{}/.ssh/{}_cloudlab.pem'.format(USER, USER)
 
+def collect_tcp_stat_logs():
+    with open('/tmp/workers.pkl','rb') as f:  
+        workers = pickle.load(f)
+        mydir = os.path.join(
+            "/tmp/", 
+            datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+        # print(mydir)
+        try:
+            os.makedirs(mydir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise  # This was not a "directory exist" error..
+        for worker in workers:
+            remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/tcp_stats {}'.format(worker['host'], mydir)
+            proc = subprocess.run(remoteCmd, shell=True)
+            new_filename = "tcp-stats-{}".format(worker['host'])
+            cmd = "mv {}/tcp-stats {}/{}".format(mydir, mydir, new_filename)
+            subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+
 def gather_data():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
@@ -40,4 +59,5 @@ def main():
     
 if __name__ == '__main__':
     main()
-    gather_data()
+    # gather_data()
+    collect_tcp_stat_logs()
