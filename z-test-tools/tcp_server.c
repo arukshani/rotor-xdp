@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
      */
     bzero(buf, BUFSIZE);
     recv(client_sock, buf, sizeof(buf), 0);
-    printf("Client: %s\n", buf);
+    // printf("Client: %s\n", buf);
 
     close(client_sock);
     printf("[+]Client disconnected.\n\n");
