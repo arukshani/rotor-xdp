@@ -39,6 +39,9 @@ scripts/config --set-str CONFIG_DEBUG_INFO_BTF "n"
 make -j $(nproc)
 sudo make modules_install
 sudo make install
+
+sudo kexec -l /boot/vmlinuz-5.15.1 --initrd=/boot/initrd.img-5.15.1 --reuse-cmdline
+sudo systemctl kexec
 ```
 
 ```
