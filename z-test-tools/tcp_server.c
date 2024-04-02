@@ -115,7 +115,8 @@ int main(int argc, char **argv) {
 //   signal(SIGINT, sig_handler);
 //   int m = 0;
 
-  
+  listen(sockfd, 5);
+  printf("Listening...\n");
 
   while (1) {
     client_sock = accept(sockfd, (struct sockaddr*)&clientaddr, &clientlen);
