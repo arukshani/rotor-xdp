@@ -32,6 +32,7 @@ echo "GRUB_DEFAULT=\"Advanced options for Ubuntu>Ubuntu, with Linux $(uname -r)\
 
 ```
 cd /opt/linux-5.15.1/
+cp /boot/config-`uname -r` .config
 (//this should do the trick as well> scripts/config --set-str SYSTEM_TRUSTED_KEYS "")
 scripts/config --disable SYSTEM_TRUSTED_KEYS
 scripts/config --disable SYSTEM_REVOCATION_KEYS
