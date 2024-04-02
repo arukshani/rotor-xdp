@@ -57,3 +57,9 @@ BTF: .tmp_vmlinux.btf: pahole (pahole) is not available
 Failed to generate BTF for vmlinux
 Try to disable CONFIG_DEBUG_INFO_BTF
 ```
+
+## loggin
+```
+sudo dmesg -w
+tail -F /var/log/messages
+```
