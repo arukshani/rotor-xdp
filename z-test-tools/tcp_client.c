@@ -80,6 +80,11 @@ struct timespec send_timestamp_arr[2000];
 struct timespec recv_timestamp_arr[2000];
 int sequence_ids[20000];
 
+void make_array(FILE* file, char* array, int size) {
+   // read entire file into array
+   fread(array, size, 1, file);
+}
+
 int main(int argc, char **argv) {
     int portno, n;
     
@@ -124,7 +129,14 @@ int main(int argc, char **argv) {
         // char snum[5];
         // sprintf(snum, "%d", m);
         // strcat(buf, snum);
-        strcpy(buf, "HELLO, THIS IS CLIENT.");
+        // strcpy(buf, "HELLO, THIS IS CLIENT.");
+        FILE* file = fopen("sample_file.txt", "r");
+        fseek(file, 0, SEEK_END);
+        int fs = ftell(file);
+        fseek(file, 0, SEEK_SET);
+        make_array(file, buf, BUFSIZE);
+        fclose(file);
+        
         sequence_ids[time_index] = m;
         m++;
 
@@ -151,6 +163,7 @@ int main(int argc, char **argv) {
 
         // time_index++;
     }
+    
     close(sockfd);
     printf("Disconnected from the server.\n");
 
