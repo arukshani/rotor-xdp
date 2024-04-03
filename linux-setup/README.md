@@ -60,6 +60,17 @@ Try to disable CONFIG_DEBUG_INFO_BTF
 
 ## loggin
 ```
+CFLAGS_tcp_input.o := -DDEBUG (in tcp  modules's Makefile)
 sudo dmesg -w
 tail -F /var/log/messages
+
+eg:
+#if FASTRETRANS_DEBUG > 0
+    pr_debug("tcp_rcv_established \n");
+#endif
+
+or
+
+printk(KERN_INFO "INSDIE tcp_ack from printk \n");
+
 ```
