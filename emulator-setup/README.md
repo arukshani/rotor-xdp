@@ -39,6 +39,7 @@ python3 opera_build.py -s //start
 ### Tunning
 ```
 
+//minimum, default and maximum
 net.ipv4.tcp_rmem=4096 65536 1073741824 
 net.ipv4.tcp_wmem=4096 65536 1073741824
 
@@ -46,6 +47,7 @@ echo 3 | tee /proc/sys/net/ipv4/tcp_reordering
 echo 300 | tee /proc/sys/net/ipv4/tcp_max_reordering
 
 https://fasterdata.es.net/host-tuning/linux/
+(67108864 bytes = 67MB ; 67108864/3400=19737 packets)
 echo net.ipv4.tcp_wmem = 4096 67108864 67108864 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_rmem = 4096 67108864 67108864 | tee -a /etc/sysctl.conf
 sysctl -p
