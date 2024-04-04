@@ -18,7 +18,7 @@ ss --tcp  -i
 ss -at '( dport = :22 or sport = :22 )'
 
 
-iperf3 -c 192.168.2.2 -p 5000 -t 100 --cport 4000
+iperf3 -c 192.168.2.2 -p 5000 --cport 4000  -t 60
 iperf3 -s -p 5000
 ss -it '( sport = :4000 )'
 
