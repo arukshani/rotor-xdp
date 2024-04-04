@@ -66,7 +66,10 @@ tail -F /var/log/messages
 
 eg:
 #if FASTRETRANS_DEBUG > 0
-    pr_debug("tcp_rcv_established \n");
+	if (ntohs(inet->inet_sport) == 4000)
+	{
+    	pr_debug("INSDIE tcp_ack pr_debug \n");
+	}
 #endif
 
 or
