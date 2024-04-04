@@ -1,5 +1,6 @@
 #!/bin/sh
 
+sudo chsh -s /bin/bash rukshani
 sudo apt-get -y update
 cd /opt/
 wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.1.tar.gz
