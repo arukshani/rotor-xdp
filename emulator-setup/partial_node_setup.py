@@ -30,6 +30,8 @@ def write_veth_info():
                 proc = subprocess.run(remoteCmd, shell=True)
 
 def get_worker_mac():
+    cmd = "rm -rf /tmp/all_worker_info.csv"
+    subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
