@@ -76,4 +76,13 @@ or
 
 printk(KERN_INFO "INSDIE tcp_ack from printk \n");
 
+struct sock *sk;
+struct inet_sock *inet  = inet_sk(sk); //RUK
+
+	//RUK
+	if (ntohs(inet->inet_sport) == 4000)
+	{
+    	printk(KERN_INFO "tcp_retransmit_timer \n");
+	}
+
 ```
