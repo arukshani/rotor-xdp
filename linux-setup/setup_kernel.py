@@ -10,12 +10,13 @@ import socket
 
 USER = os.environ['USER']
 IDENTITY_FILE = '/users/{}/.ssh/{}_cloudlab.pem'.format(USER, USER)
+NODE="node-1"
 
 def build_kernel():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-2"):
+            if (worker['host'] == NODE):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./build_kernel.sh'.format(worker['username'], worker['host'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -23,7 +24,7 @@ def prepare_kernel():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-2"):
+            if (worker['host'] == NODE):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./prepare_kernel.sh'.format(worker['username'], worker['host'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -35,5 +36,5 @@ def main():
     
 if __name__ == '__main__':
     main()
-    prepare_kernel()
-    # build_kernel()
+    # prepare_kernel()
+    build_kernel()

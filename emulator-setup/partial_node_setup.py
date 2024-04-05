@@ -11,7 +11,7 @@ import socket
 USER = os.environ['USER']
 IDENTITY_FILE = '/users/{}/.ssh/{}_cloudlab.pem'.format(USER, USER)
 DATAPATH_INTERFACE="enp65s0f0np0"
-NODE="node-2"
+NODE="node-1"
 
 ###################################################
 
