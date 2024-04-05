@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /opt/linux-5.5.1/
+cd /opt/linux-5.15.1/
 make -j $(nproc)
 sudo make modules_install
 sudo make install

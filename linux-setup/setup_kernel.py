@@ -35,5 +35,5 @@ def main():
     
 if __name__ == '__main__':
     main()
-    # prepare_kernel()
+    prepare_kernel()
     # build_kernel()

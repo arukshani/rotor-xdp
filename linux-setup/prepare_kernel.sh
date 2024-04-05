@@ -15,7 +15,7 @@ pip install numpy pandas matplotlib cycler
 echo "GRUB_DEFAULT=\"Advanced options for Ubuntu>Ubuntu, with Linux $(uname -r)\"" | sudo tee -a /etc/default/grub
 
 cp /opt/rotor-xdp/linux-setup/linux_config /opt/linux-5.15.1/
-mv /opt/linux-5.15.1/linux_config /opt/linux-5.5.1/.config
+mv /opt/linux-5.15.1/linux_config /opt/linux-5.15.1/.config
 
 sudo apt-get install libdw-dev
 cd /opt
