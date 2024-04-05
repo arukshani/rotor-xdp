@@ -58,4 +58,8 @@ sysctl net.ipv4.tcp_wmem
 sysctl net.ipv4.tcp_rmem
 ```
 
+### Partial node setup
+python3 partial_node_setup.py
+python3 partial_setup_arp.py
+
 
