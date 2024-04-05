@@ -15,7 +15,7 @@ def build_kernel():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-1"):
+            if (worker['host'] == "node-2"):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./build_kernel.sh'.format(worker['username'], worker['host'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -23,7 +23,7 @@ def prepare_kernel():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-1"):
+            if (worker['host'] == "node-2"):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./prepare_kernel.sh'.format(worker['username'], worker['host'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -36,4 +36,4 @@ def main():
 if __name__ == '__main__':
     main()
     # prepare_kernel()
-    build_kernel()
+    # build_kernel()

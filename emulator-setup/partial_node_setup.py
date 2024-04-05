@@ -11,6 +11,7 @@ import socket
 USER = os.environ['USER']
 IDENTITY_FILE = '/users/{}/.ssh/{}_cloudlab.pem'.format(USER, USER)
 DATAPATH_INTERFACE="enp65s0f0np0"
+NODE="node-2"
 
 ###################################################
 
@@ -25,7 +26,7 @@ def write_veth_info():
      with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-1"):
+            if (worker['host'] == NODE):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./get_veth_info.sh {}'.format(worker['username'], worker['host'], worker['host'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -46,7 +47,7 @@ def change_iface_properties():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-1"):
+            if (worker['host'] == NODE):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./change_iface_properties.sh {}'.format(worker['username'], worker['host'], worker['ip_lan'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -54,7 +55,7 @@ def create_containers():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-1"):
+            if (worker['host'] == NODE):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./create_containers.sh {}'.format(worker['username'], worker['host'], worker['ip_lan'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -62,7 +63,7 @@ def setup_workers():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == "node-1"):
+            if (worker['host'] == NODE):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./setup_worker.sh {}'.format(worker['username'], worker['host'], worker['ip_lan'])
                 proc = subprocess.run(remoteCmd, shell=True)
 

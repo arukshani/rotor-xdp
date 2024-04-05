@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /opt/linux-5.15.1/
+cd /opt/linux-5.5.1/
 make -j $(nproc)
 sudo make modules_install
 sudo make install
@@ -11,3 +11,4 @@ sudo systemctl kexec
 # rm .config
 # optional: remove kernel soruce if they take too much space
 # rm -rf *
+
