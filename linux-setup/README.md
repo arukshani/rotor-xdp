@@ -35,6 +35,13 @@ cp /boot/config-`uname -r` .config
 scripts/config --disable SYSTEM_TRUSTED_KEYS
 scripts/config --disable SYSTEM_REVOCATION_KEYS
 scripts/config --set-str CONFIG_DEBUG_INFO_BTF "n"
+
+Add the following in scripts/link-vmlinux.sh
+if [ "${pahole_ver}" -ge "124" ]; then
+    extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"
+fi 
+
+
 <!-- make ARCH=x86 -->
 make -j $(nproc)
 sudo make modules_install
@@ -49,6 +56,8 @@ make clean
 rm .config
 # optional: remove kernel soruce if they take too much space
 # rm -rf *
+
+
 ```
 
 ## notes
