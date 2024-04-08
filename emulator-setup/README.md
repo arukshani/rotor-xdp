@@ -62,4 +62,6 @@ sysctl net.ipv4.tcp_rmem
 python3 partial_node_setup.py
 python3 partial_setup_arp.py
 
+echo 8 | sudo tee /proc/sys/kernel/printk
+
 
