@@ -8,3 +8,4 @@ pip3 install matplotlib
 pip3 install seaborn
 pip3 install scipy
 sudo apt -y install htop
+pip install -U kaleido
