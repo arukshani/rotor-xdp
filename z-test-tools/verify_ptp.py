@@ -37,8 +37,11 @@ def start_tdump():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
+            octets = worker['ip_lan'].split('.')
+            ptp_ip="10.10."+str(octets[2])+"."+str(octets[3])
+            # print(ptp_ip)
             # if (worker['host'] != CLIENT_NODE):
-            remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./start_tdump.sh {}'.format(worker['username'], worker['host'], worker['ip_lan'])
+            remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./start_tdump.sh {}'.format(worker['username'], worker['host'], ptp_ip)
             proc = subprocess.run(remoteCmd, shell=True)
 
 def main():
