@@ -51,6 +51,25 @@ def gather_data():
             cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
             subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
+def gather_tdumps():
+    with open('/tmp/workers.pkl','rb') as f:  
+        workers = pickle.load(f)
+        mydir = os.path.join(
+            "/tmp/TDUMPS/", 
+            datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+        # print(mydir)
+        try:
+            os.makedirs(mydir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise  # This was not a "directory exist" error..
+        for worker in workers:
+            remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/host-br_time.pcap {}'.format(worker['host'], mydir)
+            proc = subprocess.run(remoteCmd, shell=True)
+            new_filename = "br-tdump-{}.pcap".format(worker['host'])
+            cmd = "mv {}/host-br_time.pcap {}/{}".format(mydir, mydir, new_filename)
+            subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+
 def main():
     # check if identity file exists & works
     if not os.path.isfile(IDENTITY_FILE):
@@ -60,4 +79,5 @@ def main():
 if __name__ == '__main__':
     main()
     # gather_data()
-    collect_tcp_stat_logs()
+    # collect_tcp_stat_logs()
+    gather_tdumps()

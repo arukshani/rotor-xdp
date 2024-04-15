@@ -12,9 +12,9 @@ def kill_broadcast_server():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] != CLIENT_NODE):
-                remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./kill_br_server.sh'.format(worker['username'], worker['host'])
-                proc = subprocess.run(remoteCmd, shell=True)
+            # if (worker['host'] != CLIENT_NODE):
+            remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./kill_br_server.sh'.format(worker['username'], worker['host'])
+            proc = subprocess.run(remoteCmd, shell=True)
 
 def send_broadcast_msg():
      with open('/tmp/workers.pkl','rb') as f:  
@@ -37,9 +37,9 @@ def start_tdump():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] != CLIENT_NODE):
-                remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./start_tdump.sh {}'.format(worker['username'], worker['host'], worker['ip_lan'])
-                proc = subprocess.run(remoteCmd, shell=True)
+            # if (worker['host'] != CLIENT_NODE):
+            remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./start_tdump.sh {}'.format(worker['username'], worker['host'], worker['ip_lan'])
+            proc = subprocess.run(remoteCmd, shell=True)
 
 def main():
     start_tdump()
