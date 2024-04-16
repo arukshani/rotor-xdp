@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
     // clkid = get_nic_clock_id();
 
     int m = 0;
-    while(m < 10000)
+    while(m < 90000)
     {
         /* get a message from the user */
         bzero(buf, BUFSIZE);

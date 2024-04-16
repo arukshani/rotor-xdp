@@ -36,7 +36,7 @@ def gather_data():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         mydir = os.path.join(
-            "/tmp/", 
+            "/tmp/XDP/", 
             datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
         # print(mydir)
         try:
@@ -78,6 +78,6 @@ def main():
     
 if __name__ == '__main__':
     main()
-    # gather_data()
+    gather_data()
     # collect_tcp_stat_logs()
-    gather_tdumps()
+    # gather_tdumps()
