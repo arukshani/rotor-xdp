@@ -22,10 +22,11 @@ sudo ip netns exec ns1 bash
 sudo ip netns exec ns2 bash
 ```
 
-### PTP start and stop
+### PTP start and stop and remove telemetry logs
 ```
 python3 ptp_script.py -s 
 python3 ptp_script.py -k 
+python3 ptp_script.py -r
 ```
 
 ### Make, Clean, Pull and Start Opera Code

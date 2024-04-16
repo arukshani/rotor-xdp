@@ -76,9 +76,9 @@ int sockfd;
 // }
 
 long time_index = 0;
-struct timespec send_timestamp_arr[2000];
-struct timespec recv_timestamp_arr[2000];
-int sequence_ids[20000];
+struct timespec send_timestamp_arr[20000000];
+struct timespec recv_timestamp_arr[20000000];
+int sequence_ids[20000000];
 
 void make_array(FILE* file, char* array, int size) {
    // read entire file into array

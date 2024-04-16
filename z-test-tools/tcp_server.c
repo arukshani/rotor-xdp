@@ -52,9 +52,9 @@ static void sig_handler(int sig)
 }
 
 long time_index = 0;
-struct timespec send_timestamp_arr[2000];
-struct timespec recv_timestamp_arr[2000];
-int sequence_ids[20000];
+struct timespec send_timestamp_arr[20000000];
+struct timespec recv_timestamp_arr[20000000];
+int sequence_ids[20000000];
 
 int main(int argc, char **argv) {
   int sockfd,client_sock; /* socket */

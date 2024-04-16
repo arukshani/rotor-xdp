@@ -76,9 +76,9 @@ int sockfd;
 // }
 
 long time_index = 0;
-struct timespec send_timestamp_arr[2000];
-struct timespec recv_timestamp_arr[2000];
-int sequence_ids[20000];
+struct timespec send_timestamp_arr[20000000];
+struct timespec recv_timestamp_arr[20000000];
+int sequence_ids[20000000];
 
 int main(int argc, char **argv) {
     int portno, n;
@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
         m++;
 
         /* send the message to the server */
-        sleep(0.001);
+        // sleep(0.001);
 
         //send time
 		// struct timespec client_send_time = get_nicclock();
@@ -136,9 +136,9 @@ int main(int argc, char **argv) {
             error("ERROR in sendto");
         
         /* print the server's reply */
-        n = recvfrom(sockfd, buf, strlen(buf), 0, &serveraddr, &serverlen);
-        if (n < 0) 
-            error("ERROR in recvfrom");
+        // n = recvfrom(sockfd, buf, strlen(buf), 0, &serveraddr, &serverlen);
+        // if (n < 0) 
+        //     error("ERROR in recvfrom");
         // printf("Echo from server: %s \n", buf);
 
         //recv time

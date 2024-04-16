@@ -52,9 +52,9 @@ static void sig_handler(int sig)
 }
 
 long time_index = 0;
-struct timespec send_timestamp_arr[2000];
-struct timespec recv_timestamp_arr[2000];
-int sequence_ids[20000];
+struct timespec send_timestamp_arr[20000000];
+struct timespec recv_timestamp_arr[20000000];
+int sequence_ids[20000000];
 
 int main(int argc, char **argv) {
   int sockfd; /* socket */
@@ -151,10 +151,10 @@ int main(int argc, char **argv) {
     //send time
     // send_timestamp_arr[time_index] = get_nicclock();
 
-    n = sendto(sockfd, buf, strlen(buf), 0, 
-	       (struct sockaddr *) &clientaddr, clientlen);
-    if (n < 0) 
-      error("ERROR in sendto");
+    // n = sendto(sockfd, buf, strlen(buf), 0, 
+	  //      (struct sockaddr *) &clientaddr, clientlen);
+    // if (n < 0) 
+    //   error("ERROR in sendto");
 
     // time_index++;
     // if (time_index > 1024) {

@@ -5,6 +5,14 @@ import pickle
 import logging
 import pandas as pd
 
+def remove_telemetry_logs():
+    with open('/tmp/workers.pkl','rb') as f:  
+        workers = pickle.load(f)
+        for worker in workers:
+            print("===================REMOVE LOGS==={}=======================".format(worker['host']))
+            remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./remove_logs.sh'.format(worker['username'],worker['host'])
+            proc = subprocess.run(remoteCmd, shell=True)
+
 def stop_ptp():
     # print("Kill PTP")
     with open('/tmp/workers.pkl','rb') as f:  
@@ -28,11 +36,15 @@ def main(args):
     
     if(args.stop):
         stop_ptp()
+    
+    if(args.remove):
+        remove_telemetry_logs()
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Start and stop PTP on worker nodes')
     parser.add_argument('--start', '-s', action='store_true')
     parser.add_argument('--stop', '-k', action='store_true')
+    parser.add_argument('--remove', '-r', action='store_true')
     args = parser.parse_args()
     return args
     
