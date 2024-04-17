@@ -11,14 +11,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import re
 
-path = "/tmp/XDP/2024-04-16_15-05-59/"
+path = "/tmp/XDP/2024-04-17_13-30-47/"
 node1_file = "afxdp-data-node-1.csv"
 
 def get_timestamp(time_format):
     return time_format.timestamp() * 1000 * 1000
 
 def plot_sent_data(node1_data, fig):
-    for x in range(2, 32):
+    for x in range(1, 33):
         topo_data = node1_data[node1_data['topo_arr'] == x]
         topo_results  = topo_data.resample('100us', on='packet_time')['packets'].sum().dropna().reset_index()
         legend_str = "n1-sent-topo-" + str(x)
