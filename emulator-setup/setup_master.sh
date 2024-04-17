@@ -9,4 +9,4 @@ pip3 install seaborn
 pip3 install scipy
 sudo apt -y install htop
 pip install -U kaleido
-sudo apt -y install tshark
+# sudo apt -y install tshark
