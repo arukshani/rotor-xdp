@@ -151,10 +151,10 @@ int main(int argc, char **argv) {
     //send time
     // send_timestamp_arr[time_index] = get_nicclock();
 
-    n = sendto(sockfd, buf, strlen(buf), 0, 
-	       (struct sockaddr *) &clientaddr, clientlen);
-    if (n < 0) 
-      error("ERROR in sendto");
+    // n = sendto(sockfd, buf, strlen(buf), 0, 
+	  //      (struct sockaddr *) &clientaddr, clientlen);
+    // if (n < 0) 
+    //   error("ERROR in sendto");
 
     // time_index++;
     // if (time_index > 1024) {

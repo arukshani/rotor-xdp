@@ -31,10 +31,9 @@
 #include <fcntl.h>
 
 
-#include "common.h"
+// #include "common.h"
 
 #define BUFSIZE 1024
-
 
 /* 
  * error - wrapper for perror
@@ -113,8 +112,6 @@ int main(int argc, char **argv) {
     serverlen = sizeof(serveraddr);
 
     // clkid = get_nic_clock_id();
-    pthread_t clock_thread;
-    pthread_create(&clock_thread, NULL, read_time, NULL);
 
     int m = 0;
     while(m < 90000)
@@ -132,35 +129,32 @@ int main(int argc, char **argv) {
 
         //send time
 		// struct timespec client_send_time = get_nicclock();
-        send_timestamp_arr[time_index] = now;
+        // send_timestamp_arr[time_index] = get_nicclock();
 
         n = sendto(sockfd, buf, strlen(buf), 0, &serveraddr, serverlen);
         if (n < 0) 
             error("ERROR in sendto");
         
         /* print the server's reply */
-        n = recvfrom(sockfd, buf, strlen(buf), 0, &serveraddr, &serverlen);
-        if (n < 0) 
-            error("ERROR in recvfrom");
+        // n = recvfrom(sockfd, buf, strlen(buf), 0, &serveraddr, &serverlen);
+        // if (n < 0) 
+        //     error("ERROR in recvfrom");
         // printf("Echo from server: %s \n", buf);
 
         //recv time
-        recv_timestamp_arr[time_index] = now;
+        // recv_timestamp_arr[time_index] = get_nicclock();
 
-        time_index++;
+        // time_index++;
     }
 
-    quit = 1;
-    pthread_join(clock_thread, NULL);
-
-    int z = 0;
-	FILE *fpt;
-	fpt = fopen("/tmp/udp_client_rtt.csv", "w+");
-	fprintf(fpt,"seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec\n");
-	for (z = 0; z < time_index; z++ ) {
-		fprintf(fpt,"%d,%ld,%ld,%ld,%ld\n",sequence_ids[z],send_timestamp_arr[z].tv_sec,send_timestamp_arr[z].tv_nsec, recv_timestamp_arr[z].tv_sec,recv_timestamp_arr[z].tv_nsec);
-	}
-	fclose(fpt);
+    // int z = 0;
+	// FILE *fpt;
+	// fpt = fopen("./logs/mem_to_mem_send_l1_fpga.csv", "w+");
+	// fprintf(fpt,"seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec\n");
+	// for (z = 0; z < time_index; z++ ) {
+	// 	fprintf(fpt,"%d,%ld,%ld,%ld,%ld\n",sequence_ids[z],send_timestamp_arr[z].tv_sec,send_timestamp_arr[z].tv_nsec, recv_timestamp_arr[z].tv_sec,recv_timestamp_arr[z].tv_nsec);
+	// }
+	// fclose(fpt);
 
     return 0;
 }

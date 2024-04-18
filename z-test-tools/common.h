@@ -1,7 +1,7 @@
 
 
 
-
+#define DEVICE "/dev/ptp2"
 
 #ifndef CLOCK_INVALID
 #define CLOCK_INVALID -1
@@ -59,7 +59,8 @@ static void read_time()
 {
 	for ( ; !quit; ) 
 	{
-		now = get_nicclock();
+		// now = get_nicclock();
+		now = get_monoclock();
 	}
 }
 
