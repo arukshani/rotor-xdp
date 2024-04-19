@@ -51,22 +51,22 @@ opera_udp_rtt['rtt_us'] = opera_udp_rtt.apply(lambda row: get_rtt(row['recv_time
 
 
 ### PLOT
-sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "udp-rtt")
-sns.kdeplot(data = opera_udp_rtt['rtt_us'], cumulative = True, label = "opera-udp-rtt")
-plt.legend()
-plt.xlabel('RTT (us)')
-plt.ylabel('CDF')
-plt.savefig('opera_udp.png')
+# sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "udp-rtt")
+# sns.kdeplot(data = opera_udp_rtt['rtt_us'], cumulative = True, label = "opera-udp-rtt")
+# plt.legend()
+# plt.xlabel('RTT (us)')
+# plt.ylabel('CDF')
+# plt.savefig('opera_udp.png')
 
-# hist, bin_edges = np.histogram(udp_rtt['rtt_us'], bins=100, density=True)
-# cdf = np.cumsum(hist * np.diff(bin_edges))
+hist, bin_edges = np.histogram(udp_rtt['rtt_us'], bins=100, density=True)
+cdf = np.cumsum(hist * np.diff(bin_edges))
 
-# hist_1, bin_edges_1 = np.histogram(opera_udp_rtt['rtt_us'], bins=100, density=True)
-# cdf_1 = np.cumsum(hist_1 * np.diff(bin_edges_1))
+hist_1, bin_edges_1 = np.histogram(opera_udp_rtt['rtt_us'], bins=100, density=True)
+cdf_1 = np.cumsum(hist_1 * np.diff(bin_edges_1))
 
 
-# fig = go.Figure(data=[
-#     go.Scatter(x=bin_edges, y=cdf, name='UDP RTT'),
-#     go.Scatter(x=bin_edges_1, y=cdf_1, name='OPERA UDP RTT')
-# ])
-# fig.write_html("opera_udp_results.html")
+fig = go.Figure(data=[
+    go.Scatter(x=bin_edges, y=cdf, name='UDP RTT'),
+    go.Scatter(x=bin_edges_1, y=cdf_1, name='OPERA UDP RTT')
+])
+fig.write_html("opera_udp_results.html")
