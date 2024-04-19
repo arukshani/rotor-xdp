@@ -747,7 +747,7 @@ int main(int argc, char **argv)
 		fprintf(fpt,"node_ip,slot,topo_arr,next_node,time_ns,time_part_sec,time_part_nsec,hop_count\n");
 		for (z = 0; z < time_index; z++ ) {
 			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-			fprintf(fpt,"%d,%d,%d,%d,%ld,%ld,%ld\n",node_ip[z],slot[z],topo_arr[z],next_node[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+			fprintf(fpt,"%d,%d,%d,%d,%ld,%ld,%ld,%d\n",node_ip[z],slot[z],topo_arr[z],next_node[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
 		}
 		fclose(fpt);
 	#endif
