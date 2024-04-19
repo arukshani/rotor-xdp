@@ -408,7 +408,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			getRouteElement(route_table, next_dest_ip_index->index, topo, &next_mac_index);
 			// printf("next_dest_ip_index = %d, next_mac_index=%d \n", next_dest_ip_index->index, next_mac_index);
 			
-			gre_hdr->hopcount = gre_hdr->hopcount + 1;
+			greh->hopcount = greh->hopcount + 1;
 
 			struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
 			ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
@@ -425,7 +425,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 					slot[time_index]=1;
 					topo_arr[time_index] = topo;
 					next_node[time_index] = next_mac_index;
-					hop_count[time_index] = gre_hdr->hopcount;
+					hop_count[time_index] = greh->hopcount;
 					time_index++;
 				}
 			#endif
@@ -449,7 +449,7 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 			// 	return_val->which_veth = 1;
 			// }
 
-			int hops = gre_hdr->hopcount + 1;
+			int hops = greh->hopcount + 1;
 
 			return_val->which_veth = greh->flags;
 
