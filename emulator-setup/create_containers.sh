@@ -44,6 +44,9 @@ for i in $(seq 1 2); do
     sudo ip netns exec $NEW_NAMESPACE_ID ip link set $INSIDE_VETH mtu 3400
     sudo ip link set $OUTSIDE_VETH mtu 3400
 
+    echo 2| sudo tee /sys/class/net/$OUTSIDE_VETH/napi_defer_hard_irqs
+    echo 1000 | sudo tee /sys/class/net/$OUTSIDE_VETH/gro_flush_timeout
+
     echo "========================================="
 done 
 

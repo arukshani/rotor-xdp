@@ -38,7 +38,7 @@ def get_rtt(recv_time_part_sec, send_time_part_sec, recv_time_part_nsec, send_ti
 #                                                             row['recv_time_part_nsec'], row['send_time_part_nsec']), axis=1)
 
 ######################################END OF UDP RTT######################################
-path_op = "/tmp/HOPS/"
+path_op = "/tmp/TAIL/"
 udp_rtt_file_op = "opera_udp_client_rtt.csv"
 
 ## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
@@ -48,15 +48,15 @@ opera_udp_rtt = opera_udp_rtt.iloc[1:]
 opera_udp_rtt['rtt_us'] = opera_udp_rtt.apply(lambda row: get_rtt(row['recv_time_part_sec'], row['send_time_part_sec'],
                                                             row['recv_time_part_nsec'], row['send_time_part_nsec']), axis=1)
 
-print(opera_udp_rtt[(opera_udp_rtt['rtt_us'] > 150)])
+# print(opera_udp_rtt[(opera_udp_rtt['rtt_us'] > 150)])
 
 ### PLOT
 # sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "udp-rtt")
-# sns.kdeplot(data = opera_udp_rtt['rtt_us'], cumulative = True, label = "opera-udp-rtt")
-# plt.legend()
-# plt.xlabel('RTT (us)')
-# plt.ylabel('CDF')
-# plt.savefig('opera_udp.png')
+sns.kdeplot(data = opera_udp_rtt['rtt_us'], cumulative = True, label = "opera-udp-rtt")
+plt.legend()
+plt.xlabel('RTT (us)')
+plt.ylabel('CDF')
+plt.savefig('opera_udp.png')
 
 # hist, bin_edges = np.histogram(udp_rtt['rtt_us'], bins=100, density=True)
 # cdf = np.cumsum(hist * np.diff(bin_edges))
