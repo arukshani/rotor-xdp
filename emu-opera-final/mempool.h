@@ -342,16 +342,16 @@ static void apply_setsockopt(struct xsk_socket *xsk)
 	// if (!opt_busy_poll)
 	// 	return;
 
-	// sock_opt = 1;
-	// if (setsockopt(xsk_socket__fd(xsk), SOL_SOCKET, SO_PREFER_BUSY_POLL,
-	// 			   (void *)&sock_opt, sizeof(sock_opt)) < 0)
-	// 	printf("Error!!!");
-
-	// sock_opt = 20;
 	sock_opt = 1;
-	if (setsockopt(xsk_socket__fd(xsk), SOL_SOCKET, SO_BUSY_POLL,
+	if (setsockopt(xsk_socket__fd(xsk), SOL_SOCKET, SO_PREFER_BUSY_POLL,
 				   (void *)&sock_opt, sizeof(sock_opt)) < 0)
 		printf("Error!!!");
+
+	// sock_opt = 20;
+	// sock_opt = 1;
+	// if (setsockopt(xsk_socket__fd(xsk), SOL_SOCKET, SO_BUSY_POLL,
+	// 			   (void *)&sock_opt, sizeof(sock_opt)) < 0)
+	// 	printf("Error!!!");
 
 	// sock_opt = 1;
 	// if (setsockopt(xsk_socket__fd(xsk), SOL_SOCKET, SO_BUSY_POLL_BUDGET,
