@@ -22,6 +22,7 @@ NODE_INTERFACE=${NODE_INTERFACE::-1}
 # echo $NODE_INTERFACE
 
 echo 2| sudo tee /sys/class/net/$NODE_INTERFACE/napi_defer_hard_irqs
-echo 1000 | sudo tee /sys/class/net/$NODE_INTERFACE/gro_flush_timeout
+# echo 1000 | sudo tee /sys/class/net/$NODE_INTERFACE/gro_flush_timeout
+echo 200000 | sudo tee /sys/class/net/$NODE_INTERFACE/gro_flush_timeout
 
 

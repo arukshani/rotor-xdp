@@ -36,7 +36,7 @@ def gather_data():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         mydir = os.path.join(
-            "/tmp/XDP/", 
+            "/tmp/HOPS/", 
             datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
         # print(mydir)
         try:
