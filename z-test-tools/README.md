@@ -20,4 +20,10 @@ python3 node_health.py -r // read start log
 python3 node_health.py -d // delete logs(start_log)
 ```
 
+### Throughput Test
+```
+sudo ./iperf_tcp_ns_client.sh -n 1 -s 192.168.2.2
+sudo ./iperf_tcp_ns_server.sh -n 1 -s 192.168.2.2
+```
+
 
