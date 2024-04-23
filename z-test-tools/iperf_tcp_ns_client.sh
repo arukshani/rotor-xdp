@@ -33,7 +33,7 @@ server=$ip
 # myArray=("cr1" "cr2" "cr3" "cr4" "cr5" "cr6" "cr7" "cr8")
 myArray=("ns1" "ns2")
 
-cpu_core_id=$(echo "62" | bc)
+cpu_core_id=$(echo "12" | bc)
 output=$(
 for i in $(seq 0 $num_namespaces); do
     cpu_core_id=$(echo "$cpu_core_id+2" | bc)
