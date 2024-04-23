@@ -522,7 +522,7 @@ int main(int argc, char **argv)
 	int v = 0;
 	int queue_index = 0;
 	int assigned_queue_count = n_nic_ports/nic_tx_thread_count;
-	// int assigned_queue_count = NUM_OF_PER_DEST_QUEUES;
+	int assigned_perdest_count = NUM_OF_PER_DEST_QUEUES/n_nic_ports;
 	for (i = 0; i < nic_tx_thread_count; i++)
 	{
 		struct thread_data *t = &thread_data[i];
@@ -536,16 +536,21 @@ int main(int argc, char **argv)
 			queue_index++;
 		}
 		t->assigned_queue_count = assigned_queue_count;
+		t->assigned_perdest_count = assigned_perdest_count;
 
-		for (v=0; v < NUM_OF_PER_DEST_QUEUES; v++) 
+		int queue_id_start = assigned_perdest_count * i;
+
+		for (v=0; v < assigned_perdest_count; v++) 
 		{
-			t->local_dest_queue_array[v] = local_per_dest_queue[v];
+			t->local_dest_queue_array[v] = local_per_dest_queue[queue_id_start];
+			t->non_local_dest_queue_array[v] = non_local_per_dest_queue[queue_id_start];
+			queue_id_start++;
 		}
 
-		for (v=0; v < NUM_OF_PER_DEST_QUEUES; v++) 
-		{
-			t->non_local_dest_queue_array[v] = non_local_per_dest_queue[v];
-		}
+		// for (v=0; v < assigned_perdest_count; v++) 
+		// {
+		// 	t->non_local_dest_queue_array[v] = non_local_per_dest_queue[queue_id_start];
+		// }
     
 		t->n_ports_rx = 1;
 	}

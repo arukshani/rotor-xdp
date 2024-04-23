@@ -600,14 +600,15 @@ thread_func_veth_to_nic_tx(void *arg)
 	struct mpmc_queue *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 
 	int assigned_queue_count = t->assigned_queue_count;
+	int assigned_perdest_count = t->assigned_perdest_count;
 
 	int w;
-	for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
+	for (w = 0; w < assigned_perdest_count; w++)
 	{
 			local_dest_queue[w] = t->local_dest_queue_array[w];
 	}
 
-	for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
+	for (w = 0; w < assigned_perdest_count; w++)
 	{
 			non_local_dest_queue[w] = t->non_local_dest_queue_array[w];
 	}
@@ -624,7 +625,7 @@ thread_func_veth_to_nic_tx(void *arg)
 		
 			int w;
 
-			for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
+			for (w = 0; w < assigned_perdest_count; w++)
 			{
 				int btx_index = 0;
 				if (non_local_dest_queue[w] != NULL)
