@@ -659,7 +659,7 @@ thread_func_veth_to_nic_tx(void *arg)
 			}
 
 
-			for (w = 0; w < NUM_OF_PER_DEST_QUEUES; w++)
+			for (w = 0; w < assigned_perdest_count; w++)
 			{
 				int btx_index = 0;
 				if (local_dest_queue[w] != NULL)
