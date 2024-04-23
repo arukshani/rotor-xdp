@@ -702,7 +702,7 @@ int main(int argc, char **argv)
 	signal(SIGTERM, signal_handler);
 	signal(SIGABRT, signal_handler);
 
-	// read_time();
+	read_time();
 
 	time_t secs = (time_t)running_time; // 10 minutes (can be retrieved from user's input)
 	time_t startTime = time(NULL);
