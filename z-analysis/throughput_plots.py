@@ -15,7 +15,7 @@ import seaborn as sns
 
 
 names = ['1_1', '2_2', '3_3', '4_4', '5_5', '6_6', '7_7']
-values_1 = [20.2, 37.2, 52.9, 65, 77.6, 85.3, 84.7]
+values_1 = [20.2, 37.2, 52.9, 65, 77.6, 85.3, 90.2]
 values_2 = [9.41, 18.46, 25.03, 32.73, 39.74, 42.38, 48.58]
 plt.plot(names, values_1, label = "Cloudlab-MLX-DRV-MODE")
 plt.plot(names, values_2, label = "LEED-FPGA-NIC-SKB-MODE")
