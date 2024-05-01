@@ -27,18 +27,30 @@ def get_rtt(recv_time_part_sec, send_time_part_sec, recv_time_part_nsec, send_ti
         return rtt_nec/1000
 
 ######################################UDP RTT######################################
-# path = "/tmp/NODE-to-NODE/"
-# udp_rtt_file = "udp_client_rtt.csv"
+path = "/tmp/NODE-to-NODE/"
+udp_rtt_file = "udp_client_rtt.csv"
 
-# ## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
-# udp_rtt = pd.read_csv(path+udp_rtt_file ,sep=',')
-# ## remove first row
-# udp_rtt = udp_rtt.iloc[1:]
-# udp_rtt['rtt_us'] = udp_rtt.apply(lambda row: get_rtt(row['recv_time_part_sec'], row['send_time_part_sec'],
-#                                                             row['recv_time_part_nsec'], row['send_time_part_nsec']), axis=1)
+## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
+udp_rtt = pd.read_csv(path+udp_rtt_file ,sep=',')
+## remove first row
+udp_rtt = udp_rtt.iloc[1:]
+udp_rtt['rtt_us'] = udp_rtt.apply(lambda row: get_rtt(row['recv_time_part_sec'], row['send_time_part_sec'],
+                                                            row['recv_time_part_nsec'], row['send_time_part_nsec']), axis=1)
+
+######################################ROOT UDP RTT######################################
+path = "/tmp/"
+r_udp_rtt_file = "root_udp_client_rtt.csv"
+
+## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
+r_udp_rtt = pd.read_csv(path+r_udp_rtt_file ,sep=',')
+## remove first row
+r_udp_rtt = r_udp_rtt.iloc[1:]
+r_udp_rtt['rtt_us'] = r_udp_rtt.apply(lambda row: get_rtt(row['recv_time_part_sec'], row['send_time_part_sec'],
+                                                            row['recv_time_part_nsec'], row['send_time_part_nsec']), axis=1)
+
 
 ######################################END OF UDP RTT######################################
-path_op = "/tmp/TAIL/"
+path_op = "/tmp/HOPS/"
 udp_rtt_file_op = "opera_udp_client_rtt.csv"
 
 ## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
@@ -51,12 +63,16 @@ opera_udp_rtt['rtt_us'] = opera_udp_rtt.apply(lambda row: get_rtt(row['recv_time
 # print(opera_udp_rtt[(opera_udp_rtt['rtt_us'] > 150)])
 
 ### PLOT
-# sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "udp-rtt")
+sns.kdeplot(data = r_udp_rtt['rtt_us'], cumulative = True, label = "root-udp-rtt")
+sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "namespace-udp-rtt")
 sns.kdeplot(data = opera_udp_rtt['rtt_us'], cumulative = True, label = "opera-udp-rtt")
 plt.legend()
-plt.xlabel('RTT (us)')
-plt.ylabel('CDF')
-plt.savefig('opera_udp.png')
+plt.xlabel('RTT (μs)', fontsize=16)
+plt.ylabel('CDF', fontsize=16) ##fontweight='bold',
+plt.savefig('all-rtt.pdf')
+
+# hist_0, bin_edges_0 = np.histogram(r_udp_rtt['rtt_us'], bins=100, density=True)
+# cdf_0 = np.cumsum(hist_0 * np.diff(bin_edges_0))
 
 # hist, bin_edges = np.histogram(udp_rtt['rtt_us'], bins=100, density=True)
 # cdf = np.cumsum(hist * np.diff(bin_edges))
@@ -66,7 +82,8 @@ plt.savefig('opera_udp.png')
 
 
 # fig = go.Figure(data=[
-#     go.Scatter(x=bin_edges, y=cdf, name='UDP RTT'),
+#     go.Scatter(x=bin_edges_0, y=cdf, name='ROOT UDP RTT'),
+#     go.Scatter(x=bin_edges, y=cdf, name='NS UDP RTT'),
 #     go.Scatter(x=bin_edges_1, y=cdf_1, name='OPERA UDP RTT')
 # ])
-# fig.write_html("opera_udp_results.html")
+# fig.write_html("all_udp_results.html")

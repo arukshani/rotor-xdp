@@ -89,32 +89,32 @@ af_xdp_delay_summary['total_delay_us'] = af_xdp_delay_summary.apply(lambda row: 
 ######################################END OF AF_XDP DELAY######################################
 ### PLOT
 # sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "udp-rtt")
-# sns.kdeplot(data = fwd_afxdp['fwd_delay_us'], cumulative = True, label = "afxdp_fwd")
-# sns.kdeplot(data = return_afxdp['return_delay_us'], cumulative = True, label = "afxdp_return")
+sns.kdeplot(data = fwd_afxdp['fwd_delay_us'], cumulative = True, label = "af_xdp-fwd-delay")
+sns.kdeplot(data = return_afxdp['return_delay_us'], cumulative = True, label = "af_xdp-return-delay")
 # sns.kdeplot(data = af_xdp_delay_summary['total_delay_us'], cumulative = True, label = "tot_afxdp_delay")
-# plt.legend()
-# plt.xlabel('Delay (us)')
-# plt.ylabel('CDF')
-# plt.savefig('af_xdp_one_way.png')
+plt.legend()
+plt.xlabel('One Way Delay (μs)', fontsize=16)
+plt.ylabel('CDF', fontsize=16)
+plt.savefig('af_xdp_one_way.pdf')
 
-hist, bin_edges = np.histogram(udp_rtt['rtt_us'], bins=100, density=True)
-cdf = np.cumsum(hist * np.diff(bin_edges))
+# hist, bin_edges = np.histogram(udp_rtt['rtt_us'], bins=100, density=True)
+# cdf = np.cumsum(hist * np.diff(bin_edges))
 
-hist_1, bin_edges_1 = np.histogram(fwd_afxdp['fwd_delay_us'], bins=100, density=True)
-cdf_1 = np.cumsum(hist_1 * np.diff(bin_edges_1))
+# hist_1, bin_edges_1 = np.histogram(fwd_afxdp['fwd_delay_us'], bins=100, density=True)
+# cdf_1 = np.cumsum(hist_1 * np.diff(bin_edges_1))
 
-hist_2, bin_edges_2 = np.histogram(return_afxdp['return_delay_us'], bins=100, density=True)
-cdf_2 = np.cumsum(hist_2 * np.diff(bin_edges_2))
+# hist_2, bin_edges_2 = np.histogram(return_afxdp['return_delay_us'], bins=100, density=True)
+# cdf_2 = np.cumsum(hist_2 * np.diff(bin_edges_2))
 
-hist_3, bin_edges_3 = np.histogram(af_xdp_delay_summary['total_delay_us'], bins=100, density=True)
-cdf_3 = np.cumsum(hist_3 * np.diff(bin_edges_3))
+# hist_3, bin_edges_3 = np.histogram(af_xdp_delay_summary['total_delay_us'], bins=100, density=True)
+# cdf_3 = np.cumsum(hist_3 * np.diff(bin_edges_3))
 
-fig = go.Figure(data=[
-    go.Scatter(x=bin_edges, y=cdf, name='UDP RTT'),
-    go.Scatter(x=bin_edges_1, y=cdf_1, name='AFXDP FWD DELAY'),
-    go.Scatter(x=bin_edges_2, y=cdf_2, name='AFXDP RETURN DELAY'),
-    go.Scatter(x=bin_edges_3, y=cdf_3, name='AFXDP TOTAL DELAY'),
-])
-# fig = go.Figure()
-# fig.add_traces(go.Scatter(x=topo_results['packet_time'], y = topo_results['packets'], mode = 'lines', name=legend_str))
-fig.write_html("udp_results.html")
+# fig = go.Figure(data=[
+#     go.Scatter(x=bin_edges, y=cdf, name='UDP RTT'),
+#     go.Scatter(x=bin_edges_1, y=cdf_1, name='AFXDP FWD DELAY'),
+#     go.Scatter(x=bin_edges_2, y=cdf_2, name='AFXDP RETURN DELAY'),
+#     go.Scatter(x=bin_edges_3, y=cdf_3, name='AFXDP TOTAL DELAY'),
+# ])
+# # fig = go.Figure()
+# # fig.add_traces(go.Scatter(x=topo_results['packet_time'], y = topo_results['packets'], mode = 'lines', name=legend_str))
+# fig.write_html("udp_results.html")

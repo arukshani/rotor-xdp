@@ -29,11 +29,11 @@ node_2 = pd.read_csv(path+node_2_file ,sep=',')
 fwd_hops = node_2.loc[(node_2['slot'] == 2)]
 ret_hops = node_1.loc[(node_1['slot'] == 2)]
 
-print(fwd_hops[(fwd_hops['hop_count'] > 3)])
+# print(fwd_hops[(fwd_hops['hop_count'] > 3)])
 # print(ret_hops[(ret_hops['hop_count'] > 4)])
 
-# sns.kdeplot(data = fwd_hops['hop_count'], cumulative = True, label = "fwd-path-hop-count")
-# sns.kdeplot(data = ret_hops['hop_count'], cumulative = True, label = "return-path-hop-count")
+sns.kdeplot(data = fwd_hops['hop_count'], cumulative = True, label = "fwd-path-hop-count")
+sns.kdeplot(data = ret_hops['hop_count'], cumulative = True, label = "return-path-hop-count")
 
 fwd_hops.reset_index(inplace=True)
 ret_hops.reset_index(inplace=True)
@@ -51,10 +51,10 @@ tot_hops['tot_hop_count'] = tot_hops.apply(lambda row: get_tot(row['fwd_hop_coun
 
 # print(tot_hops[(tot_hops['tot_hop_count'] > 6)])
 
-# sns.kdeplot(data = tot_hops['tot_hop_count'], cumulative = True, label = "tot-path-hop-count")
-# plt.legend()
-# plt.xlabel('Hop Count')
-# plt.ylabel('CDF')
-# plt.savefig('hop_count.png')
+sns.kdeplot(data = tot_hops['tot_hop_count'], cumulative = True, label = "total-hop-count")
+plt.legend()
+plt.xlabel('Hop Count', fontsize=16)
+plt.ylabel('CDF', fontsize=16)
+plt.savefig('hop-count.pdf')
 
  
