@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cd /opt/rotor-xdp/emu-opera-final
+cd /opt/rotor-xdp/emu-opera-encap-after
 make clean
