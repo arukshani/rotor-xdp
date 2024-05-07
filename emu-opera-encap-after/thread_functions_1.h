@@ -852,9 +852,9 @@ thread_func_veth_to_nic_tx(void *arg)
 							u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
 							u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
 										addr);
-							encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
+							int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
 							btx_collector->addr[btx_index] = btx2->addr[0];
-							btx_collector->len[btx_index] = btx2->len[0];
+							btx_collector->len[btx_index] = new_len;
 							// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
 
 							free(btx2);
