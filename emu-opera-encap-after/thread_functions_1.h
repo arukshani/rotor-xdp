@@ -352,11 +352,11 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	memcpy(new_data, data, len);
 	
 	int mac_index;
-	getRouteElement(route_table, (dest_index + 1), topo, &mac_index);
+	int destindex = dest_index + 1;
+	getRouteElement(route_table, destindex, topo, &mac_index);
 	struct mac_addr *dest_mac_val = mg_map_get(&mac_table, mac_index);
-
+	outer_eth_hdr = (struct ethhdr *)data;
 	ether_addr_copy_assignment(outer_eth_hdr->h_dest, dest_mac_val->bytes);
-	
 
 	outer_eth_hdr->h_proto = htons(ETH_P_IP);
 
@@ -368,6 +368,8 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	outer_iphdr->protocol = IPPROTO_GRE;
 	outer_iphdr->tot_len = bpf_htons(olen + bpf_ntohs(inner_ip_hdr_tmp->tot_len));
 	// outer_iphdr->daddr = construct_dest_ip.sin_addr.s_addr;
+
+	
 
 	struct gre_hdr *gre_hdr;
 	gre_hdr = (struct gre_hdr *)(data +
@@ -388,7 +390,8 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 static void encap_indirection(int dest_index, void *data, struct port_params *params, uint32_t len, u64 addr)
 {
 	int next_mac_index;
-	getRouteElement(route_table, (dest_index + 1), topo, &next_mac_index);
+	int destindex = dest_index + 1;
+	getRouteElement(route_table, destindex, topo, &next_mac_index);
 	// printf("next_dest_ip_index = %d, next_mac_index=%d \n", next_dest_ip_index->index, next_mac_index);
 	
 	struct ethhdr *eth = (struct ethhdr *)data;
@@ -733,7 +736,7 @@ thread_func_veth(void *arg)
 					// if (local_dest_queue[ret_val->ring_buf_index] != NULL)
 					if (local_dest_queue[dest_index] != NULL)
 					{
-						printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], dest_index);
+						// printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], dest_index);
 						// mpmc_queue_push(dest_queue, (void *) btx);
 						// int ret = mpmc_queue_push(local_dest_queue[ret_val->ring_buf_index], (void *) btx);
 						int ret = mpmc_queue_push(local_dest_queue[dest_index], (void *) btx);
@@ -856,7 +859,7 @@ thread_func_veth_to_nic_tx(void *arg)
 										addr);
 							if (pkt != NULL)
 							{
-								printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
+								// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
 								int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
 								btx_collector->addr[btx_index] = btx2->addr[0];
 								btx_collector->len[btx_index] = new_len;
