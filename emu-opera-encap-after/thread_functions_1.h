@@ -264,7 +264,7 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 	int is_nic = strcmp(params->iface, nic_iface);
 	if (is_nic == 0)
 	{
-		printf("from NIC 1 \n");
+		// printf("from NIC 1 \n");
 		struct ethhdr *eth = (struct ethhdr *)data;
 		struct iphdr *outer_ip_hdr = (struct iphdr *)(data +
 													  sizeof(struct ethhdr));
@@ -306,7 +306,10 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			// printf("Destined for local node \n");
 			int hops = greh->hopcount + 1;
 
-			return_val->which_veth = greh->flags;
+			unsigned char fourthoctec = (inner_ip_hdr->daddr >> 24) & 0xFF;
+			int octec_int = fourthoctec - '0';
+
+			return_val->which_veth =  octec_int - 2;//greh->flags
 
 			// send it to local veth
 			void *cutoff_pos = greh + 1;
@@ -387,11 +390,11 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 									sizeof(struct ethhdr) + sizeof(struct iphdr));
 
 	gre_hdr->proto = bpf_htons(ETH_P_TEB);
-	if (strcmp(params->iface, "vethout2") == 0) {
-		gre_hdr->flags = 0;
-	} else if (strcmp(params->iface, "vethout3") == 0) {
-		gre_hdr->flags = 1;
-	} 
+	// if (strcmp(params->iface, "vethout2") == 0) {
+	// 	gre_hdr->flags = 0;
+	// } else if (strcmp(params->iface, "vethout3") == 0) {
+	// 	gre_hdr->flags = 1;
+	// } 
 	gre_hdr->hopcount = 0;
 
 	return new_len;
