@@ -254,6 +254,7 @@ static int get_destination_queue_index(void *data, struct port_params *params)
 
 		struct ip_set *dest_ip_index = mg_map_get(&ip_table, construct_dest_ip.sin_addr.s_addr);
 		// printf("dest_ip_index = %d\n", dest_ip_index->index);
+		printf("get_destination_queue_index \n");
 		return (dest_ip_index->index - 1);
 	} 
 }
@@ -325,6 +326,7 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 
 static int encap_veth(int dest_index, void *data, struct port_params *params, uint32_t len, u64 addr)
 {
+	printf("Encap VETH \n");
 	struct iphdr *outer_iphdr;
 	struct ethhdr *outer_eth_hdr;
 	struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
