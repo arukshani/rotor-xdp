@@ -329,6 +329,7 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	struct ethhdr *outer_eth_hdr;
 	struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
 														  sizeof(struct ethhdr));
+	printf("Encap VETH 1\n");
 	int olen = 0;
 	olen += ETH_HLEN;
 	olen += sizeof(struct gre_hdr);
@@ -353,7 +354,6 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	int mac_index;
 	getRouteElement(route_table, (dest_index + 1), topo, &mac_index);
 	struct mac_addr *dest_mac_val = mg_map_get(&mac_table, mac_index);
-	printf("Encap VETH 1\n");
 
 	ether_addr_copy_assignment(outer_eth_hdr->h_dest, dest_mac_val->bytes);
 	printf("Encap VETH 2\n");
