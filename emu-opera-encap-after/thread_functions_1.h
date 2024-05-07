@@ -352,7 +352,7 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	{
 		printf("new_data is NOT NULL \n");
 		printf("LEN %d \n", len);
-		// memcpy(new_data, data, len);
+		memcpy(new_data, data, len);
 	} else {
 		printf("new_data is NULL \n");
 	}
@@ -727,7 +727,7 @@ thread_func_veth(void *arg)
 			{
 				btx->addr[0] = brx->addr[j];
 				// btx->len[0] = ret_val->new_len;
-				btx->len[0] = brx->addr[j];
+				btx->len[0] = brx->len[j];
 
 				// printf("packet len %d \n", ret_val->new_len);
 				
@@ -863,10 +863,6 @@ thread_func_veth_to_nic_tx(void *arg)
 										addr);
 							if (pkt != NULL)
 							{
-								if (btx2->len[0] == NULL)
-								{
-									printf("len is NULL \n");
-								}
 								int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
 								btx_collector->addr[btx_index] = btx2->addr[0];
 								btx_collector->len[btx_index] = new_len;
