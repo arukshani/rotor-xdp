@@ -348,16 +348,9 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 
 	u64 new_new_addr = xsk_umem__add_offset_to_addr(new_addr);
 	u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
-	if (new_data != NULL)
-	{
-		printf("new_data is NOT NULL \n");
-		printf("LEN %d \n", len);
-		memcpy(new_data, data, len);
-	} else {
-		printf("new_data is NULL \n");
-	}
-	
 
+	memcpy(new_data, data, len);
+	
 	int mac_index;
 	getRouteElement(route_table, (dest_index + 1), topo, &mac_index);
 	struct mac_addr *dest_mac_val = mg_map_get(&mac_table, mac_index);
@@ -740,7 +733,7 @@ thread_func_veth(void *arg)
 					// if (local_dest_queue[ret_val->ring_buf_index] != NULL)
 					if (local_dest_queue[dest_index] != NULL)
 					{
-						// printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], ret_val->ring_buf_index);
+						printf("push pakcet %d to local dest queue: %d \n", btx->addr[0], dest_index);
 						// mpmc_queue_push(dest_queue, (void *) btx);
 						// int ret = mpmc_queue_push(local_dest_queue[ret_val->ring_buf_index], (void *) btx);
 						int ret = mpmc_queue_push(local_dest_queue[dest_index], (void *) btx);
@@ -863,10 +856,10 @@ thread_func_veth_to_nic_tx(void *arg)
 										addr);
 							if (pkt != NULL)
 							{
+								printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
 								int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
 								btx_collector->addr[btx_index] = btx2->addr[0];
 								btx_collector->len[btx_index] = new_len;
-								// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
 
 								free(btx2);
 
