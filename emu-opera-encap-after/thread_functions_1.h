@@ -329,7 +329,6 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	struct ethhdr *outer_eth_hdr;
 	struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
 														  sizeof(struct ethhdr));
-	printf("Encap VETH 1\n");
 	int olen = 0;
 	olen += ETH_HLEN;
 	olen += sizeof(struct gre_hdr);
@@ -348,7 +347,9 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	int new_len = len + encap_size;
 
 	u64 new_new_addr = xsk_umem__add_offset_to_addr(new_addr);
+	printf("Encap VETH 1\n");
 	u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
+	printf("Encap VETH 2\n");
 	memcpy(new_data, data, len);
 
 	int mac_index;
@@ -356,7 +357,7 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	struct mac_addr *dest_mac_val = mg_map_get(&mac_table, mac_index);
 
 	ether_addr_copy_assignment(outer_eth_hdr->h_dest, dest_mac_val->bytes);
-	printf("Encap VETH 2\n");
+	
 
 	outer_eth_hdr->h_proto = htons(ETH_P_IP);
 
