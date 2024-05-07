@@ -347,10 +347,9 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	int new_len = len + encap_size;
 
 	u64 new_new_addr = xsk_umem__add_offset_to_addr(new_addr);
-	printf("Encap VETH 1\n");
 	u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
-	printf("Encap VETH 2\n");
 	memcpy(new_data, data, len);
+	printf("Encap VETH 1\n");
 
 	int mac_index;
 	getRouteElement(route_table, (dest_index + 1), topo, &mac_index);
