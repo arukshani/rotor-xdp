@@ -351,7 +351,8 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	if (new_data != NULL)
 	{
 		printf("new_data is NOT NULL \n");
-		memcpy(new_data, data, len);
+		printf("LEN %d \n", len);
+		// memcpy(new_data, data, len);
 	} else {
 		printf("new_data is NULL \n");
 	}
