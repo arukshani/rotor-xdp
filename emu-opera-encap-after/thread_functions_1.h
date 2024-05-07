@@ -264,6 +264,7 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 	int is_nic = strcmp(params->iface, nic_iface);
 	if (is_nic == 0)
 	{
+		printf("from NIC 1 \n");
 		struct ethhdr *eth = (struct ethhdr *)data;
 		struct iphdr *outer_ip_hdr = (struct iphdr *)(data +
 													  sizeof(struct ethhdr));
@@ -364,10 +365,20 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 									sizeof(struct ethhdr));
 	
 	__builtin_memcpy(outer_iphdr, inner_ip_hdr_tmp, sizeof(*outer_iphdr));
+
+	char dest_char[16];
+	unsigned char bytes[4];
+	bytes[0] = inner_ip_hdr_tmp->daddr & 0xFF;
+	bytes[1] = (inner_ip_hdr_tmp->daddr >> 8) & 0xFF;
+	bytes[2] = (inner_ip_hdr_tmp->daddr >> 16) & 0xFF;
+	bytes[3] = (inner_ip_hdr_tmp->daddr >> 24) & 0xFF;  
+	snprintf(dest_char, 16, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], 1); 
+	struct sockaddr_in construct_dest_ip;
+	inet_aton(dest_char, &construct_dest_ip.sin_addr);
 	
 	outer_iphdr->protocol = IPPROTO_GRE;
 	outer_iphdr->tot_len = bpf_htons(olen + bpf_ntohs(inner_ip_hdr_tmp->tot_len));
-	// outer_iphdr->daddr = construct_dest_ip.sin_addr.s_addr;
+	outer_iphdr->daddr = construct_dest_ip.sin_addr.s_addr;
 
 	
 
@@ -400,10 +411,23 @@ static void encap_indirection(int dest_index, void *data, struct port_params *pa
 	struct gre_hdr *greh = (struct gre_hdr *)(outer_ip_hdr + 1);
 	greh->hopcount = greh->hopcount + 1;
 
+	struct ethhdr *inner_eth = (struct ethhdr *)(greh + 1);
+	struct iphdr *inner_ip_hdr = (struct iphdr *)(inner_eth + 1);
+	char dest_char[16];
+	unsigned char bytes[4];
+	bytes[0] = inner_ip_hdr->daddr & 0xFF;
+	bytes[1] = (inner_ip_hdr->daddr >> 8) & 0xFF;
+	bytes[2] = (inner_ip_hdr->daddr >> 16) & 0xFF;
+	bytes[3] = (inner_ip_hdr->daddr >> 24) & 0xFF;  
+	snprintf(dest_char, 16, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], 1); 
+	struct sockaddr_in construct_dest_ip;
+	inet_aton(dest_char, &construct_dest_ip.sin_addr);
+
+
 	struct mac_addr *next_dest_mac_val = mg_map_get(&mac_table, next_mac_index);
 	ether_addr_copy_assignment(eth->h_dest, next_dest_mac_val->bytes);
 	ether_addr_copy_assignment(eth->h_source, &out_eth_src);
-	// outer_ip_hdr->daddr = construct_dest_ip.sin_addr.s_addr;
+	outer_ip_hdr->daddr = construct_dest_ip.sin_addr.s_addr;
 }
 
 // Header structure of GRE tap packet:
@@ -965,7 +989,6 @@ thread_func_nic(void *arg)
 				struct burst_tx *btx = calloc(1, sizeof(struct burst_tx));
 				if (ret_val->new_len == 1)
 				{
-					// printf("TODO: NON Local queues implement later \n");
 					btx->addr[0] = brx->addr[j];
 					btx->len[0] = brx->len[j];
 					btx->n_pkts++;
