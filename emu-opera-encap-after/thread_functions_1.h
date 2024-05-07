@@ -310,6 +310,7 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			int octec_int = fourthoctec - '0';
 
 			return_val->which_veth =  octec_int - 2;//greh->flags
+			printf("octec_int: %d ; return_val->which_veth %d \n", octec_int, return_val->which_veth);
 
 			// send it to local veth
 			void *cutoff_pos = greh + 1;
@@ -1025,7 +1026,7 @@ thread_func_nic(void *arg)
 					}
 					else
 					{
-						printf("TODO: There is no veth_side_queue %d to push the packet \n", 0);
+						printf("TODO: There is no veth_side_queue %d to push the packet \n", ret_val->which_veth);
 					}
 				}
 			}	
