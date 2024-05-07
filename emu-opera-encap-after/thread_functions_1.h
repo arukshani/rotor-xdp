@@ -348,8 +348,13 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 
 	u64 new_new_addr = xsk_umem__add_offset_to_addr(new_addr);
 	u8 *new_data = xsk_umem__get_data(params->bp->addr, new_new_addr);
-	memcpy(new_data, data, len);
-	printf("Encap VETH 1\n");
+	if (new_data != NULL)
+	{
+		memcpy(new_data, data, len);
+	} else {
+		printf("new_data is NULL \n");
+	}
+	
 
 	int mac_index;
 	getRouteElement(route_table, (dest_index + 1), topo, &mac_index);
@@ -854,15 +859,22 @@ thread_func_veth_to_nic_tx(void *arg)
 							u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
 							u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
 										addr);
-							int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
-							btx_collector->addr[btx_index] = btx2->addr[0];
-							btx_collector->len[btx_index] = new_len;
-							// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
+							if (pkt != NULL)
+							{
+								int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
+								btx_collector->addr[btx_index] = btx2->addr[0];
+								btx_collector->len[btx_index] = new_len;
+								// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
 
-							free(btx2);
+								free(btx2);
 
-							btx_index++;
-							btx_collector->n_pkts = btx_index;
+								btx_index++;
+								btx_collector->n_pkts = btx_index;
+							} else {
+								printf("packet is NULL \n");
+							}
+							
+							
 						}
 						
 					}
