@@ -306,7 +306,7 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			// printf("Destined for local node \n");
 			int hops = greh->hopcount + 1;
 
-			unsigned char fourthoctec = (inner_ip_hdr->daddr >> 24) & 0xFF;
+			char fourthoctec = (inner_ip_hdr->daddr >> 24) & 0xFF;
 			int octec_int = fourthoctec - '0';
 
 			return_val->which_veth =  octec_int - 2;//greh->flags
