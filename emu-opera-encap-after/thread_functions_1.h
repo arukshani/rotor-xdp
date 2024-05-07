@@ -646,11 +646,11 @@ static void process_rx_packet_old(void *data, struct port_params *params, uint32
 		{
 			// printf("Destined for local node \n");
 
-			// if (greh->flags == 0) {
-			// 	return_val->which_veth = 0;
-			// } else if (greh->flags == 1) {
-			// 	return_val->which_veth = 1;
-			// }
+			if (greh->flags == 0) {
+				return_val->which_veth = 0;
+			} else if (greh->flags == 1) {
+				return_val->which_veth = 1;
+			}
 
 			int hops = greh->hopcount + 1;
 
