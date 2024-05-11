@@ -894,7 +894,7 @@ thread_func_veth_to_nic_tx(void *arg)
 						{
 							void *obj2;
 							if (mpmc_queue_pull(local_dest_queue[w], &obj2) != NULL) {
-								hasPackets = true;
+								// hasPackets = true;
 								struct burst_tx *btx2 = (struct burst_tx *)obj2;
 								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
 								u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
