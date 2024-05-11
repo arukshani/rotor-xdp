@@ -831,22 +831,23 @@ thread_func_veth_to_nic_tx(void *arg)
 		{
 			struct port *port_tx = t->ports_tx[k];
 		
-			bool hasPackets = true;
-			int nonLocalRounds = 0; //Give a chance to local traffic
-			while (hasPackets && nonLocalRounds < 20)
-			{
+			// bool hasPackets = true;
+			// int nonLocalRounds = 0; //Give a chance to local traffic
+			// while (hasPackets && nonLocalRounds < 1)
+			// {
 				int w;
-				int btx_index = 0;
-				hasPackets = false;
+			// 	int btx_index = 0;
+			// 	hasPackets = false;
 				for (w = 0; w < assigned_perdest_count; w++)
 				{
-					if (non_local_dest_queue[w] != NULL && (btx_index < MAX_BURST_TX))
+					int btx_index = 0;
+					if (non_local_dest_queue[w] != NULL)
 					{
-						if ((mpmc_queue_available(non_local_dest_queue[w])))
+						while ((mpmc_queue_available(non_local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
 						{
 							void *obj2;
 							if (mpmc_queue_pull(non_local_dest_queue[w], &obj2) != NULL) {
-								hasPackets = true;
+								// hasPackets = true;
 								struct burst_tx *btx2 = (struct burst_tx *)obj2;
 
 								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
@@ -867,27 +868,29 @@ thread_func_veth_to_nic_tx(void *arg)
 					} else {
 						printf("local_dest_queue is NULL \n");
 					}
+					if (btx_index)
+					{
+						// printf("There are packets from queue %d to nic tx \n", k);
+						port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+					} 
+					btx_collector->n_pkts = 0;
 				}
-				if (btx_index)
-				{
-					// printf("There are packets from queue %d to nic tx \n", k);
-					port_tx_burst_collector(port_tx, btx_collector, 0, 0);
-				} 
-				btx_collector->n_pkts = 0;
-				nonLocalRounds = nonLocalRounds + 1;
-			}
+				
+				// nonLocalRounds = nonLocalRounds + 1;
+			// }
 
-			hasPackets = true;
-			int localRounds = 0; //Give a chance to local traffic
-			while (hasPackets && localRounds < 10)
-			{
-				int btx_index = 0;
-				hasPackets = false;
+			// hasPackets = true;
+			// int localRounds = 0; //Give a chance to local traffic
+			// while (hasPackets && localRounds < 1)
+			// {
+			// 	int btx_index = 0;
+			// 	hasPackets = false;
 				for (w = 0; w < assigned_perdest_count; w++)
 				{
-					if (local_dest_queue[w] != NULL && (btx_index < MAX_BURST_TX))
+					int btx_index = 0;
+					if (local_dest_queue[w] != NULL)
 					{
-						if ((mpmc_queue_available(local_dest_queue[w])) )
+						while ((mpmc_queue_available(local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
 						{
 							void *obj2;
 							if (mpmc_queue_pull(local_dest_queue[w], &obj2) != NULL) {
@@ -916,15 +919,15 @@ thread_func_veth_to_nic_tx(void *arg)
 					} else {
 						printf("local_dest_queue is NULL \n");
 					}
+					if (btx_index)
+					{
+						// printf("There are packets from queue %d to nic tx \n", k);
+						port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+					} 
+				
+					btx_collector->n_pkts = 0;
 				}
-				if (btx_index)
-				{
-					// printf("There are packets from queue %d to nic tx \n", k);
-					port_tx_burst_collector(port_tx, btx_collector, 0, 0);
-				} 
-			
-				btx_collector->n_pkts = 0;
-			}
+			// }
 
 		}
 	}

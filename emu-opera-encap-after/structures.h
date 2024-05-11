@@ -25,7 +25,7 @@ typedef __u8  u8;
 #endif
 
 #ifndef MAX_BURST_TX
-#define MAX_BURST_TX 33
+#define MAX_BURST_TX 20
 #endif
 
 #ifndef MAX_BURST_TX_OBJS
