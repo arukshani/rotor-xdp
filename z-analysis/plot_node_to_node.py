@@ -27,7 +27,7 @@ def get_rtt(recv_time_part_sec, send_time_part_sec, recv_time_part_nsec, send_ti
         return rtt_nec/1000
 
 ######################################UDP RTT######################################
-path = "/tmp/NODE-to-NODE/"
+path = "/tmp/data/NODE-to-NODE/"
 udp_rtt_file = "udp_client_rtt.csv"
 
 ## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
@@ -89,10 +89,84 @@ af_xdp_delay_summary['total_delay_us'] = af_xdp_delay_summary.apply(lambda row: 
 ######################################END OF AF_XDP DELAY######################################
 ### PLOT
 # sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "udp-rtt")
-sns.kdeplot(data = fwd_afxdp['fwd_delay_us'], cumulative = True, label = "af_xdp-fwd-delay")
-sns.kdeplot(data = return_afxdp['return_delay_us'], cumulative = True, label = "af_xdp-return-delay")
+# axf=sns.kdeplot(data = fwd_afxdp['fwd_delay_us'], cumulative = True, label = "af_xdp-fwd-delay")
+# axr=sns.kdeplot(data = return_afxdp['return_delay_us'], cumulative = True, label = "af_xdp-return-delay")
 # sns.kdeplot(data = af_xdp_delay_summary['total_delay_us'], cumulative = True, label = "tot_afxdp_delay")
-plt.legend()
+
+perc = 50
+x80 = np.quantile(fwd_afxdp['fwd_delay_us'], perc / 100)
+y_special = 0.50
+
+# fig, ax = plt.subplots(figsize=(10, 8))
+fig, ax = plt.subplots()
+sns.ecdfplot(data=fwd_afxdp, x="fwd_delay_us", ax=ax, label = "af_xdp-fwd-delay")
+sns.ecdfplot(data=return_afxdp, x="return_delay_us", ax=ax, label = "af_xdp-return-delay")
+y_special = 0.50
+for line in ax.get_lines():
+    x, y = line.get_data()
+    ind = np.argwhere(y >= y_special)[0, 0]  # first index where y is larger than y_special
+    # x[ind] is the desired x-value
+    # ax.text(x[ind], y_special, f' {x[ind]:.1f}', ha='right', va='top') # maybe color=line.get_color()
+    if(x[ind] == 11.874):
+        ax.text(x[ind], y_special, f' {x[ind]:.2f}', ha='right', va='bottom', color=line.get_color(), weight='bold', fontsize=11) # maybe color=line.get_color()
+    if(x[ind] == 12.658):
+        ax.text(x[ind], y_special, f' {x[ind]:.2f}', ha='left', va='bottom', color=line.get_color(), weight='bold', fontsize=11) # maybe color=line.get_color()
+    print(x[ind])
+ax.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
+
+# y_special = 0.80
+# for line in ax.get_lines():
+#     x, y = line.get_data()
+#     ind = np.argwhere(y >= y_special)[0, 0]  # first index where y is larger than y_special
+#     # x[ind] is the desired x-value
+#     # ax.text(x[ind], y_special, f' {x[ind]:.1f}', ha='right', va='top') # maybe color=line.get_color()
+#     if(x[ind] == 15.037):
+#         ax.text(x[ind], y_special, f' {x[ind]:.2f}', ha='right', va='top') # maybe color=line.get_color()
+#     if(x[ind] == 15.516):
+#         ax.text(x[ind], y_special, f' {x[ind]:.2f}', ha='left', va='top') # maybe color=line.get_color()
+#     print(x[ind])
+# ax.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
+
+# for line, legend_text in zip(ax.get_lines(), ax.legend_.get_texts()):
+#     x, y = line.get_data()
+#     ind = np.argwhere(y >= y_special)[0, 0]
+#     legend_text.set_text(f'{x[ind]:5.2f} {legend_text.get_text()}')
+
+# for line in axf.get_lines():
+#     x, y = line.get_data()
+#     ind = np.argwhere(y >= y_special)[0, 0]  # first index where y is larger than y_special
+#     # x[ind] is the desired x-value
+#     axf.text(x[ind], y_special, f' {x[ind]:.2f}', ha='right', va='top') # maybe color=line.get_color()
+# axf.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
+
+# for line in axr.get_lines():
+#     x, y = line.get_data()
+#     ind = np.argwhere(y >= y_special)[0, 0]  # first index where y is larger than y_special
+#     # x[ind] is the desired x-value
+#     axr.text(x[ind], y_special, f' {x[ind]:.2f}', ha='left', va='top') # maybe color=line.get_color()
+# axr.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
+
+
+# perc = 50
+# x80 = np.quantile(fwd_afxdp['fwd_delay_us'], perc / 100)
+# ax.axvline(x=x80, y=0.5, color='g')
+# ax.axhline(y=0.5, xmin = 0, xmax = 0.2)
+# ax.text(x80, 0.98, f"{perc}th percentile: \nx={x80:.2f} ", color='g',
+#         ha='left', va='top', transform=ax.get_xaxis_transform())
+# ax.margins(x=0)
+# percentiles = np.array([50])
+# plt.plot(x80, percentiles, marker='o', color='red',
+#          linestyle='none')
+
+# plt.scatter(11.87, 0, marker='o', s=100)
+# ax.text(x=50, f"{perc}th percentile: \nx={x80:.2f} ", transform=ax.get_xaxis_transform()) # set colour of line
+
+# ax.text(x80, 0.98, f"{perc}th percentile: \nx={x80:.2f} ", color='g',
+#         transform=ax.get_xaxis_transform())
+
+plt.legend(fontsize=14)
+plt.xticks(fontsize=11)
+plt.yticks(fontsize=11)
 plt.xlabel('One Way Delay (μs)', fontsize=16)
 plt.ylabel('CDF', fontsize=16)
 plt.savefig('af_xdp_one_way.pdf')

@@ -16,7 +16,7 @@ import seaborn as sns
 def get_tot(fwd, ret):
     return (fwd+ret)
 
-path = "/tmp/HOPS/"
+path = "/tmp/data/HOPS/"
 
 node_1_file = "2024-04-19_15-42-32/afxdp-data-node-1.csv"
 node_2_file = "2024-04-19_15-42-32/afxdp-data-node-2.csv"
@@ -52,7 +52,11 @@ tot_hops['tot_hop_count'] = tot_hops.apply(lambda row: get_tot(row['fwd_hop_coun
 # print(tot_hops[(tot_hops['tot_hop_count'] > 6)])
 
 sns.kdeplot(data = tot_hops['tot_hop_count'], cumulative = True, label = "total-hop-count")
-plt.legend()
+
+# sns.set(font_scale=1.1)
+plt.legend(fontsize=14)
+plt.xticks(fontsize=11)
+plt.yticks(fontsize=11)
 plt.xlabel('Hop Count', fontsize=16)
 plt.ylabel('CDF', fontsize=16)
 plt.savefig('hop-count.pdf')

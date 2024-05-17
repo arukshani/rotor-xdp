@@ -27,7 +27,7 @@ def get_rtt(recv_time_part_sec, send_time_part_sec, recv_time_part_nsec, send_ti
         return rtt_nec/1000
 
 ######################################UDP RTT######################################
-path = "/tmp/NODE-to-NODE/"
+path = "/tmp/data/NODE-to-NODE/"
 udp_rtt_file = "udp_client_rtt.csv"
 
 ## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
@@ -38,7 +38,7 @@ udp_rtt['rtt_us'] = udp_rtt.apply(lambda row: get_rtt(row['recv_time_part_sec'],
                                                             row['recv_time_part_nsec'], row['send_time_part_nsec']), axis=1)
 
 ######################################ROOT UDP RTT######################################
-path = "/tmp/"
+path = "/tmp/data/"
 r_udp_rtt_file = "root_udp_client_rtt.csv"
 
 ## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
@@ -50,7 +50,7 @@ r_udp_rtt['rtt_us'] = r_udp_rtt.apply(lambda row: get_rtt(row['recv_time_part_se
 
 
 ######################################END OF UDP RTT######################################
-path_op = "/tmp/HOPS/"
+path_op = "/tmp/data/HOPS/"
 udp_rtt_file_op = "opera_udp_client_rtt.csv"
 
 ## seq_id,send_time_part_sec,send_time_part_nsec,recv_time_part_sec,recv_time_part_nsec
@@ -63,10 +63,33 @@ opera_udp_rtt['rtt_us'] = opera_udp_rtt.apply(lambda row: get_rtt(row['recv_time
 # print(opera_udp_rtt[(opera_udp_rtt['rtt_us'] > 150)])
 
 ### PLOT
-sns.kdeplot(data = r_udp_rtt['rtt_us'], cumulative = True, label = "root-udp-rtt")
-sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "namespace-udp-rtt")
-sns.kdeplot(data = opera_udp_rtt['rtt_us'], cumulative = True, label = "opera-udp-rtt")
-plt.legend()
+# sns.kdeplot(data = r_udp_rtt['rtt_us'], cumulative = True, label = "root-udp-rtt")
+# sns.kdeplot(data = udp_rtt['rtt_us'], cumulative = True, label = "namespace-udp-rtt")
+# sns.kdeplot(data = opera_udp_rtt['rtt_us'], cumulative = True, label = "opera-udp-rtt")
+
+fig, ax = plt.subplots()
+sns.ecdfplot(data=r_udp_rtt, x="rtt_us", ax=ax, label = "root-udp-rtt")
+sns.ecdfplot(data=udp_rtt, x="rtt_us", ax=ax, label = "namespace-udp-rtt")
+sns.ecdfplot(data=opera_udp_rtt, x="rtt_us", ax=ax, label = "opera-udp-rtt")
+
+y_special = 0.80
+for line in ax.get_lines():
+    x, y = line.get_data()
+    ind = np.argwhere(y >= y_special)[0, 0]  # first index where y is larger than y_special
+    # x[ind] is the desired x-value
+    # ax.text(x[ind], y_special, f' {x[ind]:.1f}', ha='right', va='top') # maybe color=line.get_color()
+    if(x[ind] == 25.407):
+        ax.text(x[ind], y_special, f' {x[ind]:.2f}', ha='right', va='bottom', color=line.get_color(), weight='bold', fontsize=11) # maybe color=line.get_color()
+    if(x[ind] == 41.618):
+        ax.text(x[ind], y_special, f' {x[ind]:.2f}', ha='left', va='top', color=line.get_color(), weight='bold', fontsize=11) # maybe color=line.get_color()
+    if(x[ind] == 78.718):
+        ax.text(x[ind], y_special, f' {x[ind]:.2f}', ha='left', va='bottom', color=line.get_color(), weight='bold', fontsize=11) # maybe color=line.get_color()
+    print(x[ind])
+ax.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
+
+plt.legend(fontsize=14)
+plt.xticks(fontsize=11)
+plt.yticks(fontsize=11)
 plt.xlabel('RTT (μs)', fontsize=16)
 plt.ylabel('CDF', fontsize=16) ##fontweight='bold',
 plt.savefig('all-rtt.pdf')
