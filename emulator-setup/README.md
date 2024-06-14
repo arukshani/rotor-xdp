@@ -45,7 +45,13 @@ net.ipv4.tcp_rmem=4096 65536 1073741824
 net.ipv4.tcp_wmem=4096 65536 1073741824
 
 echo 300 | tee /proc/sys/net/ipv4/tcp_reordering
-echo 3000 | tee /proc/sys/net/ipv4/tcp_max_reordering
+echo 1000 | tee /proc/sys/net/ipv4/tcp_max_reordering
+
+disable RACK (inside namespace)
+echo 0 | tee /proc/sys/net/ipv4/tcp_recovery
+
+echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_wmem
+echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_rmem
 
 https://fasterdata.es.net/host-tuning/linux/
 (67108864 bytes = 67MB ; 67108864/3400=19737 packets)
