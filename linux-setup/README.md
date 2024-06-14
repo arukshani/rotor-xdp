@@ -98,5 +98,6 @@ struct inet_sock *inet  = inet_sk(sk); //RUK
 
 ### Auto Steps
 ```
-python3 setup_kernel.py
+python3 setup_kernel.py "node-1" -p
+python3 setup_kernel.py "node-1" -b
 ```

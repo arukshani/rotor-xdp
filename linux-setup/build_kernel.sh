@@ -1,5 +1,6 @@
 #!/bin/sh
 
+sudo debconf-set-selections /opt/rotor-xdp/linux-setup/kexec-preseed.txt
 cd /opt/linux-5.15.1/
 make -j $(nproc)
 sudo make modules_install
