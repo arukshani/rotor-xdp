@@ -12,21 +12,21 @@ import logging
 
 USER = os.environ['USER']
 IDENTITY_FILE = '/users/{}/.ssh/{}_cloudlab.pem'.format(USER, USER)
-NODE="node-1"
+# NODE="node-1"
 
-def build_kernel():
+def build_kernel(node_name):
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == NODE):
+            if (worker['host'] == node_name):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./build_kernel.sh'.format(worker['username'], worker['host'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
-def prepare_kernel():
+def prepare_kernel(node_name):
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            if (worker['host'] == NODE):
+            if (worker['host'] == node_name):
                 remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./prepare_kernel.sh'.format(worker['username'], worker['host'])
                 proc = subprocess.run(remoteCmd, shell=True)
 
@@ -37,15 +37,15 @@ def main(args):
         exit(1)
 
     if(args.nodename):
-        NODE = args.nodename
+        node_name = args.nodename
         # print(NODE)
 
     if(args.prepare):
-        prepare_kernel()
+        prepare_kernel(node_name)
         # print("prepare")
     
     if(args.build):
-        build_kernel()
+        build_kernel(node_name)
         # print("build")
     
 
