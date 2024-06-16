@@ -71,4 +71,7 @@ python3 partial_setup_arp.py
 
 echo 8 | sudo tee /proc/sys/kernel/printk
 
+ifconfig down/ifconfig up
 
+ifconfig vethin2 up
+ifconfig vethin2 down
