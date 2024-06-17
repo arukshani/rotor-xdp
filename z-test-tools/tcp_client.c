@@ -122,6 +122,7 @@ int main(int argc, char **argv) {
     printf("Connected to the server.\n");
 
     int m = 0;
+    FILE* file = fopen("sample_file.txt", "r");
     while(m < 1)
     {
         /* get a message from the user */
@@ -130,12 +131,12 @@ int main(int argc, char **argv) {
         // sprintf(snum, "%d", m);
         // strcat(buf, snum);
         // strcpy(buf, "HELLO, THIS IS CLIENT.");
-        FILE* file = fopen("sample_file.txt", "r");
+        
         fseek(file, 0, SEEK_END);
         int fs = ftell(file);
         fseek(file, 0, SEEK_SET);
         make_array(file, buf, BUFSIZE);
-        fclose(file);
+        
         
         sequence_ids[time_index] = m;
         m++;
@@ -163,6 +164,7 @@ int main(int argc, char **argv) {
 
         // time_index++;
     }
+    fclose(file);
     
     close(sockfd);
     printf("Disconnected from the server.\n");

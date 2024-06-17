@@ -9,7 +9,7 @@ import pickle
 # NSes = ["blue", "red", "ns12", "ns13", "ns15", "ns16", "ns17", "ns18", "ns19", "ns20", "ns21", "ns22", "ns23", "ns24"]
 # NSes = ["ns1", "ns2", "ns3", "ns4", "ns5", "ns6", "ns7", "ns8"]
 NSes = ["ns1", "ns2"]
-NODE="node-1"
+NODE="node-2"
 
 def remove_all_arp_records():
     with open('/tmp/workers.pkl','rb') as f:  
