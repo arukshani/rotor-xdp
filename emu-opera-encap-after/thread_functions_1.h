@@ -315,9 +315,7 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			#if DEBUG == 1
 				if (inner_ip_hdr->protocol == IPPROTO_TCP) 
 				{
-					struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
-								sizeof(struct ethhdr) +
-								sizeof(struct iphdr));
+					struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(inner_ip_hdr + 1);
 
 					seq[time_index] = ntohl(inner_tcp_hdr->seq);
 					//This field contains the upcoming sequence number and it acknowledges the feedback up to that.
