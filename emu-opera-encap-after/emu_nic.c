@@ -752,7 +752,7 @@ int main(int argc, char **argv)
 		fprintf(fpt,"seq,ack_seq,tcp_type,slot,topo_arr,time_ns,time_part_sec,time_part_nsec,hop_count\n");
 		for (z = 0; z < time_index; z++ ) {
 			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-			fprintf(fpt,"%d,%d,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+			fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
 		}
 		fclose(fpt);
 	#endif
