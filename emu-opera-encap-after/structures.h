@@ -333,7 +333,9 @@ int next_node[20000000];
 int hop_count[20000000];
 __u32 seq[20000000];
 __u32 ack_seq[20000000];
-int tcp_type[20000000];
+int is_syn[20000000];
+int is_ack[20000000];
+int is_fin[20000000];
 
 long time_index = 0;
 

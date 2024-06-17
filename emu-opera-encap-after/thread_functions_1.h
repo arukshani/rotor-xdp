@@ -325,14 +325,17 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 					//direction from the segment.
 					ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
 					if (ntohl(inner_tcp_hdr->syn)) {
-						tcp_type[time_index] = 1;
-					} else if (ntohl(inner_tcp_hdr->ack)){
-						tcp_type[time_index] = 2;
-					} else if (ntohl(inner_tcp_hdr->fin)){
-						tcp_type[time_index] = 3;
-					} else {
-						tcp_type[time_index] = 0; // none of the above
-					}
+						is_syn[time_index] = 1;
+					} 
+					
+					if (ntohl(inner_tcp_hdr->ack)){
+						is_ack[time_index] = 1;
+					} 
+					
+					if (ntohl(inner_tcp_hdr->fin)){
+						is_fin[time_index] = 1;
+					} 
+
 					timestamp_arr[time_index] = now;
 					slot[time_index]=2;
 					topo_arr[time_index] = topo;
@@ -378,15 +381,19 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 			//direction as the segment, while the acknowledgement number refers to the stream flowing in the opposite 
 			//direction from the segment.
 			ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
+			
 			if (ntohl(inner_tcp_hdr->syn)) {
-				tcp_type[time_index] = 1;
-			} else if (ntohl(inner_tcp_hdr->ack)){
-				tcp_type[time_index] = 2;
-			} else if (ntohl(inner_tcp_hdr->fin)){
-				tcp_type[time_index] = 3;
-			} else {
-				tcp_type[time_index] = 0; // none of the above
-			}
+				is_syn[time_index] = 1;
+			} 
+			
+			if (ntohl(inner_tcp_hdr->ack)){
+				is_ack[time_index] = 1;
+			} 
+			
+			if (ntohl(inner_tcp_hdr->fin)){
+				is_fin[time_index] = 1;
+			} 
+
 			timestamp_arr[time_index] = now;
 			slot[time_index]=0;
 			topo_arr[time_index] = topo;
