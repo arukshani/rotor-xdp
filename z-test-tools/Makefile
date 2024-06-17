@@ -7,7 +7,8 @@ CC = gcc
 OPTS = -pthread -g -Wall
 
 # the build target executable:
-TARGET = udp_client udp_server
+# TARGET = udp_client udp_server
+TARGET = tcp_client tcp_server
 # TARGET = udp_server
 
 # TARGET = tcp_client tcp_server
