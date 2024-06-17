@@ -312,6 +312,37 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			return_val->which_veth =  octec_int - 2;//greh->flags
 			// printf("octec_int: %d ; return_val->which_veth %d \n", octec_int, return_val->which_veth);
 
+			#if DEBUG == 1
+				if (inner_ip_hdr->protocol == IPPROTO_TCP) 
+				{
+					struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
+								sizeof(struct ethhdr) +
+								sizeof(struct iphdr));
+
+					seq[time_index] = ntohs(inner_tcp_hdr->seq);
+					//This field contains the upcoming sequence number and it acknowledges the feedback up to that.
+					// contains the value of the next sequence number that the sender of the segment is expecting to receive,
+					// if the ACK control bit is set. Note that the sequence number refers to the stream flowing in the same 
+					//direction as the segment, while the acknowledgement number refers to the stream flowing in the opposite 
+					//direction from the segment.
+					ack_seq[time_index] = ntohs(inner_tcp_hdr->ack_seq);
+					if (ntohs(inner_tcp_hdr->syn)) {
+						tcp_type[time_index] = 1;
+					} else if ntohs(inner_tcp_hdr->ack){
+						tcp_type[time_index] = 2;
+					} else if ntohs(inner_tcp_hdr->fin){
+						tcp_type[time_index] = 3;
+					} else {
+						tcp_type[time_index] = 0; // none of the above
+					}
+					timestamp_arr[time_index] = now;
+					slot[time_index]=2;
+					topo_arr[time_index] = topo;
+					hop_count[time_index] = hops;
+					time_index++;
+				}
+			#endif
+
 			// send it to local veth
 			void *cutoff_pos = greh + 1;
 			int cutoff_len = (int)(cutoff_pos - data);
@@ -334,6 +365,38 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	struct ethhdr *outer_eth_hdr;
 	struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
 														  sizeof(struct ethhdr));
+
+	#if DEBUG == 1
+		if (inner_ip_hdr_tmp->protocol == IPPROTO_TCP) 
+		{
+			struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
+					    sizeof(struct ethhdr) +
+					    sizeof(struct iphdr));
+
+			seq[time_index] = ntohs(inner_tcp_hdr->seq);
+			//This field contains the upcoming sequence number and it acknowledges the feedback up to that.
+			// contains the value of the next sequence number that the sender of the segment is expecting to receive,
+			// if the ACK control bit is set. Note that the sequence number refers to the stream flowing in the same 
+			//direction as the segment, while the acknowledgement number refers to the stream flowing in the opposite 
+			//direction from the segment.
+			ack_seq[time_index] = ntohs(inner_tcp_hdr->ack_seq);
+			if (ntohs(inner_tcp_hdr->syn)) {
+				tcp_type[time_index] = 1;
+			} else if ntohs(inner_tcp_hdr->ack){
+				tcp_type[time_index] = 2;
+			} else if ntohs(inner_tcp_hdr->fin){
+				tcp_type[time_index] = 3;
+			} else {
+				tcp_type[time_index] = 0; // none of the above
+			}
+			timestamp_arr[time_index] = now;
+			slot[time_index]=0;
+			topo_arr[time_index] = topo;
+			hop_count[time_index] = 0;
+			time_index++;
+		}
+	#endif
+
 	int olen = 0;
 	olen += ETH_HLEN;
 	olen += sizeof(struct gre_hdr);

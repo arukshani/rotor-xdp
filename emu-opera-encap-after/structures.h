@@ -331,6 +331,10 @@ struct timespec timestamp_arr[20000000];
 uint8_t topo_arr[20000000];
 int next_node[20000000];
 int hop_count[20000000];
+u32 seq[20000000];
+u32 ack_seq[20000000];
+int tcp_type[20000000];
+
 long time_index = 0;
 
 __u32 t1ms;
