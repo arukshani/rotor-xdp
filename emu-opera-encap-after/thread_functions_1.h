@@ -323,11 +323,6 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 					struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(inner_ip_hdr + 1);
 
 					seq[time_index] = ntohl(inner_tcp_hdr->seq);
-					//This field contains the upcoming sequence number and it acknowledges the feedback up to that.
-					// contains the value of the next sequence number that the sender of the segment is expecting to receive,
-					// if the ACK control bit is set. Note that the sequence number refers to the stream flowing in the same 
-					//direction as the segment, while the acknowledgement number refers to the stream flowing in the opposite 
-					//direction from the segment.
 					ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
 					if (ntohl(inner_tcp_hdr->syn)) {
 						is_syn[time_index] = 1;
@@ -378,11 +373,6 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 					    sizeof(struct iphdr));
 
 			seq[time_index] = ntohl(inner_tcp_hdr->seq);
-			//This field contains the upcoming sequence number and it acknowledges the feedback up to that.
-			// contains the value of the next sequence number that the sender of the segment is expecting to receive,
-			// if the ACK control bit is set. Note that the sequence number refers to the stream flowing in the same 
-			//direction as the segment, while the acknowledgement number refers to the stream flowing in the opposite 
-			//direction from the segment.
 			ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
 			
 			if (ntohl(inner_tcp_hdr->syn)) {
