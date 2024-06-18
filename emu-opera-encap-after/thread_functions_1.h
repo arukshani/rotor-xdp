@@ -601,6 +601,7 @@ thread_func_veth(void *arg)
 				}
 				else
 				{
+					printf("brx->addr[j] is zero \n");
 					bcache_prod(port_rx->bc, brx->addr[j]);
 				}
 			}

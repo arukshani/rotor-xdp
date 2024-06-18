@@ -29,7 +29,8 @@ typedef __u8  u8;
 #endif
 
 #ifndef MAX_BURST_TX_OBJS
-#define MAX_BURST_TX_OBJS 4096
+// #define MAX_BURST_TX_OBJS 4096
+#define MAX_BURST_TX_OBJS 8192
 #endif
 
 #ifndef NUM_OF_PER_DEST_QUEUES
