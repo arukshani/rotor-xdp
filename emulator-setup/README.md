@@ -53,6 +53,14 @@ echo 0 | tee /proc/sys/net/ipv4/tcp_recovery
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_wmem
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_rmem
 
+
+echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
+echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
+
+sudo ethtool -G enp65s0f0np0 rx 2048
+sudo ethtool -G enp65s0f0np0 tx 2048
+
+
 https://fasterdata.es.net/host-tuning/linux/
 (67108864 bytes = 67MB ; 67108864/3400=19737 packets)
 echo net.ipv4.tcp_wmem = 4096 67108864 1073741824 | tee -a /etc/sysctl.conf
