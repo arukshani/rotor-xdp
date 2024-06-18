@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
     recv(client_sock, buf, sizeof(buf), 0);
     printf("Client: %s\n", buf);
 
-    close(client_sock);
+    close(sockfd);
     printf("[+]Client disconnected.\n\n");
 
     //recv time
