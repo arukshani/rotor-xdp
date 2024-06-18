@@ -26,4 +26,10 @@ sudo ./iperf_tcp_ns_client.sh -n 1 -s 192.168.2.2
 sudo ./iperf_tcp_ns_server.sh -n 1 -s 192.168.2.2
 ```
 
+### TCPDUMP
+```
+/bin/bash start_tdump.sh
+sudo pkill tcpdump
+```
+
 
