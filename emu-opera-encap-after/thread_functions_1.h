@@ -312,6 +312,11 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			return_val->which_veth =  octec_int - 2;//greh->flags
 			// printf("octec_int: %d ; return_val->which_veth %d \n", octec_int, return_val->which_veth);
 
+			// send it to local veth
+			void *cutoff_pos = greh + 1;
+			int cutoff_len = (int)(cutoff_pos - data);
+			int new_len = len - cutoff_len;
+
 			#if DEBUG == 1
 				if (inner_ip_hdr->protocol == IPPROTO_TCP) 
 				{
@@ -336,18 +341,16 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 						is_fin[time_index] = 1;
 					} 
 
+					tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
+
 					timestamp_arr[time_index] = now;
 					slot[time_index]=2;
 					topo_arr[time_index] = topo;
 					hop_count[time_index] = hops;
+					ns_packet_len[time_index] = new_len; 
 					time_index++;
 				}
 			#endif
-
-			// send it to local veth
-			void *cutoff_pos = greh + 1;
-			int cutoff_len = (int)(cutoff_pos - data);
-			int new_len = len - cutoff_len;
 
 			int offset = 0 + cutoff_len;
 			u64 inner_eth_start_addr = addr + offset;
@@ -394,10 +397,13 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 				is_fin[time_index] = 1;
 			} 
 
+			tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
+
 			timestamp_arr[time_index] = now;
 			slot[time_index]=0;
 			topo_arr[time_index] = topo;
 			hop_count[time_index] = 0;
+			ns_packet_len[time_index] = len; 
 			time_index++;
 		}
 	#endif

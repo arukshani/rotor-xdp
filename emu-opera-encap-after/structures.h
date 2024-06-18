@@ -336,6 +336,8 @@ __u32 ack_seq[20000000];
 int is_syn[20000000];
 int is_ack[20000000];
 int is_fin[20000000];
+__u32 ns_packet_len[20000000];
+__u32 tcp_rcv_wnd[20000000];
 
 long time_index = 0;
 
