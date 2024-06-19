@@ -40,7 +40,7 @@ python3 opera_build.py -s //start
 ### Default
 ```
 echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
-echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
+echo 4096 131072 6291456 | tee /proc/sys/net/ipv4/tcp_wmem
 echo 3 | tee /proc/sys/net/ipv4/tcp_reordering
 echo 100 | tee /proc/sys/net/ipv4/tcp_max_reordering
 echo 1 | tee /proc/sys/net/ipv4/tcp_recovery

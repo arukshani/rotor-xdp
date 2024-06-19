@@ -594,6 +594,8 @@ thread_func_veth(void *arg)
 					printf("brx->addr[j] is zero \n");
 					bcache_prod(port_rx->bc, brx->addr[j]);
 				}
+			} else {
+				printf("brx is null. cannot allocate memory \n");
 			}
 		}
 	}
