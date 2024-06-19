@@ -676,7 +676,7 @@ thread_func_veth_to_nic_tx(void *arg)
 							
 						}
 					} else {
-						printf("local_dest_queue is NULL \n");
+						printf("non_local_dest_queue is NULL \n");
 					}
 					if (btx_index)
 					{
