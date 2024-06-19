@@ -3,7 +3,7 @@
 # echo $1
 
 # sudo ./opera_nic 192.168.1.1 configs/node-1-link.csv 60
-cd /opt/rotor-xdp/emu-opera-encap-after
+cd /opt/rotor-xdp/emu-opera-encap-b4
 echo $1
 echo $2
 echo $3
