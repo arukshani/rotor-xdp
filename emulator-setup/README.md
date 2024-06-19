@@ -56,6 +56,8 @@ echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_rmem
 
 echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
 echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
+echo 3 | tee /proc/sys/net/ipv4/tcp_reordering
+echo 100 | tee /proc/sys/net/ipv4/tcp_max_reordering
 
 sudo ethtool -G enp65s0f0np0 rx 2048
 sudo ethtool -G enp65s0f0np0 tx 2048

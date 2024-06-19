@@ -519,12 +519,12 @@ thread_func_veth(void *arg)
 		local_dest_queue[x] = t->local_dest_queue_array[x];
 	}
 
-	struct return_process_rx *ret_val = calloc(1, sizeof(struct return_process_rx));
+	// struct return_process_rx *ret_val = calloc(1, sizeof(struct return_process_rx));
 
 	while (!t->quit)
 	{
-		ret_val->new_len = 0;
-		ret_val->ring_buf_index = 0;
+		// ret_val->new_len = 0;
+		// ret_val->ring_buf_index = 0;
 
 		struct port *port_rx = t->ports_rx[0];
 		struct burst_rx *brx = &t->burst_rx;
@@ -586,7 +586,7 @@ thread_func_veth(void *arg)
 					}
 					else
 					{
-						printf("TODO: There is no queue to push the packet(ret_val->ring_buf_index): %d \n", ret_val->ring_buf_index);
+						printf("TODO: There is no queue to push the packet(ret_val->ring_buf_index): %d \n", dest_index);
 					}
 				}
 				else
@@ -597,7 +597,7 @@ thread_func_veth(void *arg)
 			}
 		}
 	}
-	free(ret_val);
+	// free(ret_val);
 	printf("return from thread_func_veth \n");
 	return NULL;
 }
