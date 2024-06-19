@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cd /opt/rotor-xdp/emu-opera-encap-after
+cd /opt/rotor-xdp/$1
 make

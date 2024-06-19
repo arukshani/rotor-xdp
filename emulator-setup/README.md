@@ -31,10 +31,10 @@ python3 ptp_script.py -r
 
 ### Make, Clean, Pull and Start Opera Code
 ```
-python3 opera_build.py -p //pull
-python3 opera_build.py -m //make
-python3 opera_build.py -c //clean
-python3 opera_build.py -s //start
+python3 opera_build.py opera-v2 120 -p //pull
+python3 opera_build.py opera-v2 120 -m //make
+python3 opera_build.py opera-v2 120 -c //clean
+python3 opera_build.py opera-v2 120 -s //start
 ```
 
 ### Default
@@ -44,10 +44,17 @@ echo 4096 131072 6291456 | tee /proc/sys/net/ipv4/tcp_wmem
 echo 3 | tee /proc/sys/net/ipv4/tcp_reordering
 echo 100 | tee /proc/sys/net/ipv4/tcp_max_reordering
 echo 1 | tee /proc/sys/net/ipv4/tcp_recovery
+sysctl -p
 ```
 
 ### Tunning
 ```
+echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_wmem
+echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_rmem
+echo 15000 | tee /proc/sys/net/ipv4/tcp_reordering
+echo 20000 | tee /proc/sys/net/ipv4/tcp_max_reordering
+echo 0 | tee /proc/sys/net/ipv4/tcp_recovery
+sysctl -p
 
 //minimum, default and maximum
 net.ipv4.tcp_rmem=4096 65536 1073741824 
