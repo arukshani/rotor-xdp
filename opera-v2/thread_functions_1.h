@@ -582,6 +582,7 @@ thread_func_veth(void *arg)
 							printf("local_dest_queue is full \n");
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
+							free(btx);
 						}
 					}
 					else
@@ -830,6 +831,7 @@ thread_func_nic(void *arg)
 							printf("non local_dest_queue is full \n");
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
+							free(btx);
 						}
 					}
 				} else
@@ -847,6 +849,7 @@ thread_func_nic(void *arg)
 							printf("veth_side_queue is full \n");
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
+							free(btx);
 						}
 					}
 					else

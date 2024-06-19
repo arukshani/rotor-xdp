@@ -96,3 +96,10 @@ ifconfig down/ifconfig up
 
 ifconfig vethin2 up
 ifconfig vethin2 down
+
+### Version explanation
+```
+opera-v1 = encap is done as soon as packets are received from veth or nic and tx side only send the packets out
+opera-v2 = rx side simply queue up packets in the correct per dest queues. Tx side does the encap.
+
+```
