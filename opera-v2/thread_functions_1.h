@@ -318,31 +318,39 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			int new_len = len - cutoff_len;
 
 			#if DEBUG == 1
-				if (inner_ip_hdr->protocol == IPPROTO_TCP) 
+				// if (inner_ip_hdr->protocol == IPPROTO_TCP) 
+				// {
+				// 	struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(inner_ip_hdr + 1);
+
+				// 	seq[time_index] = ntohl(inner_tcp_hdr->seq);
+				// 	ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
+				// 	if (ntohl(inner_tcp_hdr->syn)) {
+				// 		is_syn[time_index] = 1;
+				// 	} 
+					
+				// 	if (ntohl(inner_tcp_hdr->ack)){
+				// 		is_ack[time_index] = 1;
+				// 	} 
+					
+				// 	if (ntohl(inner_tcp_hdr->fin)){
+				// 		is_fin[time_index] = 1;
+				// 	} 
+
+				// 	tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
+
+				// 	timestamp_arr[time_index] = now;
+				// 	slot[time_index]=2;
+				// 	topo_arr[time_index] = topo;
+				// 	hop_count[time_index] = hops;
+				// 	ns_packet_len[time_index] = new_len; 
+				// 	time_index++;
+				// }
+				if (inner_ip_hdr->protocol == IPPROTO_UDP) 
 				{
-					struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(inner_ip_hdr + 1);
-
-					seq[time_index] = ntohl(inner_tcp_hdr->seq);
-					ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
-					if (ntohl(inner_tcp_hdr->syn)) {
-						is_syn[time_index] = 1;
-					} 
-					
-					if (ntohl(inner_tcp_hdr->ack)){
-						is_ack[time_index] = 1;
-					} 
-					
-					if (ntohl(inner_tcp_hdr->fin)){
-						is_fin[time_index] = 1;
-					} 
-
-					tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
-
 					timestamp_arr[time_index] = now;
 					slot[time_index]=2;
 					topo_arr[time_index] = topo;
 					hop_count[time_index] = hops;
-					ns_packet_len[time_index] = new_len; 
 					time_index++;
 				}
 			#endif
@@ -366,36 +374,46 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 														  sizeof(struct ethhdr));
 
 	#if DEBUG == 1
-		if (inner_ip_hdr_tmp->protocol == IPPROTO_TCP) 
+		// if (inner_ip_hdr_tmp->protocol == IPPROTO_TCP) 
+		// {
+		// 	struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
+		// 			    sizeof(struct ethhdr) +
+		// 			    sizeof(struct iphdr));
+
+		// 	seq[time_index] = ntohl(inner_tcp_hdr->seq);
+		// 	ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
+			
+		// 	if (ntohl(inner_tcp_hdr->syn)) {
+		// 		is_syn[time_index] = 1;
+		// 	} 
+			
+		// 	if (ntohl(inner_tcp_hdr->ack)){
+		// 		is_ack[time_index] = 1;
+		// 	} 
+			
+		// 	if (ntohl(inner_tcp_hdr->fin)){
+		// 		is_fin[time_index] = 1;
+		// 	} 
+
+		// 	tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
+
+		// 	timestamp_arr[time_index] = now;
+		// 	slot[time_index]=0;
+		// 	topo_arr[time_index] = topo;
+		// 	hop_count[time_index] = 0;
+		// 	ns_packet_len[time_index] = len; 
+		// 	time_index++;
+		// }
+
+		if (inner_ip_hdr_tmp->protocol == IPPROTO_UDP) 
 		{
-			struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
-					    sizeof(struct ethhdr) +
-					    sizeof(struct iphdr));
-
-			seq[time_index] = ntohl(inner_tcp_hdr->seq);
-			ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
-			
-			if (ntohl(inner_tcp_hdr->syn)) {
-				is_syn[time_index] = 1;
-			} 
-			
-			if (ntohl(inner_tcp_hdr->ack)){
-				is_ack[time_index] = 1;
-			} 
-			
-			if (ntohl(inner_tcp_hdr->fin)){
-				is_fin[time_index] = 1;
-			} 
-
-			tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
-
 			timestamp_arr[time_index] = now;
 			slot[time_index]=0;
 			topo_arr[time_index] = topo;
 			hop_count[time_index] = 0;
-			ns_packet_len[time_index] = len; 
 			time_index++;
 		}
+
 	#endif
 
 	int olen = 0;

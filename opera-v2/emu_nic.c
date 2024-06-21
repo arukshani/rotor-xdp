@@ -745,30 +745,30 @@ int main(int argc, char **argv)
 
 	// printf("time_index: %ld \n", time_index);
 
-	#if DEBUG == 1
-		// int z;
-		FILE *fpt;
-		fpt = fopen("/tmp/opera_emu_data.csv", "w+");
-		fprintf(fpt,"slot,seq,ack_seq,is_syn,is_ack,is_fin,topo_arr,time_ns,time_part_sec,time_part_nsec,hop_count,ns_packet_len,tcp_rcv_wnd\n");
-		for (z = 0; z < time_index; z++ ) {
-			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
-			fprintf(fpt,"%d,%ld,%ld,%ld,%ld,%ld,%d,%ld,%ld,%ld,%d,%ld,%ld\n",slot[z],seq[z],ack_seq[z],is_syn[z],is_ack[z],is_fin[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z], ns_packet_len[z],tcp_rcv_wnd[z]);
-		}
-		fclose(fpt);
-	#endif
-
 	// #if DEBUG == 1
 	// 	// int z;
 	// 	FILE *fpt;
 	// 	fpt = fopen("/tmp/opera_emu_data.csv", "w+");
-	// 	fprintf(fpt,"node_ip,slot,topo_arr,next_node,time_ns,time_part_sec,time_part_nsec,hop_count\n");
+	// 	fprintf(fpt,"slot,seq,ack_seq,is_syn,is_ack,is_fin,topo_arr,time_ns,time_part_sec,time_part_nsec,hop_count,ns_packet_len,tcp_rcv_wnd\n");
 	// 	for (z = 0; z < time_index; z++ ) {
 	// 		unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-	// 		fprintf(fpt,"%d,%d,%d,%d,%ld,%ld,%ld,%d\n",node_ip[z],slot[z],topo_arr[z],next_node[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+	// 		// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+	// 		fprintf(fpt,"%d,%ld,%ld,%ld,%ld,%ld,%d,%ld,%ld,%ld,%d,%ld,%ld\n",slot[z],seq[z],ack_seq[z],is_syn[z],is_ack[z],is_fin[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z], ns_packet_len[z],tcp_rcv_wnd[z]);
 	// 	}
 	// 	fclose(fpt);
 	// #endif
+
+	#if DEBUG == 1
+		// int z;
+		FILE *fpt;
+		fpt = fopen("/tmp/opera_emu_data.csv", "w+");
+		fprintf(fpt,"slot,topo_arr,time_ns,time_part_sec,time_part_nsec,hop_count\n");
+		for (z = 0; z < time_index; z++ ) {
+			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
+			fprintf(fpt,"%d,%d,%ld,%ld,%ld,%d\n",slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+		}
+		fclose(fpt);
+	#endif
 
 // #if DEBUG_PAUSE_Q == 1
 // 	int z;
