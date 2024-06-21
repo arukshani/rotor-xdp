@@ -36,7 +36,7 @@ def gather_data():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         mydir = os.path.join(
-            "/tmp/TCP/", 
+            "/tmp/PTP-100us-slot/", 
             datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
         # print(mydir)
         try:
@@ -47,7 +47,7 @@ def gather_data():
         for worker in workers:
             remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
             proc = subprocess.run(remoteCmd, shell=True)
-            new_filename = "afxdp-data-{}.csv".format(worker['host'])
+            new_filename = "ptp-100us-{}.csv".format(worker['host'])
             cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
             subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
@@ -80,4 +80,4 @@ if __name__ == '__main__':
     main()
     gather_data()
     # collect_tcp_stat_logs()
-    gather_tdumps()
+    # gather_tdumps()
