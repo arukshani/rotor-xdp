@@ -68,9 +68,9 @@
 #include <linux/tcp.h>
 
 #include "data_structures.h"
-#include "common_funcs.h"
 #include "map.h"
 #include "structures.h"
+#include "common_funcs.h"
 #include "mpmc_queue.h"
 #include "memory.h"
 #include "plumbing.h"
