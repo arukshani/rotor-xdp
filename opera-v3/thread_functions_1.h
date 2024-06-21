@@ -559,7 +559,7 @@ thread_func_veth(void *arg)
 			// process_rx_packet_old(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
 			int dest_index = get_destination_queue_index(pkt, &port_rx->params);
 
-			insert(dest_index, dest_index);
+			// insert(dest_index, dest_index);
 			// bool dest_found = false; 
 			// int active_index = 0;
 			// for (int i=0; i<32; i++) 
@@ -720,11 +720,11 @@ thread_func_veth_to_nic_tx(void *arg)
 					int btx_index = 0;
 					// int dest_index = active_local_dests[w] - 1;
 					// if (active_local_dests[w] != 0 && local_dest_queue[dest_index] != NULL)
-					item = search(w);
-					// if (local_dest_queue[dest_index] != NULL)
-					if (item != NULL)
+					// item = search(w);
+					int dest_index = w;
+					if (local_dest_queue[dest_index] != NULL)
+					// if (item != NULL)
 					{
-						int dest_index = item->data;
 						while ((mpmc_queue_available(local_dest_queue[dest_index])) && (btx_index < MAX_BURST_TX))
 						{
 							void *obj2;
@@ -751,10 +751,10 @@ thread_func_veth_to_nic_tx(void *arg)
 							}
 							
 						}
-						if (!mpmc_queue_available(local_dest_queue[dest_index]))
-						{
-							delete(item);
-						}
+						// if (!mpmc_queue_available(local_dest_queue[dest_index]))
+						// {
+						// 	delete(item);
+						// }
 					} 
 					// else {
 					// 	printf("local_dest_queue is NULL \n");
