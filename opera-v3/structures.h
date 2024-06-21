@@ -349,5 +349,16 @@ uint8_t topo;
 uint64_t slot_time_ns = 1000000;  // 1 ms
 uint64_t cycle_time_ns = 32000000; // 32 ms
 clockid_t clkid;
-int active_local_dests[32];
-int active_nonlocal_dests[32];
+
+
+// int active_local_dests[32];
+// int active_nonlocal_dests[32];
+
+#define DEST_COUNT 32
+struct DataItem {
+   int data;   
+   int key;
+};
+struct DataItem* hashArray[DEST_COUNT]; 
+struct DataItem* dummyItem;
+struct DataItem* item;

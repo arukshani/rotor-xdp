@@ -521,6 +521,10 @@ thread_func_veth(void *arg)
 
 	// struct return_process_rx *ret_val = calloc(1, sizeof(struct return_process_rx));
 
+	dummyItem = (struct DataItem*) malloc(sizeof(struct DataItem));
+   	dummyItem->data = -1;  
+   	dummyItem->key = -1;
+
 	while (!t->quit)
 	{
 		// ret_val->new_len = 0;
@@ -555,21 +559,22 @@ thread_func_veth(void *arg)
 			// process_rx_packet_old(pkt, &port_rx->params, brx->len[j], brx->addr[j], ret_val);
 			int dest_index = get_destination_queue_index(pkt, &port_rx->params);
 
-			bool dest_found = false; 
-			int active_index = 0;
-			for (int i=0; i<32; i++) 
-			{ 
-				if (active_local_dests[i] == (dest_index+1)) 
-				{ 
-					active_index = i;
-					dest_found = true; 
-					break; 
-				}
-			} 
-			if(!dest_found)
-			{
-				active_local_dests[active_index+1] = dest_index+1;
-			}
+			insert(dest_index, dest_index);
+			// bool dest_found = false; 
+			// int active_index = 0;
+			// for (int i=0; i<32; i++) 
+			// { 
+			// 	if (active_local_dests[i] == (dest_index+1)) 
+			// 	{ 
+			// 		active_index = i;
+			// 		dest_found = true; 
+			// 		break; 
+			// 	}
+			// } 
+			// if(!dest_found)
+			// {
+			// 	active_local_dests[active_index+1] = dest_index+1;
+			// }
 
 			struct burst_tx *btx = calloc(1, sizeof(struct burst_tx));
 			if (btx != NULL)
@@ -713,9 +718,13 @@ thread_func_veth_to_nic_tx(void *arg)
 				for (w = 0; w < assigned_perdest_count; w++)
 				{
 					int btx_index = 0;
-					int dest_index = active_local_dests[w] - 1;
-					if (active_local_dests[w] != 0 && local_dest_queue[dest_index] != NULL)
+					// int dest_index = active_local_dests[w] - 1;
+					// if (active_local_dests[w] != 0 && local_dest_queue[dest_index] != NULL)
+					item = search(w);
+					// if (local_dest_queue[dest_index] != NULL)
+					if (item != NULL)
 					{
+						int dest_index = item->data;
 						while ((mpmc_queue_available(local_dest_queue[dest_index])) && (btx_index < MAX_BURST_TX))
 						{
 							void *obj2;
@@ -741,6 +750,10 @@ thread_func_veth_to_nic_tx(void *arg)
 								}
 							}
 							
+						}
+						if (!mpmc_queue_available(local_dest_queue[dest_index]))
+						{
+							delete(item);
 						}
 					} 
 					// else {
