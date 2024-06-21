@@ -742,6 +742,7 @@ thread_func_veth_to_nic_tx(void *arg)
 							}
 							
 						}
+						active_local_dests[w] = 0;
 					} else {
 						printf("local_dest_queue is NULL \n");
 					}
