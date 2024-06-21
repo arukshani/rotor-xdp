@@ -162,8 +162,8 @@ struct bcache {
  * Process
  */
 static const struct bpool_params bpool_params_default = {
-	// .n_buffers = 64 * 1024 * 7,
-	.n_buffers = 128 * 1024 * 2,
+	.n_buffers = 64 * 1024 * 8,
+	// .n_buffers = 128 * 1024 * 2,
 	.buffer_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
 	.mmap_flags = 0,
 
