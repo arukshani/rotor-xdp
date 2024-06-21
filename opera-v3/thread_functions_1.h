@@ -743,9 +743,10 @@ thread_func_veth_to_nic_tx(void *arg)
 							
 						}
 						active_local_dests[w] = 0;
-					} else {
-						printf("local_dest_queue is NULL \n");
-					}
+					} 
+					// else {
+					// 	printf("local_dest_queue is NULL \n");
+					// }
 					if (btx_index)
 					{
 						// printf("There are packets from queue %d to nic tx \n", k);
