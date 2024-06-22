@@ -407,7 +407,7 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 		// }
 
 		// if (inner_ip_hdr_tmp->protocol == IPPROTO_UDP) 
-		if (inner_ip_hdr->protocol == IPPROTO_ICMP) 
+		if (inner_ip_hdr_tmp->protocol == IPPROTO_ICMP) 
 		{
 			timestamp_arr[time_index] = now;
 			slot[time_index]=0;
