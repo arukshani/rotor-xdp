@@ -33,4 +33,4 @@ plt.ylabel('CDF')
 
 # plt.xscale('log')
 
-plt.savefig('all-slot-rtt.png')
+plt.savefig('/tmp/slot-selection/all-slot-rtt.png')
