@@ -11,9 +11,9 @@ import pandas as pd
 # path = "/tmp/slot-selection/direct-slot-200us.txt"
 # path = "/tmp/slot-selection/direct-slot-1ms.txt"
 
-# path = "/tmp/slot-selection/opera-slot-100us.txt"
-# path = "/tmp/slot-selection/opera-slot-200us.txt"
-# path = "/tmp/slot-selection/opera-slot-1ms.txt"
+# path = "/tmp/slot-selection-hops/opera-slot-100us.txt"
+# path = "/tmp/slot-selection-hops/opera-slot-200us.txt"
+# path = "/tmp/slot-selection-hops/opera-slot-1ms.txt"
 
 lastColumn = [ ]
 
@@ -21,7 +21,7 @@ text_file = open(path, "r")
 lines = []
 
 for index, text in enumerate(text_file):
-    if 10000 <= index <= 60000:
+    if 1 <= index <= 50000:
         lines.append(text)
 
 for line in lines:

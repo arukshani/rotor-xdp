@@ -20,9 +20,9 @@ def read_file(path):
 direct_200us = read_file("/tmp/slot-selection/direct-slot-200us-ms.csv")
 # direct_1ms = read_file("/tmp/slot-selection/direct-slot-1ms-ms.csv")
 
-opera_100us = read_file("/tmp/slot-selection/opera-slot-100us-ms.csv")
-opera_200us = read_file("/tmp/slot-selection/opera-slot-200us-ms.csv")
-opera_1ms = read_file("/tmp/slot-selection/opera-slot-1ms-ms.csv")
+opera_100us = read_file("/tmp/slot-selection-hops/opera-slot-100us-ms.csv")
+opera_200us = read_file("/tmp/slot-selection-hops/opera-slot-200us-ms.csv")
+opera_1ms = read_file("/tmp/slot-selection-hops/opera-slot-1ms-ms.csv")
 
 # sns.kdeplot(data = direct_100us['rtt_us'], cumulative = True, label = "Direct-100us-slot")
 sns.kdeplot(data = direct_200us['rtt_us'], cumulative = True, label = "Direct-200us-slot")
@@ -36,6 +36,6 @@ plt.ylabel('CDF')
 
 # plt.xscale('log')
 
-plt.savefig('all-slot.png')
+plt.savefig('all-slot-hop.png')
 # fig = go.Figure()
 # fig.write_html("all-slot-rtt..html")
