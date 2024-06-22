@@ -348,6 +348,8 @@ uint64_t time_into_cycle_ns;
 uint8_t topo;
 // uint64_t slot_time_ns = 1000000;  // 1 ms
 // uint64_t cycle_time_ns = 32000000; // 32 ms
-uint64_t slot_time_ns = 100000;  // 100 us
-uint64_t cycle_time_ns = 3200000; // 3200 us
+// uint64_t slot_time_ns = 100000;  // 100 us
+// uint64_t cycle_time_ns = 3200000; // 3200 us
+uint64_t slot_time_ns = 130000;  // 130 us
+uint64_t cycle_time_ns = 4160000; // 4160 us
 clockid_t clkid;
