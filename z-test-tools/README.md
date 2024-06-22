@@ -32,10 +32,9 @@ sudo ./iperf_tcp_ns_server.sh -n 1 -s 192.168.2.2
 sudo pkill tcpdump
 ```
 
-### Log Ping results
+### Log Ping results (10us interval between packets)
 ```
-ping 192.168.2.2 -i 0.000001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> direct-rtt.txt
-ping 192.168.2.2 -i 0.000001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> opera-rtt.txt
+ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> /tmp/slot-selection/direct-slot-100us.txt
 ```
 
 
