@@ -345,7 +345,8 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 				// 	ns_packet_len[time_index] = new_len; 
 				// 	time_index++;
 				// }
-				if (inner_ip_hdr->protocol == IPPROTO_UDP) 
+				// if (inner_ip_hdr->protocol == IPPROTO_UDP) 
+				if (inner_ip_hdr->protocol == IPPROTO_ICMP) 
 				{
 					timestamp_arr[time_index] = now;
 					slot[time_index]=2;
@@ -405,7 +406,8 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 		// 	time_index++;
 		// }
 
-		if (inner_ip_hdr_tmp->protocol == IPPROTO_UDP) 
+		// if (inner_ip_hdr_tmp->protocol == IPPROTO_UDP) 
+		if (inner_ip_hdr->protocol == IPPROTO_ICMP) 
 		{
 			timestamp_arr[time_index] = now;
 			slot[time_index]=0;
