@@ -7,13 +7,13 @@ import pandas as pd
 
 
 ### File parsing
-path = "/tmp/slot-selection/direct-slot-100us.txt"
-path = "/tmp/slot-selection/direct-slot-200us.txt"
-path = "/tmp/slot-selection/direct-slot-1ms.txt"
+# path = "/tmp/slot-selection/direct-slot-100us.txt"
+# path = "/tmp/slot-selection/direct-slot-200us.txt"
+# path = "/tmp/slot-selection/direct-slot-1ms.txt"
 
-path = "/tmp/slot-selection/opera-slot-100us.txt"
-path = "/tmp/slot-selection/opera-slot-200us.txt"
-path = "/tmp/slot-selection/opera-slot-1ms.txt"
+# path = "/tmp/slot-selection/opera-slot-100us.txt"
+# path = "/tmp/slot-selection/opera-slot-200us.txt"
+# path = "/tmp/slot-selection/opera-slot-1ms.txt"
 
 lastColumn = [ ]
 
