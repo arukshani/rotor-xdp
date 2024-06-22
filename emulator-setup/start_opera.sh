@@ -10,6 +10,6 @@ echo $4
 echo $5
 cd /opt/rotor-xdp/$4
 nohup sudo ./emu_nic $1 config/$2.csv /dev/$3 $5 1 1 > /tmp/start_log 2>&1 &
-# nohup sudo ./emu_nic $1 ptp-32node-test-config/$2.csv /dev/$3 240 1 1 > /tmp/start_log 2>&1 &
+# nohup sudo ./emu_nic $1 ptp-32node-test-config/$2.csv /dev/$3 $5 1 1 > /tmp/start_log 2>&1 &
 echo "======================================================================="
 # nohup sudo ./opera_nic $1 configs/$2.csv $3 120 > /tmp/opera_nic.out 2>&1 &

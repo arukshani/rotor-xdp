@@ -5,7 +5,7 @@ typedef __u32 u32;
 typedef __u16 u16;
 typedef __u8  u8;
 
-#define DEBUG 0
+#define DEBUG 1
 
 // #define DEBUG_PAUSE_Q 0
 
@@ -33,8 +33,20 @@ typedef __u8  u8;
 // #define MAX_BURST_TX_OBJS 2048
 #endif
 
+#ifndef SHALLOW_BUFF_SIZE
+#define SHALLOW_BUFF_SIZE 256
+#endif
+
+#ifndef UPLINK_COUNT
+#define UPLINK_COUNT 7
+#endif
+
 #ifndef NUM_OF_PER_DEST_QUEUES
 #define NUM_OF_PER_DEST_QUEUES 32
+#endif
+
+#ifndef VETH_QUEUE_COUNT
+#define VETH_QUEUE_COUNT 2
 #endif
 
 #ifndef TOTAL_NIC_THREADS
@@ -162,8 +174,8 @@ struct bcache {
  * Process
  */
 static const struct bpool_params bpool_params_default = {
-	.n_buffers = 64 * 1024 * 7,
-	// .n_buffers = 128 * 1024 * 4,
+	.n_buffers = 64 * 1024 * 8,
+	// .n_buffers = 128 * 1024 * 2,
 	.buffer_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
 	.mmap_flags = 0,
 
@@ -259,20 +271,21 @@ struct thread_data {
 	int quit;
 	struct mpmc_queue *local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue *non_local_dest_queue_array[NUM_OF_PER_DEST_QUEUES];
-	struct mpmc_queue *veth_side_queue_array[13];
+	struct mpmc_queue *veth_side_queue_array[VETH_QUEUE_COUNT];
+	struct mpmc_queue *shallow_queue_array[NUM_OF_PER_DEST_QUEUES];
 	int assigned_queue_count; // this is actually assigned nic port count
 	int assigned_perdest_count; // how to map per-dest queues and non-loca dest to NIC queues 
+	int uplink_index;
 };
 
 static pthread_t threads[MAX_THREADS];
 static struct thread_data thread_data[MAX_THREADS];
 static int n_threads;
 
-
-
-struct mpmc_queue *veth_side_queue[13];
+struct mpmc_queue *veth_side_queue[VETH_QUEUE_COUNT];
 struct mpmc_queue *local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
 struct mpmc_queue *non_local_per_dest_queue[NUM_OF_PER_DEST_QUEUES];
+struct mpmc_queue *shallow_buffers[NUM_OF_PER_DEST_QUEUES];
 
 __u32 t1ms;
 
@@ -346,19 +359,8 @@ __u32 t1ms;
 struct timespec now;
 uint64_t time_into_cycle_ns;
 uint8_t topo;
-uint64_t slot_time_ns = 1000000;  // 1 ms
-uint64_t cycle_time_ns = 32000000; // 32 ms
+// uint64_t slot_time_ns = 1000000;  // 1 ms
+// uint64_t cycle_time_ns = 32000000; // 32 ms
+uint64_t slot_time_ns = 100000;  // 100 us
+uint64_t cycle_time_ns = 3200000; // 3200 us
 clockid_t clkid;
-
-
-// int active_local_dests[32];
-// int active_nonlocal_dests[32];
-
-#define DEST_COUNT 32
-struct DataItem {
-   int data;   
-   int key;
-};
-struct DataItem* hashArray[DEST_COUNT]; 
-struct DataItem* dummyItem;
-struct DataItem* item;

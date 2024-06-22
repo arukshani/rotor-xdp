@@ -638,21 +638,27 @@ thread_func_veth_to_nic_tx(void *arg)
 	CPU_SET(t->cpu_core_id, &cpu_cores);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
 
-	struct mpmc_queue *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
-	struct mpmc_queue *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	// struct mpmc_queue *local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	// struct mpmc_queue *non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue *shallow_queues[NUM_OF_PER_DEST_QUEUES];
 
 	int assigned_queue_count = t->assigned_queue_count;
 	int assigned_perdest_count = t->assigned_perdest_count;
 
 	int w;
-	for (w = 0; w < assigned_perdest_count; w++)
-	{
-			local_dest_queue[w] = t->local_dest_queue_array[w];
-	}
+	// for (w = 0; w < assigned_perdest_count; w++)
+	// {
+	// 		local_dest_queue[w] = t->local_dest_queue_array[w];
+	// }
+
+	// for (w = 0; w < assigned_perdest_count; w++)
+	// {
+	// 		non_local_dest_queue[w] = t->non_local_dest_queue_array[w];
+	// }
 
 	for (w = 0; w < assigned_perdest_count; w++)
 	{
-			non_local_dest_queue[w] = t->non_local_dest_queue_array[w];
+			shallow_queues[w] = t->shallow_queue_array[w];
 	}
 
 	//TODO: Fix this so that each nic port has its own burst_tx_collector
@@ -660,116 +666,104 @@ thread_func_veth_to_nic_tx(void *arg)
 
 	while (!t->quit)
 	{
-		int k = 0;
-		for (k = 0; k < assigned_queue_count; k++)
-		{
-			struct port *port_tx = t->ports_tx[k];
+
+		struct port *port_tx = t->ports_tx[0];
+		int uplink_index = t->uplink_index;
+		//Given uplink index and topo which shallow queue to use
 		
-			// bool hasPackets = true;
-			// int nonLocalRounds = 0; //Give a chance to local traffic
-			// while (hasPackets && nonLocalRounds < 1)
-			// {
-				int w;
-			// 	int btx_index = 0;
-			// 	hasPackets = false;
-				for (w = 0; w < assigned_perdest_count; w++)
-				{
-					int btx_index = 0;
-					if (non_local_dest_queue[w] != NULL)
-					{
-						while ((mpmc_queue_available(non_local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
-						{
-							void *obj2;
-							if (mpmc_queue_pull(non_local_dest_queue[w], &obj2) != NULL) {
-								// hasPackets = true;
-								struct burst_tx *btx2 = (struct burst_tx *)obj2;
 
-								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
-								u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
-											addr);
-								if (pkt != NULL)
-								{
-									encap_indirection(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
-									btx_collector->addr[btx_index] = btx2->addr[0];
-									btx_collector->len[btx_index] = btx2->len[0];
-									// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
+		// int k = 0;
+		// for (k = 0; k < assigned_queue_count; k++)
+		// {
+		// 	struct port *port_tx = t->ports_tx[k];
 
-									free(btx2);
+				// int w;
+				// for (w = 0; w < assigned_perdest_count; w++)
+				// {
+				// 	int btx_index = 0;
+				// 	if (non_local_dest_queue[w] != NULL)
+				// 	{
+				// 		while ((mpmc_queue_available(non_local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
+				// 		{
+				// 			void *obj2;
+				// 			if (mpmc_queue_pull(non_local_dest_queue[w], &obj2) != NULL) {
+								
+				// 				struct burst_tx *btx2 = (struct burst_tx *)obj2;
 
-									btx_index++;
-									btx_collector->n_pkts = btx_index;
-								} else {
-									printf("packet is NULL for indirection \n");
-								}
-							}
+				// 				u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
+				// 				u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
+				// 							addr);
+				// 				if (pkt != NULL)
+				// 				{
+				// 					encap_indirection(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
+				// 					btx_collector->addr[btx_index] = btx2->addr[0];
+				// 					btx_collector->len[btx_index] = btx2->len[0];
+				// 					// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
+
+				// 					free(btx2);
+
+				// 					btx_index++;
+				// 					btx_collector->n_pkts = btx_index;
+				// 				} else {
+				// 					printf("packet is NULL for indirection \n");
+				// 				}
+				// 			}
 							
-						}
-					} else {
-						printf("non_local_dest_queue is NULL \n");
-					}
-					if (btx_index)
-					{
-						// printf("There are packets from queue %d to nic tx \n", k);
-						port_tx_burst_collector(port_tx, btx_collector, 0, 0);
-					} 
-					btx_collector->n_pkts = 0;
-				}
+				// 		}
+				// 	} else {
+				// 		printf("non_local_dest_queue is NULL \n");
+				// 	}
+				// 	if (btx_index)
+				// 	{
+				// 		// printf("There are packets from queue %d to nic tx \n", k);
+				// 		port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+				// 	} 
+				// 	btx_collector->n_pkts = 0;
+				// }
 				
-				for (w = 0; w < assigned_perdest_count; w++)
-				{
-					int btx_index = 0;
-					// int dest_index = active_local_dests[w] - 1;
-					// if (active_local_dests[w] != 0 && local_dest_queue[dest_index] != NULL)
-					// item = search(w);
-					int dest_index = w;
-					if (local_dest_queue[dest_index] != NULL)
-					// if (item != NULL)
-					{
-						while ((mpmc_queue_available(local_dest_queue[dest_index])) && (btx_index < MAX_BURST_TX))
-						{
-							void *obj2;
-							if (mpmc_queue_pull(local_dest_queue[dest_index], &obj2) != NULL) {
-								// hasPackets = true;
-								struct burst_tx *btx2 = (struct burst_tx *)obj2;
-								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
-								u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
-											addr);
-								if (pkt != NULL)
-								{
-									// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
-									int new_len = encap_veth(dest_index, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
-									btx_collector->addr[btx_index] = btx2->addr[0];
-									btx_collector->len[btx_index] = new_len;
+				// for (w = 0; w < assigned_perdest_count; w++)
+				// {
+				// 	int btx_index = 0;
+					
+				// 	int dest_index = w;
+				// 	if (local_dest_queue[dest_index] != NULL)
+				// 	{
+				// 		while ((mpmc_queue_available(local_dest_queue[dest_index])) && (btx_index < MAX_BURST_TX))
+				// 		{
+				// 			void *obj2;
+				// 			if (mpmc_queue_pull(local_dest_queue[dest_index], &obj2) != NULL) {
+				// 				// hasPackets = true;
+				// 				struct burst_tx *btx2 = (struct burst_tx *)obj2;
+				// 				u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
+				// 				u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
+				// 							addr);
+				// 				if (pkt != NULL)
+				// 				{
+				// 					// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
+				// 					int new_len = encap_veth(dest_index, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
+				// 					btx_collector->addr[btx_index] = btx2->addr[0];
+				// 					btx_collector->len[btx_index] = new_len;
 
-									free(btx2);
+				// 					free(btx2);
 
-									btx_index++;
-									btx_collector->n_pkts = btx_index;
-								} else {
-									printf("packet is NULL \n");
-								}
-							}
+				// 					btx_index++;
+				// 					btx_collector->n_pkts = btx_index;
+				// 				} else {
+				// 					printf("packet is NULL \n");
+				// 				}
+				// 			}
 							
-						}
-						// if (!mpmc_queue_available(local_dest_queue[dest_index]))
-						// {
-						// 	delete(item);
-						// }
-					} 
-					// else {
-					// 	printf("local_dest_queue is NULL \n");
-					// }
-					if (btx_index)
-					{
-						// printf("There are packets from queue %d to nic tx \n", k);
-						port_tx_burst_collector(port_tx, btx_collector, 0, 0);
-					} 
+				// 		}
+				// 	} 
+				// 	if (btx_index)
+				// 	{
+				// 		// printf("There are packets from queue %d to nic tx \n", k);
+				// 		port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+				// 	} 
 				
-					btx_collector->n_pkts = 0;
-				}
-			// }
-
-		}
+				// 	btx_collector->n_pkts = 0;
+				// }
+		// }
 	}
 	printf("return from thread_func_veth_to_nic_tx \n");
 	return NULL;
@@ -797,7 +791,7 @@ thread_func_nic(void *arg)
 			non_local_dest_queue[w] = t->non_local_dest_queue_array[w];
 	}
 
-	struct mpmc_queue *veth_side_queue[13]; 
+	struct mpmc_queue *veth_side_queue[VETH_QUEUE_COUNT]; 
     
 	for (w = 0; w < veth_port_count; w++)
 	{

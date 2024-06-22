@@ -489,6 +489,7 @@ int main(int argc, char **argv)
 	struct mpmc_queue return_path_veth_queue[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue local_dest_queue[NUM_OF_PER_DEST_QUEUES];
 	struct mpmc_queue non_local_dest_queue[NUM_OF_PER_DEST_QUEUES];
+	struct mpmc_queue shallow_buffer_queue[NUM_OF_PER_DEST_QUEUES];
 	
 	// local queues
 	for (i = 0; i < NUM_OF_PER_DEST_QUEUES; i++)
@@ -505,6 +506,12 @@ int main(int argc, char **argv)
 		non_local_per_dest_queue[i] = &non_local_dest_queue[i];
 	}
 
+	// shallow queues
+	for (i = 0; i < NUM_OF_PER_DEST_QUEUES; i++)
+	{
+		mpmc_queue_init(&shallow_buffer_queue[i], SHALLOW_BUFF_SIZE, &memtype_heap);
+		shallow_buffers[i] = &shallow_buffer_queue[i];
+	}
     
     // veth_port_count = n_ports - 1;
 	int w;
@@ -522,7 +529,8 @@ int main(int argc, char **argv)
 	int v = 0;
 	int queue_index = 0;
 	int assigned_queue_count = n_nic_ports/nic_tx_thread_count;
-	int assigned_perdest_count = NUM_OF_PER_DEST_QUEUES/n_nic_ports;
+	// int assigned_perdest_count = NUM_OF_PER_DEST_QUEUES/n_nic_ports; 
+	int assigned_perdest_count = NUM_OF_PER_DEST_QUEUES; //assigned all shallow queues
 	for (i = 0; i < nic_tx_thread_count; i++)
 	{
 		struct thread_data *t = &thread_data[i];
@@ -532,6 +540,7 @@ int main(int argc, char **argv)
 		for (k = 0; k < assigned_queue_count; k++)
 		{
 			t->ports_tx[k] = ports[queue_index];
+			t->uplink_index = queue_index;
 			// printf("NIC TX: port & queue %d : thread %d: \n", queue_index, i);
 			queue_index++;
 		}
@@ -542,8 +551,9 @@ int main(int argc, char **argv)
 
 		for (v=0; v < assigned_perdest_count; v++) 
 		{
-			t->local_dest_queue_array[v] = local_per_dest_queue[queue_id_start];
-			t->non_local_dest_queue_array[v] = non_local_per_dest_queue[queue_id_start];
+			// t->local_dest_queue_array[v] = local_per_dest_queue[queue_id_start];
+			// t->non_local_dest_queue_array[v] = non_local_per_dest_queue[queue_id_start];
+			t->shallow_queue_array[v] = shallow_buffers[queue_id_start];
 			queue_id_start++;
 		}
 
@@ -822,6 +832,13 @@ int main(int argc, char **argv)
 			printf("Failed to destroy queue: %d", ret);
 
 		ret = mpmc_queue_destroy(non_local_per_dest_queue[w]);
+		if (ret)
+			printf("Failed to destroy queue: %d", ret);
+	}
+
+	for (w = 0; w < SHALLOW_BUFF_SIZE; w++)
+	{
+		int ret = mpmc_queue_destroy(shallow_buffers[w]);
 		if (ret)
 			printf("Failed to destroy queue: %d", ret);
 	}
