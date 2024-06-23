@@ -58,8 +58,8 @@ for line in ax.get_lines():
 ax.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
 
 plt.legend(fontsize=14)
-plt.xticks(fontsize=11)
-plt.yticks(fontsize=11)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
 plt.xlabel('RTT (μs)', fontsize=16)
 plt.ylabel('CDF', fontsize=16)
 # plt.savefig('P-ALL-RTTs.png')

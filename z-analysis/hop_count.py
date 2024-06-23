@@ -23,11 +23,22 @@ def read_file(file_name):
     return node_df
 
 n1_df_100us = read_file("n1-100us-log.csv")
+n1_df_100us = n1_df_100us.head(50000)
+
 n2_df_100us = read_file("n2-100us-log.csv")
+n2_df_100us = n2_df_100us.head(50000)
+
 n1_df_200us = read_file("n1-200us-log.csv")
+n1_df_200us = n1_df_200us.head(50000)
+
 n2_df_200us = read_file("n2-200us-log.csv")
+n2_df_200us = n2_df_200us.head(50000)
+
 n1_df_1ms = read_file("n1-1ms-log.csv")
+n1_df_1ms = n1_df_1ms.head(50000)
+
 n2_df_1ms= read_file("n2-1ms-log.csv")
+n2_df_1ms = n2_df_1ms.head(50000)
 
 fwd_hops_100us = n2_df_100us.loc[(n2_df_100us['slot'] == 2)]
 ret_hops_100us = n1_df_100us.loc[(n1_df_100us['slot'] == 2)]
@@ -37,32 +48,49 @@ fwd_hops_1ms = n2_df_1ms.loc[(n2_df_1ms['slot'] == 2)]
 ret_hops_1ms = n1_df_1ms.loc[(n1_df_1ms['slot'] == 2)]
 
 fig, ax = plt.subplots()
+# ax.set_xticks(range(1,6))
 
+## max hops = 5
+ideal_hop_count = [2, 2, 2, 2, 2, 3, 5, 5, 5, 4, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 5, 4, 3, 2]
+ideal_df=pd.DataFrame(ideal_hop_count, columns=['ideal_hop_count']) 
+print("ideal max hops {}".format(ideal_df['ideal_hop_count'].max()))
+# ideal_df['ideal_hop_count'] = ideal_df['ideal_hop_count'].astype(str)
+sns.ecdfplot(data=ideal_df, x="ideal_hop_count", ax=ax, label = "Intended Path")
+
+## max hops = 7
 fwd_hops_100us.reset_index(inplace=True)
 ret_hops_100us.reset_index(inplace=True)
 fwd_hops_100us = fwd_hops_100us.rename(columns={'hop_count': 'fwd_hop_count'})
 ret_hops_100us = ret_hops_100us.rename(columns={'hop_count': 'return_hop_count'})
 tot_hops_100us = pd.concat([fwd_hops_100us, ret_hops_100us], axis=1)
 tot_hops_100us['tot_hop_count'] = tot_hops_100us.apply(lambda row: get_tot(row['fwd_hop_count'], row['return_hop_count']), axis=1)
+print("100us max hops {}".format(tot_hops_100us['tot_hop_count'].max()))
 # sns.kdeplot(data = tot_hops_100us['tot_hop_count'], cumulative = True, label = "100μs-Slot")
+# tot_hops_100us['tot_hop_count'] = tot_hops_100us['tot_hop_count'].astype(str)
 sns.ecdfplot(data=tot_hops_100us, x="tot_hop_count", ax=ax, label = "100μs-Slot")
 
+## max hops = 7
 fwd_hops_200us.reset_index(inplace=True)
 ret_hops_200us.reset_index(inplace=True)
 fwd_hops_200us = fwd_hops_200us.rename(columns={'hop_count': 'fwd_hop_count'})
 ret_hops_200us = ret_hops_200us.rename(columns={'hop_count': 'return_hop_count'})
 tot_hops_200us = pd.concat([fwd_hops_200us, ret_hops_200us], axis=1)
 tot_hops_200us['tot_hop_count'] = tot_hops_200us.apply(lambda row: get_tot(row['fwd_hop_count'], row['return_hop_count']), axis=1)
+print("200us max hops {}".format(tot_hops_200us['tot_hop_count'].max()))
 # sns.kdeplot(data = tot_hops_200us['tot_hop_count'], cumulative = True, label = "200μs-Slot")
+# tot_hops_200us['tot_hop_count'] = tot_hops_200us['tot_hop_count'].astype(str)
 sns.ecdfplot(data=tot_hops_200us, x="tot_hop_count", ax=ax, label = "200μs-Slot")
 
+## max hops = 7
 fwd_hops_1ms.reset_index(inplace=True)
 ret_hops_1ms.reset_index(inplace=True)
 fwd_hops_1ms = fwd_hops_1ms.rename(columns={'hop_count': 'fwd_hop_count'})
 ret_hops_1ms = ret_hops_1ms.rename(columns={'hop_count': 'return_hop_count'})
 tot_hops_1ms = pd.concat([fwd_hops_1ms, ret_hops_1ms], axis=1)
 tot_hops_1ms['tot_hop_count'] = tot_hops_1ms.apply(lambda row: get_tot(row['fwd_hop_count'], row['return_hop_count']), axis=1)
+print("1ms max hops {}".format(tot_hops_1ms['tot_hop_count'].max()))
 # sns.kdeplot(data = tot_hops_1ms['tot_hop_count'], cumulative = True, label = "1ms-Slot")
+# tot_hops_1ms['tot_hop_count'] = tot_hops_1ms['tot_hop_count'].astype(str)
 sns.ecdfplot(data=tot_hops_1ms, x="tot_hop_count", ax=ax, label = "1ms-Slot")
 
 # node_1_file = "n1-100us-log.csv"
@@ -101,12 +129,12 @@ sns.ecdfplot(data=tot_hops_1ms, x="tot_hop_count", ax=ax, label = "1ms-Slot")
 # sns.kdeplot(data = tot_hops['tot_hop_count'], cumulative = True, label = "total-hop-count")
 
 # sns.set(font_scale=1.1)
-plt.legend(fontsize=14)
-plt.xticks(fontsize=11)
-plt.yticks(fontsize=11)
-plt.xlabel('Hop Counts for ping RTTs', fontsize=16)
+plt.legend(fontsize=14, loc='lower right')
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
+plt.xlabel('Total Hop Count (Forward Path + Return Path)', fontsize=16)
 plt.ylabel('CDF', fontsize=16)
-# plt.savefig('P-HopCountDist.pdf')
-plt.savefig('all-hop-count.png')
+plt.savefig('P-HopCountDist.pdf')
+# plt.savefig('all-hop-count.png')
 
  

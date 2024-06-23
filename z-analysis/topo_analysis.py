@@ -72,7 +72,7 @@ def main(args):
         tot=fwd_topo_hop_dict[x] + ret_topo_hop_dict[x]
         tot_hops.append(tot)
     
-    # print(tot_hops)
+    print(tot_hops)
     dataframe=pd.DataFrame(tot_hops, columns=['tot_hops']) 
     print(dataframe['tot_hops'])
     # sns.kdeplot(data = dataframe['tot_hops'], cumulative = True, label = "n1-n2")
