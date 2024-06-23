@@ -13,6 +13,9 @@ import numpy as np
 import seaborn as sns
 
 dataframe_collection ={}
+combined_topo_hops = []
+fwd_topo_hops = []
+ret_topo_hops = []
 # topo_hop_dict = {}
 # some_dict[a] = b
 # some_dict[3] = 4
@@ -51,6 +54,20 @@ def get_path_per_topo(src,dst, topo_hop_dict):
             # print("Find next nodes for topo-{}".format(num+1))
             get_next_node(dst_row[num], dst, num+1, num_hops, topo_hop_dict)
             
+def get_topology_df(fwd_topo_hop_dict, ret_topo_hop_dict,ax,label_txt):
+    tot_hops = []
+    for x in range(1, 33):
+        # print("We're on time %d" % (x))
+        # total_hop_dict[x] = fwd_topo_hop_dict[x] + ret_topo_hop_dict[x]
+        tot=fwd_topo_hop_dict[x] + ret_topo_hop_dict[x]
+        tot_hops.append(tot)
+        combined_topo_hops.append(tot)
+        fwd_topo_hops.append(fwd_topo_hop_dict[x])
+        ret_topo_hops.append(ret_topo_hop_dict[x])
+    
+    # print(tot_hops)
+    dataframe=pd.DataFrame(tot_hops, columns=['tot_hops']) 
+    # sns.ecdfplot(data=dataframe, x="tot_hops", ax=ax, label = label_txt)
 
 def main(args):
     load_data()
@@ -58,34 +75,31 @@ def main(args):
     fwd_topo_hop_dict = {}
     ret_topo_hop_dict = {}
     # total_hop_dict = {}
-
-    get_path_per_topo(1,2, fwd_topo_hop_dict)
-    # print(fwd_topo_hop_dict)
-
-    get_path_per_topo(2,1, ret_topo_hop_dict)
-    # print(ret_topo_hop_dict)
-
-    tot_hops = []
-    for x in range(1, 33):
-        # print("We're on time %d" % (x))
-        # total_hop_dict[x] = fwd_topo_hop_dict[x] + ret_topo_hop_dict[x]
-        tot=fwd_topo_hop_dict[x] + ret_topo_hop_dict[x]
-        tot_hops.append(tot)
-    
-    print(tot_hops)
-    dataframe=pd.DataFrame(tot_hops, columns=['tot_hops']) 
-    print(dataframe['tot_hops'])
-    # sns.kdeplot(data = dataframe['tot_hops'], cumulative = True, label = "n1-n2")
-
     fig, ax = plt.subplots()
-    sns.ecdfplot(data=dataframe, x="tot_hops", ax=ax, label = "n1-n2")
 
+    for y in range(1, 33):
+        for x in range(1, 33):
+            if y != x:
+                # print("{}-{}".format(str(y), str(x)))
+                get_path_per_topo(y,x, fwd_topo_hop_dict)
+                get_path_per_topo(x,y, ret_topo_hop_dict)
+                label_txt = "n"+str(y)+"-n"+ str(x)
+                get_topology_df(fwd_topo_hop_dict, ret_topo_hop_dict, ax, label_txt)
+
+    df_com=pd.DataFrame(combined_topo_hops, columns=['tot_hops']) 
+    df_fwd=pd.DataFrame(fwd_topo_hops, columns=['tot_hops']) 
+    df_ret=pd.DataFrame(ret_topo_hops, columns=['tot_hops']) 
+    
+    sns.ecdfplot(data=df_com, x="tot_hops", ax=ax, label = "forward+return")
+    sns.ecdfplot(data=df_fwd, x="tot_hops", ax=ax, label = "forward path")
+    sns.ecdfplot(data=df_ret, x="tot_hops", ax=ax, label = "return path")
+    
     plt.legend(fontsize=14)
     plt.xticks(fontsize=11)
     plt.yticks(fontsize=11)
-    plt.xlabel('ideal hop count', fontsize=16)
+    plt.xlabel('Intended Hop Count', fontsize=16)
     plt.ylabel('CDF', fontsize=16)
-    plt.savefig('ideal-hops.png')
+    plt.savefig('combined-topo-hops.png')
         
         
         
