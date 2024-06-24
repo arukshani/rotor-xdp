@@ -16,36 +16,48 @@ import seaborn as sns
 def get_tot(fwd, ret):
     return (fwd+ret)
 
-path = "/tmp/slot-selection-hops/"
+# path = "/tmp/slot-selection-hops/"
+path = "/tmp/with_icmp_seq/"
 
 def read_file(file_name):
     node_df = pd.read_csv(path+file_name ,sep=',')
     return node_df
 
 n1_df_100us = read_file("n1-100us-log.csv")
-n1_df_100us = n1_df_100us.head(50000)
+# n1_df_100us = n1_df_100us.head(100000)
 
 n2_df_100us = read_file("n2-100us-log.csv")
-n2_df_100us = n2_df_100us.head(50000)
+# n2_df_100us = n2_df_100us.head(100000)
 
 n1_df_200us = read_file("n1-200us-log.csv")
-n1_df_200us = n1_df_200us.head(50000)
+# n1_df_200us = n1_df_200us.head(100000)
 
 n2_df_200us = read_file("n2-200us-log.csv")
-n2_df_200us = n2_df_200us.head(50000)
+# n2_df_200us = n2_df_200us.head(100000)
 
 n1_df_1ms = read_file("n1-1ms-log.csv")
-n1_df_1ms = n1_df_1ms.head(50000)
+# n1_df_1ms = n1_df_1ms.head(100000)
 
 n2_df_1ms= read_file("n2-1ms-log.csv")
-n2_df_1ms = n2_df_1ms.head(50000)
+# n2_df_1ms = n2_df_1ms.head(100000)
 
 fwd_hops_100us = n2_df_100us.loc[(n2_df_100us['slot'] == 2)]
+fwd_hops_100us = fwd_hops_100us.head(50000)
+
 ret_hops_100us = n1_df_100us.loc[(n1_df_100us['slot'] == 2)]
+ret_hops_100us = ret_hops_100us.head(50000)
+
 fwd_hops_200us = n2_df_200us.loc[(n2_df_200us['slot'] == 2)]
+fwd_hops_200us = fwd_hops_200us.head(50000)
+
 ret_hops_200us = n1_df_200us.loc[(n1_df_200us['slot'] == 2)]
+ret_hops_200us = ret_hops_200us.head(50000)
+
 fwd_hops_1ms = n2_df_1ms.loc[(n2_df_1ms['slot'] == 2)]
+fwd_hops_1ms = fwd_hops_1ms.head(50000)
+
 ret_hops_1ms = n1_df_1ms.loc[(n1_df_1ms['slot'] == 2)]
+ret_hops_1ms = ret_hops_1ms.head(50000)
 
 fig, ax = plt.subplots()
 # ax.set_xticks(range(1,6))
@@ -135,6 +147,6 @@ plt.yticks(fontsize=14)
 plt.xlabel('Total Hop Count (Forward Path + Return Path)', fontsize=14)
 plt.ylabel('CDF', fontsize=14)
 plt.savefig('P-HopCountDist.pdf')
-# plt.savefig('all-hop-count.png')
+# plt.savefig('hop-count.png')
 
  

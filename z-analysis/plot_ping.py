@@ -24,11 +24,13 @@ def read_file(path):
 direct_200us = read_file("/tmp/slot-selection/direct-slot-200us-ms.csv")
 # direct_1ms = read_file("/tmp/slot-selection/direct-slot-1ms-ms.csv")
 
-opera_100us = read_file("/tmp/slot-selection-hops/opera-slot-100us-ms.csv")
-opera_200us = read_file("/tmp/slot-selection-hops/opera-slot-200us-ms.csv")
-opera_1ms = read_file("/tmp/slot-selection-hops/opera-slot-1ms-ms.csv")
+opera_100us = read_file("/tmp/with_icmp_seq/opera-slot-100us-ms.csv")
+opera_200us = read_file("/tmp/with_icmp_seq/opera-slot-200us-ms.csv")
+opera_1ms = read_file("/tmp/with_icmp_seq/opera-slot-1ms-ms.csv")
 
-
+print("100us max rtt {}".format(opera_100us['rtt_us'].max()))
+print("200us max rtt {}".format(opera_200us['rtt_us'].max()))
+print("1ms max rtt {}".format(opera_1ms['rtt_us'].max()))
 # sns.kdeplot(data = direct_200us['rtt_us'], cumulative = True, label = "Direct-container-to-container")
 # sns.kdeplot(data = opera_100us['rtt_us'], cumulative = True, label = "Opera-100μs-slot")
 # sns.kdeplot(data = opera_200us['rtt_us'], cumulative = True, label = "Opera-200μs-slot")
@@ -48,11 +50,11 @@ for line in ax.get_lines():
     # ax.text(x[ind], y_special, f' {x[ind]:.1f}', ha='right', va='top') # maybe color=line.get_color()
     if(x[ind] == 41.0):
         ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='right', va='top', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
-    if(x[ind] == 133.0):
+    if(x[ind] == 129.0):
         ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='left', va='top', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
-    if(x[ind] == 126.0):
-        ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='right', va='top', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
-    if(x[ind] == 97.0):
+    # if(x[ind] == 112.0):
+    #     ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='right', va='top', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
+    if(x[ind] == 105.0):
         ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='right', va='bottom', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
     print(x[ind])
 ax.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
