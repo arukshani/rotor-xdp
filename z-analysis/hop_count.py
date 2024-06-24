@@ -17,7 +17,7 @@ def get_tot(fwd, ret):
     return (fwd+ret)
 
 # path = "/tmp/slot-selection-hops/"
-path = "/tmp/with_icmp_seq/"
+path = "/tmp/paper-latency-hop/"
 
 def read_file(file_name):
     node_df = pd.read_csv(path+file_name ,sep=',')
@@ -147,6 +147,6 @@ plt.yticks(fontsize=14)
 plt.xlabel('Total Hop Count (Forward Path + Return Path)', fontsize=14)
 plt.ylabel('CDF', fontsize=14)
 plt.savefig('P-HopCountDist.pdf')
-# plt.savefig('hop-count.png')
+# plt.savefig('P-HopCountDist.png')
 
  

@@ -24,9 +24,9 @@ def read_file(path):
 direct_200us = read_file("/tmp/slot-selection/direct-slot-200us-ms.csv")
 # direct_1ms = read_file("/tmp/slot-selection/direct-slot-1ms-ms.csv")
 
-opera_100us = read_file("/tmp/with_icmp_seq/opera-slot-100us-ms.csv")
-opera_200us = read_file("/tmp/with_icmp_seq/opera-slot-200us-ms.csv")
-opera_1ms = read_file("/tmp/with_icmp_seq/opera-slot-1ms-ms.csv")
+opera_100us = read_file("/tmp/paper-latency-hop/opera-slot-100us-ms.csv")
+opera_200us = read_file("/tmp/paper-latency-hop/opera-slot-200us-ms.csv")
+opera_1ms = read_file("/tmp/paper-latency-hop/opera-slot-1ms-ms.csv")
 
 print("100us max rtt {}".format(opera_100us['rtt_us'].max()))
 print("200us max rtt {}".format(opera_200us['rtt_us'].max()))
@@ -52,9 +52,9 @@ for line in ax.get_lines():
         ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='right', va='top', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
     if(x[ind] == 129.0):
         ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='left', va='top', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
-    # if(x[ind] == 112.0):
+    # if(x[ind] == 116.0):
     #     ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='right', va='top', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
-    if(x[ind] == 105.0):
+    if(x[ind] == 107.0):
         ax.text(x[ind], y_special, f' {x[ind]:.0f}', ha='right', va='bottom', color=line.get_color(), weight='bold', fontsize=10) # maybe color=line.get_color()
     print(x[ind])
 ax.axhline(y_special, linestyle='--', color='#cfcfcf', lw=2, alpha=0.75)
