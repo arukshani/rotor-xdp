@@ -762,10 +762,10 @@ int main(int argc, char **argv)
 		// int z;
 		FILE *fpt;
 		fpt = fopen("/tmp/opera_emu_data.csv", "w+");
-		fprintf(fpt,"slot,topo_arr,time_ns,time_part_sec,time_part_nsec,hop_count\n");
+		fprintf(fpt,"slot,topo_arr,time_ns,time_part_sec,time_part_nsec,hop_count,seq\n");
 		for (z = 0; z < time_index; z++ ) {
 			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-			fprintf(fpt,"%d,%d,%ld,%ld,%ld,%d\n",slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+			fprintf(fpt,"%d,%d,%ld,%ld,%ld,%d,%ld\n",slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z],seq[z]);
 		}
 		fclose(fpt);
 	#endif

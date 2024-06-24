@@ -348,6 +348,10 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 				// if (inner_ip_hdr->protocol == IPPROTO_UDP) 
 				if (inner_ip_hdr->protocol == IPPROTO_ICMP) 
 				{
+					struct icmphdr *inner_icmp_hdr = (struct icmphdr *)(data +
+					sizeof(struct ethhdr) +
+					sizeof(struct iphdr));
+					seq[time_index] = ntohl(inner_icmp_hdr->sequence);
 					timestamp_arr[time_index] = now;
 					slot[time_index]=2;
 					topo_arr[time_index] = topo;
@@ -409,6 +413,10 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 		// if (inner_ip_hdr_tmp->protocol == IPPROTO_UDP) 
 		if (inner_ip_hdr_tmp->protocol == IPPROTO_ICMP) 
 		{
+			struct icmphdr *inner_icmp_hdr = (struct icmphdr *)(data +
+					sizeof(struct ethhdr) +
+					sizeof(struct iphdr));
+			seq[time_index] = ntohl(inner_icmp_hdr->sequence);
 			timestamp_arr[time_index] = now;
 			slot[time_index]=0;
 			topo_arr[time_index] = topo;
