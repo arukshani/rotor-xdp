@@ -35,13 +35,13 @@ sudo pkill tcpdump
 ### Log Ping results (10us interval between packets)
 ```
 ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> /tmp/direct-slot-100us.txt
-ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> /tmp/opera-slot-100us.txt
+ping 192.168.2.2 -i 0.00001 -c 60000  | while read pong; do echo "$(date):$pong"; done >> /tmp/opera-slot-100us.txt
 
 ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> /tmp/direct-slot-200us.txt
-ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> /tmp/opera-slot-200us.txt
+ping 192.168.2.2 -i 0.00001 -c 60000  | while read pong; do echo "$(date):$pong"; done >> /tmp/opera-slot-200us.txt
 
 ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> /tmp/direct-slot-1ms.txt
-ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"; done >> /tmp/opera-slot-1ms.txt
+ping 192.168.2.2 -i 0.00001 -c 60000  | while read pong; do echo "$(date):$pong"; done >> /tmp/opera-slot-1ms.txt
 ```
 
 
