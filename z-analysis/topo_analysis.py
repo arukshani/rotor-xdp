@@ -16,6 +16,7 @@ dataframe_collection ={}
 combined_topo_hops = []
 fwd_topo_hops = []
 ret_topo_hops = []
+is_topo_seen ={}
 # topo_hop_dict = {}
 # some_dict[a] = b
 # some_dict[3] = 4
@@ -79,27 +80,31 @@ def main(args):
 
     for y in range(1, 33):
         for x in range(1, 33):
-            if y != x:
-                # print("{}-{}".format(str(y), str(x)))
-                get_path_per_topo(y,x, fwd_topo_hop_dict)
-                get_path_per_topo(x,y, ret_topo_hop_dict)
-                label_txt = "n"+str(y)+"-n"+ str(x)
-                get_topology_df(fwd_topo_hop_dict, ret_topo_hop_dict, ax, label_txt)
+            topo_key = "n"+str(y)+"-n"+ str(x)
+            if (not(topo_key in is_topo_seen)):
+                if y != x:
+                    is_topo_seen[topo_key] = 1
+                    # print("{}-{}".format(str(y), str(x)))
+                    get_path_per_topo(y,x, fwd_topo_hop_dict)
+                    get_path_per_topo(x,y, ret_topo_hop_dict)
+                    label_txt = "n"+str(y)+"-n"+ str(x)
+                    get_topology_df(fwd_topo_hop_dict, ret_topo_hop_dict, ax, label_txt)
 
     df_com=pd.DataFrame(combined_topo_hops, columns=['tot_hops']) 
     df_fwd=pd.DataFrame(fwd_topo_hops, columns=['tot_hops']) 
     df_ret=pd.DataFrame(ret_topo_hops, columns=['tot_hops']) 
     
-    sns.ecdfplot(data=df_com, x="tot_hops", ax=ax, label = "forward+return")
-    sns.ecdfplot(data=df_fwd, x="tot_hops", ax=ax, label = "forward path")
-    sns.ecdfplot(data=df_ret, x="tot_hops", ax=ax, label = "return path")
+    sns.ecdfplot(data=df_com, x="tot_hops", ax=ax, label = "Forward Path + Return Path")
+    sns.ecdfplot(data=df_fwd, x="tot_hops", ax=ax, label = "Forward Path")
+    sns.ecdfplot(data=df_ret, x="tot_hops", ax=ax, label = "Return Path")
     
     plt.legend(fontsize=14)
-    plt.xticks(fontsize=11)
-    plt.yticks(fontsize=11)
-    plt.xlabel('Intended Hop Count', fontsize=16)
-    plt.ylabel('CDF', fontsize=16)
-    plt.savefig('combined-topo-hops.png')
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.xlabel('Hop Count', fontsize=14)
+    plt.ylabel('CDF', fontsize=14)
+    # plt.savefig('all-topo-hops.png')
+    plt.savefig('P-ALL-TOPO-HOPS.pdf')
         
         
         
