@@ -12,8 +12,8 @@ import pandas as pd
 # path = "/tmp/slot-selection/direct-slot-1ms.txt"
 
 # path = "/tmp/with_icmp_seq/opera-slot-100us.txt"
-# path = "/tmp/with_icmp_seq/opera-slot-200us.txt"
-path = "/tmp/with_icmp_seq/opera-slot-1ms.txt"
+path = "/tmp/with_icmp_seq/opera-slot-200us.txt"
+# path = "/tmp/with_icmp_seq/opera-slot-1ms.txt"
 
 lastColumn = [ ]
 
