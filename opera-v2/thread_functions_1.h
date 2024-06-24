@@ -351,7 +351,7 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 					struct icmphdr *inner_icmp_hdr = (struct icmphdr *)(data +
 					sizeof(struct ethhdr) +
 					sizeof(struct iphdr));
-					seq[time_index] = ntohl(inner_icmp_hdr->un.echo.sequence);
+					seq[time_index] = ntohs(inner_icmp_hdr->un.echo.sequence);
 					timestamp_arr[time_index] = now;
 					slot[time_index]=2;
 					topo_arr[time_index] = topo;
@@ -416,7 +416,7 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 			struct icmphdr *inner_icmp_hdr = (struct icmphdr *)(data +
 					sizeof(struct ethhdr) +
 					sizeof(struct iphdr));
-			seq[time_index] = ntohl(inner_icmp_hdr->un.echo.sequence);
+			seq[time_index] = ntohs(inner_icmp_hdr->un.echo.sequence);
 			timestamp_arr[time_index] = now;
 			slot[time_index]=0;
 			topo_arr[time_index] = topo;

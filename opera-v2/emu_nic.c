@@ -765,7 +765,7 @@ int main(int argc, char **argv)
 		fprintf(fpt,"slot,topo_arr,time_ns,time_part_sec,time_part_nsec,hop_count,seq\n");
 		for (z = 0; z < time_index; z++ ) {
 			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
-			fprintf(fpt,"%d,%d,%ld,%ld,%ld,%d,%ld\n",slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z],seq[z]);
+			fprintf(fpt,"%d,%d,%ld,%ld,%ld,%d,%d\n",slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z],seq[z]);
 		}
 		fclose(fpt);
 	#endif
