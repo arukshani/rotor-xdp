@@ -34,7 +34,7 @@ python3 ptp_script.py -r
 python3 opera_build.py opera-v2 120 -p //pull
 python3 opera_build.py opera-v2 120 -m //make
 python3 opera_build.py opera-v2 120 -c //clean
-python3 opera_build.py opera-v2 120 -s //start
+python3 opera_build.py opera-v2 200 -s //start
 python3 opera_build.py opera-v2 120 -k //kill
 ```
 
