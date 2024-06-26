@@ -40,8 +40,12 @@ python3 opera_build.py opera-v2 120 -k //kill
 
 ### Default
 ```
-echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
-echo 4096 131072 6291456 | tee /proc/sys/net/ipv4/tcp_wmem
+net.ipv4.tcp_wmem = 4096   16384   4194304
+net.ipv4.tcp_rmem = 4096   131072  6291456
+
+sysctl -w net.ipv4.tcp_rmem=4096 16384 4194304
+sysctl -w net.ipv4.tcp_wmem=4096 16384 4194304
+
 echo 3 | tee /proc/sys/net/ipv4/tcp_reordering
 echo 100 | tee /proc/sys/net/ipv4/tcp_max_reordering
 echo 1 | tee /proc/sys/net/ipv4/tcp_recovery
@@ -64,8 +68,9 @@ net.ipv4.tcp_wmem=4096 65536 1073741824
 echo 300 | tee /proc/sys/net/ipv4/tcp_reordering
 echo 1000 | tee /proc/sys/net/ipv4/tcp_max_reordering
 
-disable RACK (inside namespace)
+disable and enable RACK (inside namespace)
 echo 0 | tee /proc/sys/net/ipv4/tcp_recovery
+echo 1 | tee /proc/sys/net/ipv4/tcp_recovery
 
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_wmem
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_rmem
@@ -78,6 +83,17 @@ https://fasterdata.es.net/host-tuning/linux/
 (67108864 bytes = 67MB ; 67108864/3400=19737 packets)
 echo net.ipv4.tcp_wmem = 4096 67108864 1073741824 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_rmem = 4096 67108864 1073741824 | tee -a /etc/sysctl.conf
+
+### Following doesn't cause packet drops in controller
+echo net.ipv4.tcp_wmem = 4096 65536 6291456 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_rmem = 4096 65536 6291456 | tee -a /etc/sysctl.conf
+
+echo net.ipv4.tcp_wmem = 4096 16384 4194304 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_rmem = 4096 131072 6291456 | tee -a /etc/sysctl.conf
+
+echo net.ipv4.tcp_rmem = 4096 131072 54400000 | tee -a /etc/sysctl.conf
+
+
 sysctl -p
 
 sysctl net.ipv4.tcp_reordering
@@ -85,6 +101,10 @@ sysctl net.ipv4.tcp_max_reordering
 sysctl net.ipv4.tcp_wmem
 sysctl net.ipv4.tcp_rmem
 sysctl net.ipv4.tcp_recovery
+
+
+tc qdisc add dev vethin2 root tbf rate 10gbit burst 50mbit limit 10000000
+tc qdisc del dev vethin2 root
 ```
 
 ### Partial node setup
