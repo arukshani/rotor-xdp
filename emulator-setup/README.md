@@ -107,7 +107,7 @@ sysctl net.ipv4.tcp_rmem
 sysctl net.ipv4.tcp_recovery
 
 
-tc qdisc add dev vethin2 root tbf rate 10gbit burst 50mbit limit 10000000
+tc qdisc add dev vethin2 root tbf rate 10gbit burst 12mbit limit 1000000
 tc qdisc del dev vethin2 root
 ```
 
