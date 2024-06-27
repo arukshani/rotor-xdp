@@ -108,6 +108,10 @@ sysctl net.ipv4.tcp_recovery
 
 
 tc qdisc add dev vethin2 root tbf rate 10gbit burst 12mbit limit 1000000
+tc qdisc add dev vethin2 root tbf rate 11gbit burst 12mbit limit 1000000
+tc qdisc add dev vethin2 root tbf rate 12gbit burst 12mbit limit 1000000
+tc qdisc add dev vethin2 root tbf rate 12gbit burst 15mbit limit 1000000
+tc qdisc add dev vethin2 root tbf rate 12gbit burst 14mbit limit 1009000
 tc qdisc del dev vethin2 root
 ```
 
