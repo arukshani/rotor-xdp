@@ -91,6 +91,8 @@ echo net.ipv4.tcp_rmem = 4096 65536 6291456 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_wmem = 4096 16384 4194304 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_rmem = 4096 131072 6291456 | tee -a /etc/sysctl.conf
 
+## For paper
+echo net.ipv4.tcp_wmem = 4096 16384 4194304 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_rmem = 4096 131072 54400000 | tee -a /etc/sysctl.conf
 
 
@@ -123,4 +125,28 @@ ifconfig vethin2 down
 opera-v1 = encap is done as soon as packets are received from veth or nic and tx side only send the packets out
 opera-v2 = rx side simply queue up packets in the correct per dest queues. Tx side does the encap.
 opera-ex = experimental
+```
+
+### BCC Tools
+```
+After building from source do the following inside network namespace
+mount -t debugfs none /sys/kernel/debug/ 
+
+cd bcc/tools/
+python3 tcprtt.py -P 5000
+
+/* original */
+/* u32 srtt = ts->srtt_us >> 3; */
+
+    /* RUK: Get Min RTT */
+    /* u32 srtt = ts->rtt_min.s[0].v; */
+
+    /* RUK: RACK RTT_US */
+    /* u32 srtt = ts->rack.rtt_us; */
+
+    /* RUK: RACK RTT_US */
+    /* u32 srtt = ts->rack.reo_wnd_steps; */
+
+    /* RUK: RACK reordering */
+    u32 srtt = ts->reordering;
 ```

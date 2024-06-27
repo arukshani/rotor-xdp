@@ -5,6 +5,8 @@ import argparse
 import logging
 import pandas as pd
 
+# path = "data/default-rack/"
+path = "data/default-sack/"
 
 def parse_log(file_name):
     text_file = open(file_name, "r")
@@ -21,19 +23,19 @@ def parse_log(file_name):
     return retransmission_count
         
 
-retrans_1 = parse_log("data/opera_tcp_test1.txt")
+retrans_1 = parse_log(path+"opera_tcp_test1.txt")
 df_1 = pd.DataFrame(retrans_1.items(), columns=['time', 'retrans_count'])
 
-retrans_2 = parse_log("data/opera_tcp_test2.txt")
+retrans_2 = parse_log(path+"opera_tcp_test2.txt")
 df_2 = pd.DataFrame(retrans_2.items(), columns=['time', 'retrans_count'])
 
-retrans_3 = parse_log("data/opera_tcp_test3.txt")
+retrans_3 = parse_log(path+"opera_tcp_test3.txt")
 df_3 = pd.DataFrame(retrans_3.items(), columns=['time', 'retrans_count'])
 
-retrans_4 = parse_log("data/opera_tcp_test4.txt")
+retrans_4 = parse_log(path+"opera_tcp_test4.txt")
 df_4 = pd.DataFrame(retrans_4.items(), columns=['time', 'retrans_count'])
 
-retrans_5 = parse_log("data/opera_tcp_test5.txt")
+retrans_5 = parse_log(path+"opera_tcp_test5.txt")
 df_5 = pd.DataFrame(retrans_5.items(), columns=['time', 'retrans_count'])
 
 ax = df_1.plot(x="time", y=["retrans_count"],kind="line")
@@ -47,6 +49,8 @@ plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.xlabel('Time(s)', fontsize=14)
 plt.ylabel('Number of Retransmissions', fontsize=14)
-# plt.savefig('P-Opera-retrans-count.png')
-plt.savefig('P-Opera-retrans-count.pdf')
+# plt.savefig('P-Retrans-Default-RACK.png')
+# plt.savefig('P-Retrans-Default-RACK.pdf')
+# plt.savefig('P-Retrans-Default-SACK.png')
+plt.savefig('P-Retrans-Default-SACK.pdf')
 
