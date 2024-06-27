@@ -95,6 +95,8 @@ echo net.ipv4.tcp_rmem = 4096 131072 6291456 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_wmem = 4096 16384 4194304 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_rmem = 4096 131072 54400000 | tee -a /etc/sysctl.conf
 
+echo net.ipv4.tcp_rmem = 4096 131072 68000000 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_wmem = 4096 131072 68000000 | tee -a /etc/sysctl.conf
 
 sysctl -p
 
