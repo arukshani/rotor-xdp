@@ -129,6 +129,15 @@ for sack
 echo net.ipv4.tcp_rmem = 4096 54400000 68000000 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_wmem = 4096 54400000 68000000 | tee -a /etc/sysctl.conf
 tc qdisc add dev vethin2 root tbf rate 11gbit burst 12mbit limit 1000000
+or
+tc qdisc add dev vethin2 root tbf rate 11gbit burst 10mbit limit 1000000
+echo net.ipv4.tcp_rmem = 4096 6291456 68000000 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_wmem = 4096 6291456 68000000 | tee -a /etc/sysctl.conf
+or
+tc qdisc add dev vethin2 root tbf rate 11gbit burst 5mbit limit 1000000
+echo net.ipv4.tcp_rmem = 4096 6291456 57800000 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_wmem = 4096 6291456 57800000 | tee -a /etc/sysctl.conf
+
 ```
 
 ### Partial node setup
