@@ -727,6 +727,9 @@ int main(int argc, char **argv)
 
 	/* Threads completion. */
 	printf("Quit.\n");
+	printf("local_dest_queue_overflow_count %ld s \n", local_dest_queue_overflow_count);
+	printf("non_local_dest_queue_overflow_count %ld s \n", non_local_dest_queue_overflow_count);
+	printf("veth_queue_overflow_count %ld s \n", veth_queue_overflow_count);
 	// printf("=========TIMING======================= \n");
 	// printf("total_veth_rx %ld s \n", (total_veth_rx / 1000000000));
 	// printf("total_nic_tx %ld s \n", (total_nic_tx / 1000000000));

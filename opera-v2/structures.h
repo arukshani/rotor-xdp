@@ -357,3 +357,7 @@ uint64_t cycle_time_ns = 6400000; // 6400 us
 // uint64_t slot_time_ns = 130000;  // 130 us
 // uint64_t cycle_time_ns = 4160000; // 4160 us
 clockid_t clkid;
+
+uint64_t local_dest_queue_overflow_count;
+uint64_t non_local_dest_queue_overflow_count;
+uint64_t veth_queue_overflow_count;

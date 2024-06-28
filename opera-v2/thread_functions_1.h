@@ -603,7 +603,8 @@ thread_func_veth(void *arg)
 						int ret = mpmc_queue_push(local_dest_queue[dest_index], (void *) btx);
 						if (!ret) 
 						{
-							printf("local_dest_queue is full \n");
+							local_dest_queue_overflow_count++;
+							// printf("local_dest_queue is full \n");
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
 							free(btx);
@@ -857,7 +858,8 @@ thread_func_nic(void *arg)
 						int ret = mpmc_queue_push(non_local_dest_queue[ret_val->ring_buf_index], (void *) btx);
 						if (!ret) 
 						{
-							printf("non local_dest_queue is full \n");
+							non_local_dest_queue_overflow_count++;
+							// printf("non local_dest_queue is full \n");
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
 							free(btx);
@@ -875,7 +877,8 @@ thread_func_nic(void *arg)
 						int ret = mpmc_queue_push(veth_side_queue[ret_val->which_veth], (void *) btx);
 						if (!ret) 
 						{
-							printf("veth_side_queue is full \n");
+							veth_queue_overflow_count++;
+							// printf("veth_side_queue is full \n");
 							//Release buffers to pool
 							bcache_prod(port_rx->bc, brx->addr[j]);
 							free(btx);
