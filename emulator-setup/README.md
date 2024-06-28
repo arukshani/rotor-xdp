@@ -111,8 +111,14 @@ tc qdisc add dev vethin2 root tbf rate 10gbit burst 12mbit limit 1000000
 tc qdisc add dev vethin2 root tbf rate 11gbit burst 12mbit limit 1000000
 tc qdisc add dev vethin2 root tbf rate 12gbit burst 12mbit limit 1000000
 tc qdisc add dev vethin2 root tbf rate 12gbit burst 15mbit limit 1000000
-tc qdisc add dev vethin2 root tbf rate 12gbit burst 14mbit limit 1009000
+tc qdisc add dev vethin2 root tbf rate 10gbit burst 5mbit limit 1000000
 tc qdisc del dev vethin2 root
+
+
+working paras
+tc qdisc add dev vethin2 root tbf rate 10gbit burst 5mbit limit 1000000
+echo net.ipv4.tcp_rmem = 4096 131072 68000000 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_wmem = 4096 131072 68000000 | tee -a /etc/sysctl.conf
 ```
 
 ### Partial node setup
