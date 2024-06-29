@@ -93,7 +93,7 @@ echo net.ipv4.tcp_rmem = 4096 131072 6291456 | tee -a /etc/sysctl.conf
 
 ## For paper
 echo net.ipv4.tcp_wmem = 4096 16384 4194304 | tee -a /etc/sysctl.conf
-echo net.ipv4.tcp_rmem = 4096 131072 54400000 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_rmem = 4096 131072 6291456 | tee -a /etc/sysctl.conf
 
 echo net.ipv4.tcp_rmem = 4096 54400000 68000000 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_wmem = 4096 54400000 68000000 | tee -a /etc/sysctl.conf
@@ -137,6 +137,13 @@ or
 tc qdisc add dev vethin2 root tbf rate 11gbit burst 5mbit limit 1000000
 echo net.ipv4.tcp_rmem = 4096 6291456 57800000 | tee -a /etc/sysctl.conf
 echo net.ipv4.tcp_wmem = 4096 6291456 57800000 | tee -a /etc/sysctl.conf
+
+rack - custom srtt
+echo net.ipv4.tcp_rmem = 4096 54400000 68000000 | tee -a /etc/sysctl.conf
+echo net.ipv4.tcp_wmem = 4096 54400000 68000000 | tee -a /etc/sysctl.conf
+tc qdisc add dev vethin2 root tbf rate 11gbit burst 5mbit limit 1000000
+sysctl -p
+
 
 ```
 
