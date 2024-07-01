@@ -18,6 +18,7 @@
 
 python3 node_health.py -r // read start log
 python3 node_health.py -d // delete logs(start_log)
+python3 node_health.py -c // check emu_nic process state
 ```
 
 ### Throughput Test
@@ -44,4 +45,8 @@ ping 192.168.2.2 -i 0.00001 -c 90000  | while read pong; do echo "$(date):$pong"
 ping 192.168.2.2 -i 0.00001 -c 60000  | while read pong; do echo "$(date):$pong"; done >> /tmp/opera-slot-1ms.txt
 ```
 
-
+### Log Congestion Window
+```
+<!-- bash ss-output.sh 192.168.2.2   -->
+./ss-output.sh 192.168.2.2
+```
