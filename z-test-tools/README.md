@@ -50,7 +50,7 @@ ping 192.168.2.2 -i 0.00001 -c 60000  | while read pong; do echo "$(date):$pong"
 <!-- bash ss-output.sh 192.168.2.2   -->
 ./ss-output.sh 192.168.2.2
 ```
-## inside the namespace
+## inside the namespace (https://unix.stackexchange.com/questions/747990/how-to-clear-the-sys-kernel-debug-tracing-trace-pipe-quickly) 
 ```
 mount -t debugfs none /sys/kernel/debug/
 cd /sys/kernel/debug/tracing
@@ -60,4 +60,9 @@ cat trace
 
 cat /sys/kernel/debug/tracing/trace_pipe
 cat /sys/kernel/debug/tracing/trace
+```
+
+## This will clear both trace and trace_pipe files (might not need)
+```
+echo > /sys/kernel/debug/tracing/trace
 ```
