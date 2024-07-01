@@ -50,3 +50,14 @@ ping 192.168.2.2 -i 0.00001 -c 60000  | while read pong; do echo "$(date):$pong"
 <!-- bash ss-output.sh 192.168.2.2   -->
 ./ss-output.sh 192.168.2.2
 ```
+## inside the namespace
+```
+mount -t debugfs none /sys/kernel/debug/
+cd /sys/kernel/debug/tracing
+echo 1 > events/tcp/tcp_probe/enable
+<!-- run workloads -->
+cat trace
+
+cat /sys/kernel/debug/tracing/trace_pipe
+cat /sys/kernel/debug/tracing/trace
+```
