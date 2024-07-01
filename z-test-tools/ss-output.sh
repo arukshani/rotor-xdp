@@ -35,5 +35,7 @@ cleanup ()
 trap cleanup SIGINT SIGTERM
 
 while [ 1 ]; do 
-	ss --no-header -ein dst $DST | ts '%.s' | tee -a sender-ss.txt 
+	# ss --no-header -ein dst $DST | ts '%.s' | tee -a sender-ss.txt 
+	ss --no-header -in dst $DST | ts '%.s' | tee -a sender-ss.txt
+	# ss --no-header -it '( dport = :5000 )'
 done
