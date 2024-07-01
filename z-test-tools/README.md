@@ -50,7 +50,7 @@ ping 192.168.2.2 -i 0.00001 -c 60000  | while read pong; do echo "$(date):$pong"
 <!-- bash ss-output.sh 192.168.2.2   -->
 ./ss-output.sh 192.168.2.2
 ```
-## inside the namespace (https://unix.stackexchange.com/questions/747990/how-to-clear-the-sys-kernel-debug-tracing-trace-pipe-quickly) 
+## inside the namespace 
 ```
 mount -t debugfs none /sys/kernel/debug/
 cd /sys/kernel/debug/tracing
@@ -62,7 +62,27 @@ cat /sys/kernel/debug/tracing/trace_pipe
 cat /sys/kernel/debug/tracing/trace
 ```
 
+(https://unix.stackexchange.com/questions/747990/how-to-clear-the-sys-kernel-debug-tracing-trace-pipe-quickly) 
 ## This will clear both trace and trace_pipe files (might not need)
 ```
 echo > /sys/kernel/debug/tracing/trace
+```
+
+## Disable trace
+```
+cd /sys/kernel/debug/tracing
+echo 0 > events/tcp/tcp_probe/enable
+```
+
+```
+cat trace_pipe >> /tmp/cwnd_logs/direct-no-ratelimit.txt
+cat trace_pipe >> /tmp/cwnd_logs/direct-ratelimit.txt
+cat trace_pipe >> /tmp/cwnd_logs/opera-rack-default.txt
+cat trace_pipe >> /tmp/cwnd_logs/opera-sack-default.txt
+cat trace_pipe >> /tmp/cwnd_logs/opera-sack-increase-reo.txt
+```
+
+## trace (https://lwn.net/Articles/290277/)
+```
+timestamp in <secs>.<usecs>
 ```
