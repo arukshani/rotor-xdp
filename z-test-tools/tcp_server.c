@@ -128,9 +128,10 @@ int main(int argc, char **argv) {
     bzero(buf, BUFSIZE);
     while (recv(client_sock, buf, sizeof(buf), 0))
     {
-      printf("Client: %s\n", buf);
+      // printf("Client: %s\n", buf);
       bzero(buf, BUFSIZE);
     }
+    printf("All Done!! \n");
     
 
     // close(client_sock);
