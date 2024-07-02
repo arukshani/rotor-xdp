@@ -33,7 +33,7 @@
 
 // #include "common.h"
 
-#define BUFSIZE 4096
+#define BUFSIZE 8192
 
 /*
  * error - wrapper for perror
@@ -126,11 +126,15 @@ int main(int argc, char **argv) {
      * recvfrom: receive a UDP datagram from a client
      */
     bzero(buf, BUFSIZE);
-    recv(client_sock, buf, sizeof(buf), 0);
-    printf("Client: %s\n", buf);
+    while (recv(client_sock, buf, sizeof(buf), 0))
+    {
+      printf("Client: %s\n", buf);
+      bzero(buf, BUFSIZE);
+    }
+    
 
-    close(client_sock);
-    printf("[+]Client disconnected.\n\n");
+    // close(client_sock);
+    // printf("[+]Client disconnected.\n\n");
 
     //recv time
     // sequence_ids[time_index] = atoi(buf);

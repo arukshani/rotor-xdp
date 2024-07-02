@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
 
     int m = 0;
     FILE* file = fopen("sample_file.txt", "r");
-    while(m < 1000)
+    while(m < 32000)
     {
         /* get a message from the user */
         bzero(buf, BUFSIZE);
