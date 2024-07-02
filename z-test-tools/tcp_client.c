@@ -33,7 +33,7 @@
 
 // #include "common.h"
 
-#define BUFSIZE 4096
+#define BUFSIZE 8192
 
 /* 
  * error - wrapper for perror
@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
 
     int m = 0;
     FILE* file = fopen("sample_file.txt", "r");
-    while(m < 1)
+    while(m < 1000)
     {
         /* get a message from the user */
         bzero(buf, BUFSIZE);
