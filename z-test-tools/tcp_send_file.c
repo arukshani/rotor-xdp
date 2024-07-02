@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
     printf("Connected to the server.\n");
 
     int m = 0;
-    FILE* file = fopen("sample_file.txt", "r");
+    FILE* file = fopen("/opt/sample_file.zip", "r");
 
     if(file == NULL)
     {

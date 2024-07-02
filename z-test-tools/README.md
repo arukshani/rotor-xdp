@@ -86,3 +86,7 @@ cat trace_pipe >> /tmp/cwnd_logs/opera-sack-increase-reo.txt
 ```
 timestamp in <secs>.<usecs>
 ```
+
+```
+zip -r sample_file.zip /opt/rotor-xdp
+```
