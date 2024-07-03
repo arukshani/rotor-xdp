@@ -324,6 +324,8 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 
 					seq[time_index] = ntohl(inner_tcp_hdr->seq);
 					ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
+					src_port[time_index] = ntohs(inner_tcp_hdr->source);
+					dst_port[time_index] = ntohs(inner_tcp_hdr->dest);
 					if (ntohl(inner_tcp_hdr->syn)) {
 						is_syn[time_index] = 1;
 					} 
@@ -385,6 +387,8 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 
 			seq[time_index] = ntohl(inner_tcp_hdr->seq);
 			ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
+			src_port[time_index] = ntohs(inner_tcp_hdr->source);
+			dst_port[time_index] = ntohs(inner_tcp_hdr->dest);
 			
 			if (ntohl(inner_tcp_hdr->syn)) {
 				is_syn[time_index] = 1;

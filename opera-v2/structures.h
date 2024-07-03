@@ -339,6 +339,8 @@ int is_ack[20000000];
 int is_fin[20000000];
 __u32 ns_packet_len[20000000];
 __u32 tcp_rcv_wnd[20000000];
+u16 src_port[20000000];
+u16 dst_port[20000000];
 
 long time_index = 0;
 

@@ -27,13 +27,13 @@ pos = n1_df.columns.get_loc('time_ns')
 n1_df['elaps_time_ns'] =  n1_df.iloc[1:, pos] - n1_df.iat[0, pos]
 n1_df['elaps_time_us'] =  n1_df['elaps_time_ns'] /1000
 n1_df.replace(np.nan, 0, inplace=True)
-# n1_df = n1_df.head(1200) #0-1200
-n1_df = n1_df[2640:2700] 
-print(n1_df.head(20))
+n1_df = n1_df.head(1200) #0-1200
+# n1_df = n1_df[2640:2700] 
+# print(n1_df.head(20))
 # n1_df=n1_df[n1_df.index.isin([1201,2400])]
 # print(n1_df.size)
 
-# print(n1_df[10:15])
+print(n1_df[0:15])
 
 # index_list = [0,10]
 # test = n1_df.iloc[0,10]
