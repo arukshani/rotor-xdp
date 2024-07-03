@@ -28,18 +28,37 @@ n1_df['elaps_time_ns'] =  n1_df.iloc[1:, pos] - n1_df.iat[0, pos]
 n1_df['elaps_time_us'] =  n1_df['elaps_time_ns'] /1000
 n1_df.replace(np.nan, 0, inplace=True)
 # print(n1_df.head(100))
-n1_df = n1_df.head(2000)
+n1_df = n1_df.head(1200)
 
-print(n1_df[['seq', 'topo_arr', 'elaps_time_us']].head(10))
+# print(n1_df[['seq', 'topo_arr', 'elaps_time_us']].head(10))
 
 # periods = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32]
 periods = n1_df[n1_df.topo_arr.diff()!=0].elaps_time_us
-print(periods)
+# print(periods)
+
+labels = n1_df[n1_df.topo_arr.diff()!=0].topo_arr
+# print(labels)
+
+indices = n1_df[n1_df.topo_arr.diff()!=0].index.values
+print(indices)
 
 plt.plot(n1_df['elaps_time_us'], n1_df['seq'], label = "direct")
 # for item in periods[1::]:
 for item in periods:
     plt.axvline(item, ymin=0, ymax=1,color='red')
+
+# for i in range(len(indices)-1):
+for i in range(len(indices)-1):
+# for i in indices:
+    # print(str(periods[i]+periods[i+1]-1)/2)
+    # print(periods[i])
+    index = indices[i]
+    next_index = indices[i+1]
+    # print(periods[index+1])
+    # plt.text(y=3102196394,x=(periods[index]+periods[next_index]-1)/2,
+    #     s=str(labels[index]), color='black', fontsize=7)
+    plt.text(y=3102196394,x=(periods[index]),
+        s=str(labels[index]), color='black', fontsize=7)
 
 # ax = sns.lineplot(x="elaps_time_us", y="seq", data=n1_df)
 # ax.axvspan(3, 100,facecolor="darkmagenta", edgecolor='black', hatch="o", alpha=.3, label="Easter week")
