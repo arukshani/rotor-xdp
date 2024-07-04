@@ -33,7 +33,7 @@
 
 // #include "common.h"
 
-#define BUFSIZE 8192
+#define BUFSIZE 10242
 
 /* 
  * error - wrapper for perror
