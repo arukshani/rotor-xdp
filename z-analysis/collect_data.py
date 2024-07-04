@@ -48,7 +48,7 @@ def gather_data():
         for worker in workers:
             remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
             proc = subprocess.run(remoteCmd, shell=True)
-            new_filename = "1-direct-{}.csv".format(worker['host'])
+            new_filename = "3-direct-{}.csv".format(worker['host'])
             cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
             subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
