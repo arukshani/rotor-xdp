@@ -273,7 +273,7 @@ static int get_destination_queue_index(void *data, struct port_params *params)
 					slot[time_index]=0;
 					topo_arr[time_index] = topo;
 					hop_count[time_index] = 0;
-					ns_packet_len[time_index] = len; 
+					ns_packet_len[time_index] = 0; 
 					time_index++;
 				}
 
