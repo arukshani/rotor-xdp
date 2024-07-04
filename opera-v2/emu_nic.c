@@ -756,7 +756,7 @@ int main(int argc, char **argv)
 		for (z = 0; z < time_index; z++ ) {
 			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
 			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
-			fprintf(fpt,"%d,%ld,%ld,%ld,%ld,%ld,%d,%ld,%ld,%ld,%d,%ld,%ld\n",slot[z],seq[z],ack_seq[z],is_syn[z],is_ack[z],is_fin[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z],ns_packet_len[z],0,src_port[z],dst_port[z]);
+			fprintf(fpt,"%d,%ld,%ld,%ld,%ld,%ld,%d,%ld,%ld,%ld,%d,%ld,%ld,%ld,%ld\n",slot[z],seq[z],ack_seq[z],is_syn[z],is_ack[z],is_fin[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z],ns_packet_len[z],0,src_port[z],dst_port[z]);
 		}
 		fclose(fpt);
 	#endif
