@@ -2,9 +2,9 @@
 
 DST=$1
 
-touch sender-ss.txt
+touch /tmp/sender-ss.txt
 
-rm -f sender-ss.txt 
+rm -f /tmp/sender-ss.txt 
 
 # cleanup ()
 # {
@@ -38,5 +38,5 @@ while [ 1 ]; do
 	# ss --no-header -ein dst $DST | ts '%.s' | tee -a sender-ss.txt 
 	# ss --no-header -in dst $DST | ts '%.s' | tee -a sender-ss.txt
 	# ss --no-header -it '( dport = :5000 )'
-	ss --no-header -eit '( dport = :5000 )' | ts '%.s' | tee -a sender-ss.txt 
+	ss --no-header -eit '( dport = :5000 )' | ts '%.s' | tee -a /tmp/sender-ss.txt 
 done
