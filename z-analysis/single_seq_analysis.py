@@ -30,7 +30,7 @@ n1_df['elaps_time_ns'] =  n1_df.iloc[1:, pos] - n1_df.iat[0, pos]
 n1_df['elaps_time_us'] =  n1_df['elaps_time_ns'] /1000
 n1_df.replace(np.nan, 0, inplace=True)
 # n1_df = n1_df.head(1000) #0-1200
-# n1_df = n1_df[5400:5600] 
+n1_df = n1_df[5400:5600] 
 
 # print(n1_df[['seq', 'topo_arr', 'elaps_time_us']])
 
