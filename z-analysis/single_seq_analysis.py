@@ -13,9 +13,9 @@ import re
 import numpy as np
 import seaborn as sns
 
-path = "default-rack-small-file/1-seq-drack/"
-filename = "1-seq-drack-node-1.csv"
-plotname = 'default-rack-small-file/plots/1-drack-b1001-2000.png'
+path = "sack-small-file/2-seq-sack/"
+filename = "2-seq-sack-node-1.csv"
+plotname = 'sack-small-file/plots/2-sack-b1001-2000.png'
 
 def read_file(n1_file_name):
     n1_df = pd.read_csv(path+n1_file_name ,sep=',')
@@ -23,7 +23,7 @@ def read_file(n1_file_name):
 
 n1_df = read_file(filename)
 n1_df = n1_df.loc[(n1_df['slot'] == 0)]
-n1_df = n1_df.loc[(n1_df['src_port'] == 55054)]
+n1_df = n1_df.loc[(n1_df['src_port'] == 43008)]
 
 pos = n1_df.columns.get_loc('time_ns')
 n1_df['elaps_time_ns'] =  n1_df.iloc[1:, pos] - n1_df.iat[0, pos]

@@ -38,7 +38,7 @@ def gather_data():
         # mydir = os.path.join(
         #     "data/seq/", 
         #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
-        mydir = "default-rack-small-file/"
+        mydir = "sack-small-file/"
         # print(mydir)
         try:
             os.makedirs(mydir)
@@ -46,13 +46,13 @@ def gather_data():
             if e.errno != errno.EEXIST:
                 raise  # This was not a "directory exist" error..
         for worker in workers:
-            remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
-            # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/sender-ss.txt {}'.format(worker['host'], mydir)
+            # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
+            remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/sender-ss.txt {}'.format(worker['host'], mydir)
             proc = subprocess.run(remoteCmd, shell=True)
-            new_filename = "1-seq-drack-{}.csv".format(worker['host'])
-            # new_filename = "1-cwnd-drack-{}.txt".format(worker['host'])
-            cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
-            # cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
+            # new_filename = "2-seq-sack-{}.csv".format(worker['host'])
+            new_filename = "2-cwnd-sack-{}.txt".format(worker['host'])
+            # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
+            cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
             subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
 def gather_tdumps():
