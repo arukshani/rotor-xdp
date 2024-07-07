@@ -8,9 +8,9 @@ import fileinput
 
 # print("hello")
 
-path = "data/cwnd/"
-read_file_name = path+"4-cwnd-direct-node-1.txt"
-write_file_name = path+"4-cwnd-direct-node-1.csv"
+path = "default-rack-small-file/"
+read_file_name = path+"1-cwnd-drack-node-1.txt"
+write_file_name = path+"1-cwnd-drack-node-1.csv"
 
 with open(write_file_name, 'a') as f:
     f.write("{},{}\n".format('time','snd_cwnd'))

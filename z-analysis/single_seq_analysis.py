@@ -13,9 +13,9 @@ import re
 import numpy as np
 import seaborn as sns
 
-path = "data/seq/"
-filename = "3-direct-node-1.csv"
-plotname = 'data/seq/plots/3-direct-all.png'
+path = "default-rack-small-file/1-seq-drack/"
+filename = "1-seq-drack-node-1.csv"
+plotname = 'default-rack-small-file/plots/1-drack-b1001-2000.png'
 
 def read_file(n1_file_name):
     n1_df = pd.read_csv(path+n1_file_name ,sep=',')
@@ -23,14 +23,14 @@ def read_file(n1_file_name):
 
 n1_df = read_file(filename)
 n1_df = n1_df.loc[(n1_df['slot'] == 0)]
-# n1_df = n1_df.loc[(n1_df['src_port'] == 52202)]
+n1_df = n1_df.loc[(n1_df['src_port'] == 55054)]
 
 pos = n1_df.columns.get_loc('time_ns')
 n1_df['elaps_time_ns'] =  n1_df.iloc[1:, pos] - n1_df.iat[0, pos]
 n1_df['elaps_time_us'] =  n1_df['elaps_time_ns'] /1000
 n1_df.replace(np.nan, 0, inplace=True)
 # n1_df = n1_df.head(1000) #0-1200
-n1_df = n1_df[5400:5600] 
+n1_df = n1_df[1001:2000] 
 
 # print(n1_df[['seq', 'topo_arr', 'elaps_time_us']])
 

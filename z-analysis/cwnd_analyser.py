@@ -16,11 +16,11 @@ import seaborn as sns
 def get_tot(fwd, ret):
     return (fwd+ret)
 
-path = "data/cwnd/"
-plot_path = "data/cwnd/plots/"
+path = "default-rack-small-file/"
+plot_path = "default-rack-small-file/plots/"
 
-trace_file = "4-cwnd-direct-node-1.csv"
-plotname = "4-cwnd-direct-node-1.png"
+trace_file = "1-cwnd-drack-node-1.csv"
+plotname = "1-cwnd-drack-node-1.png"
 
 trace_df = pd.read_csv(path+trace_file ,sep=',')
 pos = trace_df.columns.get_loc('time')
