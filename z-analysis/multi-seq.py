@@ -14,7 +14,7 @@ import numpy as np
 import seaborn as sns
 
 path = "multi-plots/"
-plotname = 'multi-plots/plots/relative-seq-time20000-21000.png'
+plotname = 'multi-plots/plots/relative-seq-time1001-2000.png'
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -30,7 +30,7 @@ def read_file(n1_file_name, filter_port):
     n1_df['relative_seq'] =  n1_df.iloc[1:, seq_pos] - n1_df.iat[0, seq_pos]
     n1_df.replace(np.nan, 0, inplace=True)
 
-    mask = (n1_df['elaps_time_us'] > 20000) & (n1_df['elaps_time_us'] <= 21000)
+    mask = (n1_df['elaps_time_us'] > 5750) & (n1_df['elaps_time_us'] <= 6250)
     n1_df = n1_df.loc[mask]
     # n1_df = n1_df.head(1000) #0-1200
     # n1_df = n1_df[5001:10000] 
