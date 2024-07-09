@@ -221,7 +221,7 @@ static void read_time()
 	// struct timespec now = get_realtime();
 	now = get_nicclock();
 	unsigned long current_time_ns = get_nsec(&now);
-	t1ms = current_time_ns / 1000000; // number of 1's of milliseconds
+	// t1ms = current_time_ns / 1000000; // number of 1's of milliseconds
 	time_into_cycle_ns = current_time_ns % cycle_time_ns;
 	topo = (time_into_cycle_ns / slot_time_ns) + 1;
 	// printf("topo: %d \n", topo);
@@ -700,6 +700,13 @@ int main(int argc, char **argv)
 
 	// read_time();
 
+	tread_topo_data.cpu_core_id = 4;
+	int status_topo_track = pthread_create(&thread_track_topo_change,
+								NULL,
+								track_topo_change,
+								&tread_topo_data);
+	printf("Create topo track thread %d: \n", tread_topo_data.cpu_core_id);
+
 	time_t secs = (time_t)running_time; // 10 minutes (can be retrieved from user's input)
 	time_t startTime = time(NULL);
 
@@ -788,8 +795,12 @@ int main(int argc, char **argv)
 		printf("Quit thread %d \n", i);
 	}
 
+	tread_topo_data.quit = 1;
+
 	for (i = 0; i < n_threads; i++)
 		pthread_join(threads[i], NULL);
+
+	pthread_join(thread_track_topo_change, NULL);
 
 	printf("After thread join \n");
 

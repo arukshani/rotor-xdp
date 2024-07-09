@@ -264,9 +264,16 @@ struct thread_data {
 	int assigned_perdest_count; // how to map per-dest queues and non-loca dest to NIC queues 
 };
 
+struct tread_topo_data {
+	u32 cpu_core_id;
+	int quit;
+}
+
 static pthread_t threads[MAX_THREADS];
 static struct thread_data thread_data[MAX_THREADS];
 static int n_threads;
+static pthread_t thread_track_topo_change;
+static struct thread_data tread_topo_data;
 
 
 

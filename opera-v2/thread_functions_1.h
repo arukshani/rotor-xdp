@@ -1007,3 +1007,25 @@ thread_func_nic_to_veth_tx(void *arg)
 }
 
 
+static void *
+track_topo_change(void *arg)
+{
+	struct tread_topo_data *t = arg;
+	cpu_set_t cpu_cores;
+	u32 i;
+
+	CPU_ZERO(&cpu_cores);
+	CPU_SET(t->cpu_core_id, &cpu_cores);
+	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
+
+	uint8_t prev_topo;
+
+	while (!t->quit) {
+		if (prev_topo != topo)
+		{
+			printf("Topo change from %d to %d at %ld\n", prev_topo, topo, now);
+		}
+	}
+
+}
+
