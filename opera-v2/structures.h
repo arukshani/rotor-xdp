@@ -273,7 +273,7 @@ static pthread_t threads[MAX_THREADS];
 static struct thread_data thread_data[MAX_THREADS];
 static int n_threads;
 static pthread_t thread_track_topo_change;
-static struct thread_data tread_topo_data;
+static struct tread_topo_data tread_topo_data;
 
 
 
