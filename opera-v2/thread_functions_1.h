@@ -735,8 +735,8 @@ thread_func_veth_to_nic_tx(void *arg)
 						if (mpmc_queue_pull(non_local_dest_queue[w], &obj2) != NULL) {
 							// hasPackets = true;
 							struct burst_tx *btx2 = (struct burst_tx *)obj2;
-							if (btx2 != NULL)
-							{
+							// if (btx2 != NULL)
+							// {
 								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
 								u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
 											addr);
@@ -754,10 +754,10 @@ thread_func_veth_to_nic_tx(void *arg)
 								} else {
 									printf("packet is NULL for indirection \n");
 								}
-							} else {
-								free(btx2);
-								printf("BTX is NULL for indirection \n");
-							}
+							// } else {
+							// 	free(btx2);
+							// 	printf("BTX is NULL for indirection \n");
+							// }
 						}
 					}
 				} else {
@@ -781,8 +781,8 @@ thread_func_veth_to_nic_tx(void *arg)
 						void *obj2;
 						if (mpmc_queue_pull(local_dest_queue[w], &obj2) != NULL) {
 							struct burst_tx *btx2 = (struct burst_tx *)obj2;
-							if (btx2 != NULL)
-							{
+							// if (btx2 != NULL)
+							// {
 								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
 								u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
 											addr);
@@ -800,10 +800,10 @@ thread_func_veth_to_nic_tx(void *arg)
 								} else {
 									printf("packet is NULL \n");
 								}
-							} else {
-								free(btx2);
-								printf("BTX is NULL \n");
-							}
+							// } else {
+							// 	free(btx2);
+							// 	printf("BTX is NULL \n");
+							// }
 						}
 					}
 				} else {
@@ -976,17 +976,17 @@ thread_func_nic_to_veth_tx(void *arg)
 				if (mpmc_queue_pull(veth_side_queue, &obj) != NULL) {
 					struct burst_tx *btx = (struct burst_tx *)obj;
 
-					if (btx != NULL)
-					{
+					// if (btx != NULL)
+					// {
 						btx_collector->addr[btx_index] = btx->addr[0];
 						btx_collector->len[btx_index] = btx->len[0];
 						free(btx);
 
 						btx_index++;
 						btx_collector->n_pkts = btx_index;
-					} else {
-						free(btx);
-					}
+					// } else {
+					// 	free(btx);
+					// }
 				}
 			}
 		} 
