@@ -984,7 +984,7 @@ thread_func_nic_to_veth_tx(void *arg)
 
 						btx_index++;
 						btx_collector->n_pkts = btx_index;
-					else {
+					} else {
 						free(btx);
 					}
 				}
