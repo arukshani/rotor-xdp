@@ -29,8 +29,8 @@ typedef __u8  u8;
 #endif
 
 #ifndef MAX_BURST_TX_OBJS
-#define MAX_BURST_TX_OBJS 4096
-// #define MAX_BURST_TX_OBJS 2048
+// #define MAX_BURST_TX_OBJS 4096
+#define MAX_BURST_TX_OBJS 2048
 #endif
 
 #ifndef NUM_OF_PER_DEST_QUEUES
@@ -56,7 +56,7 @@ typedef __u8  u8;
 #endif
 
 #ifndef MAX_PORTS
-#define MAX_PORTS 24
+#define MAX_PORTS 12
 #endif
 
 #ifndef MAX_THREADS
@@ -326,7 +326,6 @@ struct gre_hdr
 
 // Telemetry
 uint32_t node_ip[20000000];
-// char description[20000000][100]; //strcpy(description[0], aString);
 int slot[20000000]; // 0-from_veth, 1-intermediate_node, 2-to_veth
 struct timespec timestamp_arr[20000000];
 uint8_t topo_arr[20000000];
