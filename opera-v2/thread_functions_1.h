@@ -1024,6 +1024,7 @@ track_topo_change(void *arg)
 		if (prev_topo != topo)
 		{
 			printf("Topo change from %d to %d at %ld\n", prev_topo, topo, now);
+			prev_topo = topo;
 		}
 	}
 
