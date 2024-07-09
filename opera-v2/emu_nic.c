@@ -700,12 +700,13 @@ int main(int argc, char **argv)
 
 	// read_time();
 
-	tread_topo_data.cpu_core_id = 4;
+	struct tread_topo_data *topo_t = &tread_topo_data;
+	topo_t.cpu_core_id = 4;
 	int status_topo_track = pthread_create(&thread_track_topo_change,
 								NULL,
 								track_topo_change,
 								&tread_topo_data);
-	printf("Create topo track thread %d: \n", tread_topo_data.cpu_core_id);
+	printf("Create topo track thread %d: \n", topo_t.cpu_core_id);
 
 	time_t secs = (time_t)running_time; // 10 minutes (can be retrieved from user's input)
 	time_t startTime = time(NULL);
