@@ -723,25 +723,20 @@ thread_func_veth_to_nic_tx(void *arg)
 		{
 			struct port *port_tx = t->ports_tx[k];
 		
-			// bool hasPackets = true;
-			// int nonLocalRounds = 0; //Give a chance to local traffic
-			// while (hasPackets && nonLocalRounds < 1)
-			// {
-				int w;
-			// 	int btx_index = 0;
-			// 	hasPackets = false;
-				for (w = 0; w < assigned_perdest_count; w++)
+			int w;
+			for (w = 0; w < assigned_perdest_count; w++)
+			{
+				int btx_index = 0;
+				if (non_local_dest_queue[w] != NULL)
 				{
-					int btx_index = 0;
-					if (non_local_dest_queue[w] != NULL)
+					while ((mpmc_queue_available(non_local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
 					{
-						while ((mpmc_queue_available(non_local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
-						{
-							void *obj2;
-							if (mpmc_queue_pull(non_local_dest_queue[w], &obj2) != NULL) {
-								// hasPackets = true;
-								struct burst_tx *btx2 = (struct burst_tx *)obj2;
-
+						void *obj2;
+						if (mpmc_queue_pull(non_local_dest_queue[w], &obj2) != NULL) {
+							// hasPackets = true;
+							struct burst_tx *btx2 = (struct burst_tx *)obj2;
+							if (btx2 != NULL)
+							{
 								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
 								u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
 											addr);
@@ -759,40 +754,35 @@ thread_func_veth_to_nic_tx(void *arg)
 								} else {
 									printf("packet is NULL for indirection \n");
 								}
+							} else {
+								free(btx2);
+								printf("BTX is NULL for indirection \n");
 							}
-							
 						}
-					} else {
-						printf("non_local_dest_queue is NULL \n");
 					}
-					if (btx_index)
-					{
-						// printf("There are packets from queue %d to nic tx \n", k);
-						port_tx_burst_collector(port_tx, btx_collector, 0, 0);
-					} 
-					btx_collector->n_pkts = 0;
+				} else {
+					printf("non_local_dest_queue is NULL \n");
 				}
-				
-				// nonLocalRounds = nonLocalRounds + 1;
-			// }
-
-			// hasPackets = true;
-			// int localRounds = 0; //Give a chance to local traffic
-			// while (hasPackets && localRounds < 1)
-			// {
-			// 	int btx_index = 0;
-			// 	hasPackets = false;
-				for (w = 0; w < assigned_perdest_count; w++)
+				if (btx_index)
 				{
-					int btx_index = 0;
-					if (local_dest_queue[w] != NULL)
+					// printf("There are packets from queue %d to nic tx \n", k);
+					port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+				} 
+				btx_collector->n_pkts = 0;
+			}
+			
+			for (w = 0; w < assigned_perdest_count; w++)
+			{
+				int btx_index = 0;
+				if (local_dest_queue[w] != NULL)
+				{
+					while ((mpmc_queue_available(local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
 					{
-						while ((mpmc_queue_available(local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
-						{
-							void *obj2;
-							if (mpmc_queue_pull(local_dest_queue[w], &obj2) != NULL) {
-								// hasPackets = true;
-								struct burst_tx *btx2 = (struct burst_tx *)obj2;
+						void *obj2;
+						if (mpmc_queue_pull(local_dest_queue[w], &obj2) != NULL) {
+							struct burst_tx *btx2 = (struct burst_tx *)obj2;
+							if (btx2 != NULL)
+							{
 								u64 addr = xsk_umem__add_offset_to_addr(btx2->addr[0]);
 								u8 *pkt = xsk_umem__get_data(port_tx->params.bp->addr,
 											addr);
@@ -810,22 +800,23 @@ thread_func_veth_to_nic_tx(void *arg)
 								} else {
 									printf("packet is NULL \n");
 								}
+							} else {
+								free(btx2);
+								printf("BTX is NULL \n");
 							}
-							
 						}
-					} else {
-						printf("local_dest_queue is NULL \n");
 					}
-					if (btx_index)
-					{
-						// printf("There are packets from queue %d to nic tx \n", k);
-						port_tx_burst_collector(port_tx, btx_collector, 0, 0);
-					} 
-				
-					btx_collector->n_pkts = 0;
+				} else {
+					printf("local_dest_queue is NULL \n");
 				}
-			// }
-
+				if (btx_index)
+				{
+					// printf("There are packets from queue %d to nic tx \n", k);
+					port_tx_burst_collector(port_tx, btx_collector, 0, 0);
+				} 
+			
+				btx_collector->n_pkts = 0;
+			}
 		}
 	}
 	printf("return from thread_func_veth_to_nic_tx \n");
@@ -964,24 +955,9 @@ thread_func_nic_to_veth_tx(void *arg)
 	CPU_SET(t->cpu_core_id, &cpu_cores);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
 
-	time_t starttime = time(NULL);
-	time_t seconds = 120;
-	time_t endtime = starttime + seconds;
-	int need_to_flush = 0;
-
 	struct burst_tx_collector *btx_collector = &t->burst_tx_collector[0];
-
 	struct mpmc_queue *veth_side_queue = t->veth_side_queue_array[0];
 
-	// struct mpmc_queue *veth_side_queue[13]; 
-    
-	// for (w = 0; w < veth_port_count; w++)
-	// {
-	// 	veth_side_queue[w] = t->veth_side_queue_array[w];
-	// }
-	
-	int track_veth_tx_port = 0;
-    int num_veths = veth_port_count - 1;
 
 	while (!t->quit) {
 		struct port *port_tx = t->ports_tx[0];
@@ -999,20 +975,24 @@ thread_func_nic_to_veth_tx(void *arg)
 				void *obj;
 				if (mpmc_queue_pull(veth_side_queue, &obj) != NULL) {
 					struct burst_tx *btx = (struct burst_tx *)obj;
-					btx_collector->addr[btx_index] = btx->addr[0];
-					btx_collector->len[btx_index] = btx->len[0];
-					free(btx);
 
-					btx_index++;
-					btx_collector->n_pkts = btx_index;
+					if (btx != NULL)
+					{
+						btx_collector->addr[btx_index] = btx->addr[0];
+						btx_collector->len[btx_index] = btx->len[0];
+						free(btx);
+
+						btx_index++;
+						btx_collector->n_pkts = btx_index;
+					else {
+						free(btx);
+					}
 				}
 			}
 		} 
 		else {
 			printf("veth side queue is null \n");
 		}
-        
-
 		if (btx_index)
 		{
 			port_tx_burst_collector(port_tx, btx_collector, 0, 0);

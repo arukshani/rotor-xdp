@@ -627,10 +627,6 @@ int main(int argc, char **argv)
 		start_index_for_veth_ports = start_index_for_veth_ports + 1;
 		t->veth_side_queue_array[0] = veth_side_queue[g];
 		g++;
-		// for (g = 0; g < veth_port_count; g++)
-        // {
-        //     t->veth_side_queue_array[0] = veth_side_queue[g];
-        // }
 		t->n_ports_rx = 1;
 	}
 
