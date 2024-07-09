@@ -1018,7 +1018,7 @@ track_topo_change(void *arg)
 	CPU_SET(t->cpu_core_id, &cpu_cores);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_cores);
 
-	uint8_t prev_topo;
+	uint8_t prev_topo = 0;
 
 	while (!t->quit) {
 		if (prev_topo != topo)
