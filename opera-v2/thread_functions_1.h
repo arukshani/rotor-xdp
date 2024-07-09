@@ -360,7 +360,10 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 			int octec_int = (int)(fourthoctec);
 
 			return_val->which_veth =  octec_int - 2;//greh->flags
-			// printf("octec_int: %d ; return_val->which_veth %d \n", octec_int, return_val->which_veth);
+			if (return_val->which_veth != 0)
+			{
+				printf("octec_int: %d ; return_val->which_veth %d \n", octec_int, return_val->which_veth);
+			}
 
 			// send it to local veth
 			void *cutoff_pos = greh + 1;
