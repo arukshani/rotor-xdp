@@ -2,6 +2,8 @@
 
 # echo $1
 
+ulimit -s 65536
+
 # sudo ./opera_nic 192.168.1.1 configs/node-1-link.csv 60
 echo $1
 echo $2

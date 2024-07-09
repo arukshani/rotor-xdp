@@ -9,8 +9,8 @@ def increase_stack_size():
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         for worker in workers:
-            print("===================READ start log==={}=======================".format(worker['host']))
-            remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./slack_size.sh'.format(worker['username'],worker['host'])
+            print("===================Increase stack size==={}=======================".format(worker['host']))
+            remoteCmd = 'ssh -o StrictHostKeyChecking=no {}@{} "bash -s" < ./stack_size.sh'.format(worker['username'],worker['host'])
             proc = subprocess.run(remoteCmd, shell=True)
 
 def emu_process_check():
@@ -43,7 +43,7 @@ def main(args):
         read_start_log()
     if(args.delete):
         delete_logs()
-    if(args.check):
+    if(args.process):
         emu_process_check()
     if(args.stack):
         increase_stack_size()
