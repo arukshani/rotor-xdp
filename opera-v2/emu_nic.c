@@ -226,10 +226,10 @@ static void read_time()
 	time_into_cycle_ns = current_time_ns % cycle_time_ns;
 	topo = (time_into_cycle_ns / slot_time_ns) + 1;
 
-	if (prev_topo != topo){
-		printf("topo: change from %d to %d \n", prev_topo, topo);
-		prev_topo = topo;
-	}
+	// if (prev_topo != topo){
+	// 	printf("topo: change from %d to %d \n", prev_topo, topo);
+	// 	prev_topo = topo;
+	// }
 }
 
 int main(int argc, char **argv)
@@ -705,13 +705,13 @@ int main(int argc, char **argv)
 
 	// read_time();
 
-	// struct tread_topo_data *topo_t = &tread_topo_data;
-	// topo_t->cpu_core_id = 4;
-	// int status_topo_track = pthread_create(&thread_track_topo_change,
-	// 							NULL,
-	// 							track_topo_change,
-	// 							&tread_topo_data);
-	// printf("Create topo track thread %d: \n", topo_t->cpu_core_id);
+	struct tread_topo_data *topo_t = &tread_topo_data;
+	topo_t->cpu_core_id = 4;
+	int status_topo_track = pthread_create(&thread_track_topo_change,
+								NULL,
+								track_topo_change,
+								&tread_topo_data);
+	printf("Create topo track thread %d: \n", topo_t->cpu_core_id);
 
 	time_t secs = (time_t)running_time; // 10 minutes (can be retrieved from user's input)
 	time_t startTime = time(NULL);
@@ -801,12 +801,12 @@ int main(int argc, char **argv)
 		printf("Quit thread %d \n", i);
 	}
 
-	// tread_topo_data.quit = 1;
+	tread_topo_data.quit = 1;
 
 	for (i = 0; i < n_threads; i++)
 		pthread_join(threads[i], NULL);
 
-	// pthread_join(thread_track_topo_change, NULL);
+	pthread_join(thread_track_topo_change, NULL);
 
 	printf("After thread join \n");
 
