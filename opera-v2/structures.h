@@ -348,6 +348,11 @@ __u32 tcp_rcv_wnd[20000000];
 u16 src_port[20000000];
 u16 dst_port[20000000];
 
+uint8_t topo_prev[20000000];
+uint8_t topo_curr[20000000];
+struct timespec topo_change_time[20000000];
+long topo_track_index = 0;
+
 long time_index = 0;
 
 __u32 t1ms;

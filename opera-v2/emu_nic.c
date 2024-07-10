@@ -226,10 +226,15 @@ static void read_time()
 	time_into_cycle_ns = current_time_ns % cycle_time_ns;
 	topo = (time_into_cycle_ns / slot_time_ns) + 1;
 
-	// if (prev_topo != topo){
-	// 	printf("topo: change from %d to %d \n", prev_topo, topo);
-	// 	prev_topo = topo;
-	// }
+	#if DEBUG == 1
+		if (prev_topo != topo){
+			// printf("topo: change from %d to %d \n", prev_topo, topo);
+			topo_prev[topo_track_index] = prev_topo;
+			topo_curr[topo_track_index] = topo;
+			topo_change_time[topo_track_index] = now;
+			prev_topo = topo;
+		}
+	#endif
 }
 
 int main(int argc, char **argv)
@@ -768,6 +773,17 @@ int main(int argc, char **argv)
 			fprintf(fpt,"%d,%ld,%ld,%ld,%ld,%ld,%d,%ld,%ld,%ld,%d,%ld,%ld,%ld,%ld\n",slot[z],seq[z],ack_seq[z],is_syn[z],is_ack[z],is_fin[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z],ns_packet_len[z],0,src_port[z],dst_port[z]);
 		}
 		fclose(fpt);
+
+		FILE *fpt_topo;
+		fpt_topo = fopen("/tmp/topo_change_times.csv", "w+");
+		fprintf(fpt_topo,"prev_topo,curr_topo,time_part_sec,time_part_nsec,time_ns\n");
+		for (z = 0; z < time_index; z++ ) {
+			unsigned long now_ns = get_nsec(&topo_change_time[z]);
+			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+			fprintf(fpt,"%d,%d,%ld,%ld,%ld\n",topo_prev[z],topo_curr[z],topo_change_time[z].tv_sec,topo_change_time[z].tv_nsec,now_ns);
+		}
+		fclose(fpt_topo);
+
 	#endif
 
 	// #if DEBUG == 1
