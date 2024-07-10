@@ -233,6 +233,7 @@ static void read_time()
 			topo_curr[topo_track_index] = topo;
 			topo_change_time[topo_track_index] = now;
 			prev_topo = topo;
+			topo_track_index++;
 		}
 	#endif
 }
