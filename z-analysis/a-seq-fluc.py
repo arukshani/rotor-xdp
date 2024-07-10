@@ -17,7 +17,7 @@ def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
 path = "throughput/direct-1/"
-plotname = 'throughput/direct-1/plots/test_actual_topo.png'
+plotname = 'throughput/direct-1/plots/test_actual_topo-t249000-250000.png'
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -51,10 +51,10 @@ topo_filtered_data['elaps_time_ns'] = topo_filtered_data.apply(lambda row: get_e
 topo_filtered_data['elaps_time_us'] =  topo_filtered_data['elaps_time_ns'] /1000
 # print(topo_filtered_data.head(10))
 
-dir_mask = (direct_df['elaps_time_us'] > 0) & (direct_df['elaps_time_us'] <= 6400)
+dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
 direct_df = direct_df.loc[dir_mask]
 
-topo_mask = (topo_filtered_data['elaps_time_us'] > 0) & (topo_filtered_data['elaps_time_us'] <= 6400)
+topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
 topo_filtered_data = topo_filtered_data.loc[topo_mask]
 
 plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "direct", marker='|')
