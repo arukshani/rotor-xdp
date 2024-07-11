@@ -144,7 +144,8 @@ echo net.ipv4.tcp_wmem = 4096 54400000 68000000 | tee -a /etc/sysctl.conf
 tc qdisc add dev vethin2 root tbf rate 11gbit burst 5mbit limit 1000000
 sysctl -p
 
-
+//list rate limits
+tc q 
 ```
 
 ### Partial node setup

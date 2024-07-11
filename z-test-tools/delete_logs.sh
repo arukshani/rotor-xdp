@@ -5,3 +5,4 @@ sudo rm /tmp/opera_emu_data.csv
 sudo rm /tmp/host-tcp-dump.pcap
 sudo rm /tmp/sender-ss.txt
 sudo rm /tmp/topo_change_times.csv
+sudo rm /tmp/trace_tcp_probe.txt

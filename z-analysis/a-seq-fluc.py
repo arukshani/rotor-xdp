@@ -16,8 +16,8 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "throughput/direct-1/"
-plotname = 'throughput/direct-1/plots/test_actual_topo-t249000-250000.png'
+path = "throughput/direct-2/"
+plotname = 'throughput/direct-2/plots/direct-2-seq-all.png'
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -39,8 +39,8 @@ def read_file(n1_file_name, filter_port):
     # n1_df = n1_df[5001:10000] 
     return n1_df
 
-direct_df = read_file(path+"seq_data/1-direct-node-1.csv", 44350)
-topo_direct = pd.read_csv(path+"topo_data/1-direct-topochange-node-1.csv" ,sep=',')
+direct_df = read_file(path+"seq_data/2-direct-seq-node-1.csv", 56166)
+topo_direct = pd.read_csv(path+"topo_data/2-direct-topochange-node-1.csv" ,sep=',')
 
 df_starting_time = direct_df['time_ns'].iloc[0]
 topo_starting_time = topo_direct[topo_direct.time_ns < df_starting_time].iloc[-1]['time_ns']
@@ -51,26 +51,25 @@ topo_filtered_data['elaps_time_ns'] = topo_filtered_data.apply(lambda row: get_e
 topo_filtered_data['elaps_time_us'] =  topo_filtered_data['elaps_time_ns'] /1000
 # print(topo_filtered_data.head(10))
 
-dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
-direct_df = direct_df.loc[dir_mask]
+# dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
+# direct_df = direct_df.loc[dir_mask]
 
-topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
-topo_filtered_data = topo_filtered_data.loc[topo_mask]
+# topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
+# topo_filtered_data = topo_filtered_data.loc[topo_mask]
 
 plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "direct", marker='|')
 # plt.plot(sack_df['elaps_time_us'], sack_df['relative_seq'], label = "sack-opera", marker='|')
 
-periods_topo = topo_filtered_data.elaps_time_us
-periods_label = topo_filtered_data.curr_topo
-periods_indices = topo_filtered_data.index.values
-for item in periods_topo:
-    plt.axvline(item, ymin=0, ymax=1,color='red')
+# periods_topo = topo_filtered_data.elaps_time_us
+# periods_label = topo_filtered_data.curr_topo
+# periods_indices = topo_filtered_data.index.values
+# for item in periods_topo:
+#     plt.axvline(item, ymin=0, ymax=1,color='red')
 
-for i in range(len(periods_indices)):
-    index = periods_indices[i]
-    # next_index = indices[i+1]
-    plt.text(y=direct_df['relative_seq'].max(),x=(periods_topo[index]),
-        s=str(periods_label[index]), color='black', fontsize=7.5)
+# for i in range(len(periods_indices)):
+#     index = periods_indices[i]
+#     plt.text(y=direct_df['relative_seq'].max(),x=(periods_topo[index]),
+#         s=str(periods_label[index]), color='black', fontsize=7.5)
 
 # periods_dir = direct_df[direct_df.topo_arr.diff()!=0].elaps_time_us
 # labels = sack_df[sack_df.topo_arr.diff()!=0].topo_arr

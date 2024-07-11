@@ -16,24 +16,26 @@ import seaborn as sns
 def get_tot(fwd, ret):
     return (fwd+ret)
 
-path = "data/cwnd_logs/"
-
-trace_file = "direct-no-ratelimit.csv"
+path = "throughput/direct-2/"
+trace_file = "2-direct-cwnd-node-1.csv"
+plotname = "throughput/direct-2/plots/direct-2-cwnd.png"
 
 trace_df = pd.read_csv(path+trace_file ,sep=',')
-print(trace_df.head(5))
+# print(trace_df.head(5))
 
-plt.plot(trace_df['time'], trace_df['srtt'], label = "srtt")
+# plt.plot(trace_df['time'], trace_df['srtt'], label = "srtt")
+plt.plot(trace_df['time'], trace_df['snd_cwnd'], label = "snd_cwnd")
 
 # fig, ax = plt.subplots()
 # sns.ecdfplot(data=trace_df, x="snd_cwnd", ax=ax, label = "cwnd")
 
-plt.legend(fontsize=14)
-plt.xticks(fontsize=14)
-plt.yticks(fontsize=14)
-# plt.xlabel('time', fontsize=14)
-# plt.ylabel('srtt', fontsize=14)
-plt.savefig('srtt_no-ratelimit.png')
+plt.legend(fontsize=11)
+plt.xticks(fontsize=11)
+plt.yticks(fontsize=11)
+plt.xlabel('time', fontsize=11)
+plt.ylabel('cwnd (packets)', fontsize=11)
+# plt.ylabel('srtt (us)', fontsize=11)
+plt.savefig(plotname)
 # plt.savefig('P-ALL-RTTs.pdf')
 
  
