@@ -126,12 +126,24 @@ int main(int argc, char **argv) {
      * recvfrom: receive a UDP datagram from a client
      */
     bzero(buf, BUFSIZE);
-    while (recv(client_sock, buf, sizeof(buf), 0))
+    long rcv_size = 0;
+    long tot_recv = 0;
+    while ((rcv_size=recv(client_sock, buf, sizeof(buf), 0)) > 0)
     {
+      tot_recv = tot_recv + rcv_size;
       // printf("Client: %s\n", buf);
       bzero(buf, BUFSIZE);
     }
-    printf("All Done!! \n");
+    if (rcv_size == -1)
+    {
+        printf("err recv \n");
+    }
+    else if (rcv_size == 0)
+    {
+      printf("EOS on the socket");
+        // EOS on the socket: close it, exit the thread, etc.
+    }
+    printf("All Done!! - %ld \n", tot_recv);
     
 
     // close(client_sock);

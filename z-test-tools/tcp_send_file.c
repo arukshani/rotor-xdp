@@ -85,20 +85,24 @@ void make_array(FILE* file, char* array, int size) {
    fread(array, size, 1, file);
 }
 
+long sent_size = 0;
 void send_file(FILE *fp, int sockfd)
 {
     char data[BUFSIZE] = {0};
-    int countdown = 10000;
+    // int countdown = 10000;
 
-    while((fgets(data, BUFSIZE, fp)!=NULL) && countdown > 0)
+    // while((fgets(data, BUFSIZE, fp)!=NULL) && countdown > 0)
+    while((fgets(data, BUFSIZE, fp)!=NULL))
     {
-        if(send(sockfd, data, sizeof(data), 0)== -1)
+        long curr_sent_size = send(sockfd, data, sizeof(data), 0);
+        if(curr_sent_size == -1)
         {
             perror("[-] Error in sending data");
             exit(1);
         }
+        sent_size = sent_size + curr_sent_size;
         bzero(data, BUFSIZE);
-        countdown--;
+        // countdown--;
     }
 }
 
@@ -148,7 +152,7 @@ int main(int argc, char **argv) {
     }
     send_file(file,sockfd);
 
-    printf("[+] File data send successfully. \n");
+    printf("[+] File data send successfully. = %ld \n", sent_size);
     fclose(file);
     close(sockfd);
     printf("[+]Disconnected from the server. \n");

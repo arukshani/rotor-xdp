@@ -13,8 +13,8 @@ import re
 import numpy as np
 import seaborn as sns
 
-path = "multi-plots/"
-plotname = 'multi-plots/plots/throughput-all-w50-t36000-42000.png'
+path = "throughput/opera-1/seq_data/"
+plotname = 'throughput/opera-1/plots/throughput-opera-w100.png'
 
 BYTES_TO_BITS = 8
 BITS_TO_MEGABITS = 1.0 / 1000000.0
@@ -46,8 +46,8 @@ def read_file(n1_file_name, filter_port):
     n1_df['relative_seq'] =  n1_df.iloc[1:, seq_pos] - n1_df.iat[0, seq_pos]
     n1_df.replace(np.nan, 0, inplace=True)
 
-    mask = (n1_df['elaps_time_us'] > 36000) & (n1_df['elaps_time_us'] <= 42000)
-    n1_df = n1_df.loc[mask]
+    # mask = (n1_df['elaps_time_us'] > 36000) & (n1_df['elaps_time_us'] <= 42000)
+    # n1_df = n1_df.loc[mask]
     # n1_df = n1_df.head(1000) #0-1200
     # n1_df = n1_df[5001:10000] 
 
@@ -60,25 +60,25 @@ def read_file(n1_file_name, filter_port):
 
     return n1_df
 
-direct_df = read_file(path+"4-direct-node-1.csv", 55006)
-sack_df = read_file(path+"2-seq-sack-node-1.csv", 43008)
+# direct_df = read_file(path+"1-direct-node-1.csv", 44350)
+sack_df = read_file(path+"1-opera-seq-node-1.csv", 38482)
 
 # print(direct_df[['ns_packet_len', 'relative_seq', 'elaps_time_us']].head(10))
 
-plt.plot(direct_df['elaps_time_us'], direct_df['throughput'], label = "direct", marker='|')
-plt.plot(sack_df['elaps_time_us'], sack_df['throughput'], label = "sack-opera", marker='|')
+# plt.plot(direct_df['elaps_time_us'], direct_df['throughput'], label = "direct", marker='|')
+plt.plot(sack_df['elaps_time_us'], sack_df['throughput'], label = "opera", marker='|')
 
-periods = sack_df[sack_df.topo_arr.diff()!=0].elaps_time_us
-labels = sack_df[sack_df.topo_arr.diff()!=0].topo_arr
-indices = sack_df[sack_df.topo_arr.diff()!=0].index.values
-for item in periods:
-    plt.axvline(item, ymin=0, ymax=1,color='red')
+# periods = sack_df[sack_df.topo_arr.diff()!=0].elaps_time_us
+# labels = sack_df[sack_df.topo_arr.diff()!=0].topo_arr
+# indices = sack_df[sack_df.topo_arr.diff()!=0].index.values
+# for item in periods:
+#     plt.axvline(item, ymin=0, ymax=1,color='red')
 
-for i in range(len(indices)):
-    index = indices[i]
-    # next_index = indices[i+1]
-    plt.text(y=sack_df['throughput'].max(),x=(periods[index]),
-        s=str(labels[index]), color='black', fontsize=10)
+# for i in range(len(indices)):
+#     index = indices[i]
+#     # next_index = indices[i+1]
+#     plt.text(y=sack_df['throughput'].max(),x=(periods[index]),
+#         s=str(labels[index]), color='black', fontsize=10)
 
 plt.legend(fontsize=11)
 plt.xticks(fontsize=11)
