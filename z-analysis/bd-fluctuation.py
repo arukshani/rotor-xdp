@@ -13,8 +13,8 @@ import re
 import numpy as np
 import seaborn as sns
 
-path = "throughput/opera-1/seq_data/"
-plotname = 'throughput/opera-1/plots/throughput-opera-w100.png'
+path = "throughput-2/exp-2/"
+plotname = "throughput-2/exp-2/throughput_compare_1000w.png"
 
 BYTES_TO_BITS = 8
 BITS_TO_MEGABITS = 1.0 / 1000000.0
@@ -51,7 +51,7 @@ def read_file(n1_file_name, filter_port):
     # n1_df = n1_df.head(1000) #0-1200
     # n1_df = n1_df[5001:10000] 
 
-    n1_df = n1_df.iloc[::100, :]
+    n1_df = n1_df.iloc[::1000, :]
     n1_df['time_change'] = n1_df['elaps_time_us'].diff()
     n1_df['seq_change'] = n1_df['relative_seq'].diff()
     n1_df.replace(np.nan, 0, inplace=True)
@@ -60,12 +60,12 @@ def read_file(n1_file_name, filter_port):
 
     return n1_df
 
-# direct_df = read_file(path+"1-direct-node-1.csv", 44350)
-sack_df = read_file(path+"1-opera-seq-node-1.csv", 38482)
+direct_df = read_file(path+"2-direct-seq-node-1.csv", 46440)
+sack_df = read_file(path+"2-opera-seq-node-1.csv", 46022)
 
 # print(direct_df[['ns_packet_len', 'relative_seq', 'elaps_time_us']].head(10))
 
-# plt.plot(direct_df['elaps_time_us'], direct_df['throughput'], label = "direct", marker='|')
+plt.plot(direct_df['elaps_time_us'], direct_df['throughput'], label = "direct", marker='|')
 plt.plot(sack_df['elaps_time_us'], sack_df['throughput'], label = "opera", marker='|')
 
 # periods = sack_df[sack_df.topo_arr.diff()!=0].elaps_time_us

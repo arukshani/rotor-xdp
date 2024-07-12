@@ -95,6 +95,16 @@ rukshani@node-1:/opt$ dd if=/dev/zero of=output_1M.dat  bs=1M  count=1
 1+0 records in
 1+0 records out
 1048576 bytes (1.0 MB, 1.0 MiB) copied, 0.00240791 s, 435 MB/s
+
+rukshani@node-1:/opt/rotor-xdp/opera-v2$ dd if=/dev/zero of=/opt/output_24M.dat  bs=24M  count=1
+1+0 records in
+1+0 records out
+25165824 bytes (25 MB, 24 MiB) copied, 0.0312092 s, 806 MB/s
+
+rukshani@node-1:/opt/rotor-xdp/opera-v2$ dd if=/dev/zero of=/opt/output_576M.dat  bs=24M  count=24
+24+0 records in
+24+0 records out
+603979776 bytes (604 MB, 576 MiB) copied, 0.526378 s, 1.1 GB/s
 ```
 
 

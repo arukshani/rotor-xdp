@@ -16,8 +16,8 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "throughput/direct-2/"
-plotname = 'throughput/direct-2/plots/direct-2-seq-all.png'
+path = "throughput-2/exp-2/"
+plotname = 'throughput-2/exp-2/2-opera-seq-all.png'
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -39,16 +39,16 @@ def read_file(n1_file_name, filter_port):
     # n1_df = n1_df[5001:10000] 
     return n1_df
 
-direct_df = read_file(path+"seq_data/2-direct-seq-node-1.csv", 56166)
-topo_direct = pd.read_csv(path+"topo_data/2-direct-topochange-node-1.csv" ,sep=',')
+direct_df = read_file(path+"2-opera-seq-node-1.csv", 46022)
+# topo_direct = pd.read_csv(path+"1-direct-topochange-node-1.csv" ,sep=',')
 
-df_starting_time = direct_df['time_ns'].iloc[0]
-topo_starting_time = topo_direct[topo_direct.time_ns < df_starting_time].iloc[-1]['time_ns']
-topo_filtered_data = topo_direct[topo_direct.time_ns > topo_starting_time]
+# df_starting_time = direct_df['time_ns'].iloc[0]
+# topo_starting_time = topo_direct[topo_direct.time_ns < df_starting_time].iloc[-1]['time_ns']
+# topo_filtered_data = topo_direct[topo_direct.time_ns > topo_starting_time]
 
 ## Elapsed time since seq data starting time
-topo_filtered_data['elaps_time_ns'] = topo_filtered_data.apply(lambda row: get_elapsed_time(row['time_ns'], df_starting_time), axis=1)
-topo_filtered_data['elaps_time_us'] =  topo_filtered_data['elaps_time_ns'] /1000
+# topo_filtered_data['elaps_time_ns'] = topo_filtered_data.apply(lambda row: get_elapsed_time(row['time_ns'], df_starting_time), axis=1)
+# topo_filtered_data['elaps_time_us'] =  topo_filtered_data['elaps_time_ns'] /1000
 # print(topo_filtered_data.head(10))
 
 # dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
@@ -57,7 +57,7 @@ topo_filtered_data['elaps_time_us'] =  topo_filtered_data['elaps_time_ns'] /1000
 # topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
 # topo_filtered_data = topo_filtered_data.loc[topo_mask]
 
-plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "direct", marker='|')
+plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "opera", marker='|')
 # plt.plot(sack_df['elaps_time_us'], sack_df['relative_seq'], label = "sack-opera", marker='|')
 
 # periods_topo = topo_filtered_data.elaps_time_us

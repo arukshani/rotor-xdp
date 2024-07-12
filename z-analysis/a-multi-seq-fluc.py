@@ -16,8 +16,8 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "throughput/multi-plots/"
-plotname = 'throughput/multi-plots/seq-t249000-250000.png'
+path = "throughput-2/exp-1/"
+plotname = 'throughput-2/exp-1/seq_compare.png'
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -35,16 +35,17 @@ def read_file(n1_file_name, filter_port):
 
     return n1_df
 
-direct_df = read_file(path+"2-direct-seq-node-1.csv", 56166)
-dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
-direct_df = direct_df.loc[dir_mask]
+direct_df = read_file(path+"1-direct-seq-node-1.csv", 46440)
+# dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
+# direct_df = direct_df.loc[dir_mask]
 
-opera_df = read_file(path+"3-opera-seq-node-1.csv", 42300)
-opera_mask = (opera_df['elaps_time_us'] > 249000) & (opera_df['elaps_time_us'] <= 250000)
-opera_df = opera_df.loc[opera_mask]
+opera_df = read_file(path+"1-opera-seq-node-1.csv", 46022)
+# opera_mask = (opera_df['elaps_time_us'] > 249000) & (opera_df['elaps_time_us'] <= 250000)
+# opera_df = opera_df.loc[opera_mask]
 
-plt.plot(opera_df['elaps_time_us'], opera_df['relative_seq'], label = "opera", marker='|')
+
 plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "direct", marker='|')
+plt.plot(opera_df['elaps_time_us'], opera_df['relative_seq'], label = "opera", marker='|')
 
 
 plt.legend(fontsize=11)

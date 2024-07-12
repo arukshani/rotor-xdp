@@ -38,7 +38,7 @@ def gather_data():
         # mydir = os.path.join(
         #     "data/seq/", 
         #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
-        mydir = "throughput/iperf3/"
+        mydir = "throughput-2/exp-2/"
         # print(mydir)
         try:
             os.makedirs(mydir)
@@ -46,16 +46,18 @@ def gather_data():
             if e.errno != errno.EEXIST:
                 raise  # This was not a "directory exist" error..
         for worker in workers:
-            # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
-            remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/iperf_tcp_probe.txt {}'.format(worker['host'], mydir)
-            # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/topo_change_times.csv {}'.format(worker['host'], mydir)
-            proc = subprocess.run(remoteCmd, shell=True)
-            # new_filename = "2-direct-seq-{}.csv".format(worker['host'])
-            new_filename = "1-direct-cwnd-{}.txt".format(worker['host'])
-            # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
-            # cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
-            cmd = "mv {}/iperf_tcp_probe.txt {}/{}".format(mydir, mydir, new_filename)
-            subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+            if (worker['host'] == "node-1"):
+                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
+                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/sender-ss.txt {}'.format(worker['host'], mydir)
+                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/topo_change_times.csv {}'.format(worker['host'], mydir)
+                proc = subprocess.run(remoteCmd, shell=True)
+                # new_filename = "2-opera-seq-{}.csv".format(worker['host'])
+                # new_filename = "2-opera-topochange-{}.txt".format(worker['host'])
+                new_filename = "2-opera-ss-{}.txt".format(worker['host'])
+                # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
+                # cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
+                cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
+                subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
 def gather_tdumps():
     with open('/tmp/workers.pkl','rb') as f:  
