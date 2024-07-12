@@ -90,4 +90,11 @@ timestamp in <secs>.<usecs>
 
 ```
 zip -r sample_file.zip /opt/rotor-xdp
+
+rukshani@node-1:/opt$ dd if=/dev/zero of=output_1M.dat  bs=1M  count=1
+1+0 records in
+1+0 records out
+1048576 bytes (1.0 MB, 1.0 MiB) copied, 0.00240791 s, 435 MB/s
 ```
+
+

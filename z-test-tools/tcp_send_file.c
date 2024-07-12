@@ -115,13 +115,14 @@ int main(int argc, char **argv) {
     // char buf[BUFSIZE];
 
     /* check command line arguments */
-    if (argc != 3) {
-       fprintf(stderr,"usage: %s <dst_hostip> <port>\n", argv[0]);
+    if (argc != 4) {
+       fprintf(stderr,"usage: %s <dst_hostip> <port> <filename>\n", argv[0]);
        exit(0);
     }
     // src_hostip = argv[1];
     dst_hostip = argv[1];
     portno = atoi(argv[2]);
+    char *filename = argv[3];
 
     /* socket: create the socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -143,7 +144,7 @@ int main(int argc, char **argv) {
     printf("Connected to the server.\n");
 
     int m = 0;
-    FILE* file = fopen("/opt/sample_file.zip", "r");
+    FILE* file = fopen(filename, "r");
 
     if(file == NULL)
     {
