@@ -16,8 +16,8 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "throughput-2/exp-3/"
-plotname = 'throughput-2/exp-3/3-opera-seq-all.png'
+path = "throughput-2/exp-5/"
+plotname = 'throughput-2/exp-5/5-direct-iperf-seq-t200ms-200.4ms.png'
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -33,13 +33,13 @@ def read_file(n1_file_name, filter_port):
     n1_df['relative_seq'] =  n1_df.iloc[1:, seq_pos] - n1_df.iat[0, seq_pos]
     n1_df.replace(np.nan, 0, inplace=True)
 
-    # mask = (n1_df['elaps_time_us'] > 100000) & (n1_df['elaps_time_us'] <= 106400)
-    # n1_df = n1_df.loc[mask]
+    mask = (n1_df['elaps_time_us'] > 200000) & (n1_df['elaps_time_us'] <= 200400)
+    n1_df = n1_df.loc[mask]
     # n1_df = n1_df.head(1000) #0-1200
     # n1_df = n1_df[5001:10000] 
     return n1_df
 
-direct_df = read_file(path+"3-opera-seq-node-1.csv", 40422)
+direct_df = read_file(path+"5-direct-iperf-seq-node-1.csv", 56156)
 # topo_direct = pd.read_csv(path+"1-direct-topochange-node-1.csv" ,sep=',')
 
 # df_starting_time = direct_df['time_ns'].iloc[0]
@@ -57,7 +57,7 @@ direct_df = read_file(path+"3-opera-seq-node-1.csv", 40422)
 # topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
 # topo_filtered_data = topo_filtered_data.loc[topo_mask]
 
-plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "opera", marker='|')
+plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "seq", marker='|')
 # plt.plot(sack_df['elaps_time_us'], sack_df['relative_seq'], label = "sack-opera", marker='|')
 
 # periods_topo = topo_filtered_data.elaps_time_us

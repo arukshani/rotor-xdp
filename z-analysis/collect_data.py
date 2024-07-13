@@ -47,15 +47,15 @@ def gather_data():
                 raise  # This was not a "directory exist" error..
         for worker in workers:
             if (worker['host'] == "node-1"):
-                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
+                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
                 # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/sender-ss.txt {}'.format(worker['host'], mydir)
-                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/topo_change_times.csv {}'.format(worker['host'], mydir)
+                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/topo_change_times.csv {}'.format(worker['host'], mydir)
                 proc = subprocess.run(remoteCmd, shell=True)
-                new_filename = "5-direct-iperf-seq-{}.csv".format(worker['host'])
-                # new_filename = "3-opera-topochange-{}.txt".format(worker['host'])
+                # new_filename = "5-direct-iperf-seq-{}.csv".format(worker['host'])
+                new_filename = "5-direct-iperf-topochange-{}.txt".format(worker['host'])
                 # new_filename = "4-opera-iperf-ss-{}.txt".format(worker['host'])
-                cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
-                # cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
+                # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
+                cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
                 # cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
                 subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
