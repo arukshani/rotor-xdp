@@ -16,8 +16,8 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "throughput-2/exp-2/"
-plotname = 'throughput-2/exp-2/2-opera-seq-all.png'
+path = "throughput-2/exp-3/"
+plotname = 'throughput-2/exp-3/3-opera-seq-all.png'
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -39,7 +39,7 @@ def read_file(n1_file_name, filter_port):
     # n1_df = n1_df[5001:10000] 
     return n1_df
 
-direct_df = read_file(path+"2-opera-seq-node-1.csv", 46022)
+direct_df = read_file(path+"3-opera-seq-node-1.csv", 40422)
 # topo_direct = pd.read_csv(path+"1-direct-topochange-node-1.csv" ,sep=',')
 
 # df_starting_time = direct_df['time_ns'].iloc[0]

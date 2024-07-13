@@ -439,29 +439,29 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 					    sizeof(struct iphdr));
 
 			seq[time_index] = ntohl(inner_tcp_hdr->seq);
-			ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
+			// ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
 			src_port[time_index] = ntohs(inner_tcp_hdr->source);
-			dst_port[time_index] = ntohs(inner_tcp_hdr->dest);
+			// dst_port[time_index] = ntohs(inner_tcp_hdr->dest);
 			
-			if (ntohl(inner_tcp_hdr->syn)) {
-				is_syn[time_index] = 1;
-			} 
+			// if (ntohl(inner_tcp_hdr->syn)) {
+			// 	is_syn[time_index] = 1;
+			// } 
 			
-			if (ntohl(inner_tcp_hdr->ack)){
-				is_ack[time_index] = 1;
-			} 
+			// if (ntohl(inner_tcp_hdr->ack)){
+			// 	is_ack[time_index] = 1;
+			// } 
 			
-			if (ntohl(inner_tcp_hdr->fin)){
-				is_fin[time_index] = 1;
-			} 
+			// if (ntohl(inner_tcp_hdr->fin)){
+			// 	is_fin[time_index] = 1;
+			// } 
 
 			// tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
 
 			timestamp_arr[time_index] = now;
-			slot[time_index]=0;
+			// slot[time_index]=0;
 			topo_arr[time_index] = topo;
-			hop_count[time_index] = 0;
-			ns_packet_len[time_index] = len; 
+			// hop_count[time_index] = 0;
+			// ns_packet_len[time_index] = len; 
 			time_index++;
 		}
 

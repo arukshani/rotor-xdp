@@ -38,7 +38,7 @@ def gather_data():
         # mydir = os.path.join(
         #     "data/seq/", 
         #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
-        mydir = "throughput-2/exp-2/"
+        mydir = "throughput-2/exp-4/"
         # print(mydir)
         try:
             os.makedirs(mydir)
@@ -51,9 +51,9 @@ def gather_data():
                 remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/sender-ss.txt {}'.format(worker['host'], mydir)
                 # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/topo_change_times.csv {}'.format(worker['host'], mydir)
                 proc = subprocess.run(remoteCmd, shell=True)
-                # new_filename = "2-opera-seq-{}.csv".format(worker['host'])
-                # new_filename = "2-opera-topochange-{}.txt".format(worker['host'])
-                new_filename = "2-opera-ss-{}.txt".format(worker['host'])
+                # new_filename = "3-opera-seq-{}.csv".format(worker['host'])
+                # new_filename = "3-opera-topochange-{}.txt".format(worker['host'])
+                new_filename = "4-opera-iperf-ss-{}.txt".format(worker['host'])
                 # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
                 # cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
                 cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
