@@ -334,18 +334,18 @@ struct gre_hdr
 // Telemetry
 // uint32_t node_ip[90000000];
 // int slot[20000000]; // 0-from_veth, 1-intermediate_node, 2-to_veth
-struct timespec timestamp_arr[90000000];
-uint8_t topo_arr[90000000];
-// int next_node[20000000];
-// int hop_count[20000000];
-__u32 seq[90000000];
+struct timespec timestamp_arr[30000000];
+uint8_t topo_arr[30000000];
+// int next_node[30000000];
+// int hop_count[30000000];
+__u32 seq[30000000];
 // __u32 ack_seq[20000000];
 // int is_syn[20000000];
 // int is_ack[20000000];
 // int is_fin[20000000];
 // __u32 ns_packet_len[20000000];
 // __u32 tcp_rcv_wnd[20000000];
-u16 src_port[90000000];
+u16 src_port[30000000];
 // u16 dst_port[20000000];
 
 uint8_t topo_prev[20000000];
