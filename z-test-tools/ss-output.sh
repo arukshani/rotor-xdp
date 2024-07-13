@@ -38,5 +38,6 @@ while [ 1 ]; do
 	# ss --no-header -ein dst $DST | ts '%.s' | tee -a sender-ss.txt 
 	# ss --no-header -in dst $DST | ts '%.s' | tee -a sender-ss.txt
 	# ss --no-header -it '( dport = :5000 )'
-	ss --no-header -eit '( dport = :5000 )' | ts '%.s' | tee -a /tmp/sender-ss.txt 
+	# ss --no-header -eit '( dport = :5000 )' | ts '%.s' | tee -a /tmp/sender-ss.txt 
+	watch -n 0.00001 ss --no-header -eit '( dport = :5000 )' | ts '%.s' | while read pong; do echo "$(date):$pong"; done >> /tmp/sender-ss.txt 
 done
