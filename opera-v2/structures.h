@@ -29,8 +29,8 @@ typedef __u8  u8;
 #endif
 
 #ifndef MAX_BURST_TX_OBJS
-#define MAX_BURST_TX_OBJS 4096
-// #define MAX_BURST_TX_OBJS 2048
+// #define MAX_BURST_TX_OBJS 4096
+#define MAX_BURST_TX_OBJS 2048
 #endif
 
 #ifndef NUM_OF_PER_DEST_QUEUES
@@ -172,8 +172,8 @@ static const struct bpool_params bpool_params_default = {
 };
 
 static const struct xsk_umem_config umem_cfg_default = {
-	// .fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS * 2,
-	.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+	.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS * 2,
+	// .fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
 	.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
 	.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
 	.frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM,
