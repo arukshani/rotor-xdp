@@ -8,7 +8,7 @@ import fileinput
 
 # print("hello")
 
-path = "iperf-data/exp-3/"
+path = "iperf-data/exp-4/"
 read_file_name = path+"direct-iperf-ss-clean-node-1.txt"
 write_file_name = path+"direct-iperf-ss-node-1.csv"
 

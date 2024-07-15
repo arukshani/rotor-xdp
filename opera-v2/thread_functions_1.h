@@ -983,11 +983,11 @@ thread_func_nic_to_veth_tx(void *arg)
 			int buffer_occupancy = 0;
 			while ((buffer_occupancy = mpmc_queue_available(veth_side_queue)) && (btx_index < MAX_BURST_TX))
 			{
-				// #if DEBUG == 1
-				// 	veth_buff[veth_buff_track] = buffer_occupancy;
-				// 	veth_buff_time[veth_buff_track] = now;
-				// 	veth_buff_track++;
-				// #endif
+				#if DEBUG == 1
+					veth_buff[veth_buff_track] = buffer_occupancy;
+					veth_buff_time[veth_buff_track] = now;
+					veth_buff_track++;
+				#endif
 				// printf("DRAIN VETH 0 SIDE QUEUE \n");
 				void *obj;
 				if (mpmc_queue_pull(veth_side_queue, &obj) != NULL) {

@@ -363,9 +363,9 @@ int local_q_num[30000000];
 struct timespec buff_time[30000000];
 long local_buff_track = 0;
 
-// int veth_buff[30000000];
-// struct timespec veth_buff_time[30000000];
-// long veth_buff_track = 0;
+int veth_buff[30000000];
+struct timespec veth_buff_time[30000000];
+long veth_buff_track = 0;
 
 __u32 t1ms;
 struct timespec now;
