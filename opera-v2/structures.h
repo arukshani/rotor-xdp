@@ -355,10 +355,14 @@ struct timespec topo_change_time[20000000];
 long topo_track_index = 0;
 
 int local_buff[30000000];
-int veth_buff[30000000];
 int local_q_num[30000000];
 struct timespec buff_time[30000000];
 long local_buff_track = 0;
+
+int veth_buff[30000000];
+// int veth_q_num[30000000];
+struct timespec veth_buff_time[30000000];
+long veth_buff_track = 0;
 
 long time_index = 0;
 

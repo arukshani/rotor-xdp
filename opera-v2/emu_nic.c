@@ -787,13 +787,23 @@ int main(int argc, char **argv)
 
 		FILE *fpt_buff;
 		fpt_buff = fopen("/tmp/local_buff_occupancy.csv", "w+");
-		fprintf(fpt_buff,"local_q_num,buff_size,time_part_sec,time_part_nsec,time_ns\n");
+		fprintf(fpt_buff,"q_num,buff_size,time_part_sec,time_part_nsec,time_ns\n");
 		for (z = 0; z < local_buff_track; z++ ) {
 			unsigned long now_ns = get_nsec(&buff_time[z]);
 			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
 			fprintf(fpt_buff,"%d,%d,%ld,%ld,%ld\n",local_q_num[z],local_buff[z],buff_time[z].tv_sec,buff_time[z].tv_nsec,now_ns);
 		}
 		fclose(fpt_buff);
+
+		FILE *fpt_veth_buff;
+		fpt_veth_buff = fopen("/tmp/veth_buff_occupancy.csv", "w+");
+		fprintf(fpt_veth_buff,"q_num,buff_size,time_part_sec,time_part_nsec,time_ns\n");
+		for (z = 0; z < veth_buff_track; z++ ) {
+			unsigned long now_ns = get_nsec(&veth_buff_time[z]);
+			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+			fprintf(fpt_veth_buff,"%d,%d,%ld,%ld,%ld\n",0,veth_buff[z],veth_buff_time[z].tv_sec,veth_buff_time[z].tv_nsec,now_ns);
+		}
+		fclose(fpt_veth_buff);
 
 		FILE *fpt_topo;
 		fpt_topo = fopen("/tmp/topo_change_times.csv", "w+");
