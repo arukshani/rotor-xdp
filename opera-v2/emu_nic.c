@@ -787,7 +787,7 @@ int main(int argc, char **argv)
 
 		FILE *fpt_buff;
 		fpt_buff = fopen("/tmp/local_buff_occupancy.csv", "w+");
-		fprintf(fpt_topo,"local_q_num,buff_size,time_part_sec,time_part_nsec,time_ns\n");
+		fprintf(fpt_buff,"local_q_num,buff_size,time_part_sec,time_part_nsec,time_ns\n");
 		for (z = 0; z < local_buff_track; z++ ) {
 			unsigned long now_ns = get_nsec(&buff_time[z]);
 			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
