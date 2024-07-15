@@ -985,7 +985,6 @@ thread_func_nic_to_veth_tx(void *arg)
 			{
 				#if DEBUG == 1
 					veth_buff[veth_buff_track] = buffer_occupancy;
-					veth_q_num[veth_buff_track] = 0;
 					veth_buff_time[veth_buff_track] = now;
 					veth_buff_track++;
 				#endif
