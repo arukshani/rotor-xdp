@@ -791,7 +791,7 @@ int main(int argc, char **argv)
 		for (z = 0; z < local_buff_track; z++ ) {
 			unsigned long now_ns = get_nsec(&buff_time[z]);
 			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
-			fprintf(fpt,"%d,%d,%ld,%ld,%ld\n",local_q_num[z],local_buff[z],buff_time[z].tv_sec,buff_time[z].tv_nsec,now_ns);
+			fprintf(fpt_buff,"%d,%d,%ld,%ld,%ld\n",local_q_num[z],local_buff[z],buff_time[z].tv_sec,buff_time[z].tv_nsec,now_ns);
 		}
 		fclose(fpt_buff);
 
@@ -801,7 +801,7 @@ int main(int argc, char **argv)
 		for (z = 0; z < topo_track_index; z++ ) {
 			unsigned long now_ns = get_nsec(&topo_change_time[z]);
 			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
-			fprintf(fpt,"%d,%d,%ld,%ld,%ld\n",topo_prev[z],topo_curr[z],topo_change_time[z].tv_sec,topo_change_time[z].tv_nsec,now_ns);
+			fprintf(fpt_topo,"%d,%d,%ld,%ld,%ld\n",topo_prev[z],topo_curr[z],topo_change_time[z].tv_sec,topo_change_time[z].tv_nsec,now_ns);
 		}
 		fclose(fpt_topo);
 
