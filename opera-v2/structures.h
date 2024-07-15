@@ -354,6 +354,12 @@ uint8_t topo_curr[20000000];
 struct timespec topo_change_time[20000000];
 long topo_track_index = 0;
 
+int local_buff[30000000];
+int veth_buff[30000000];
+int local_q_num[30000000];
+struct timespec buff_time[30000000];
+long local_buff_track = 0;
+
 long time_index = 0;
 
 __u32 t1ms;

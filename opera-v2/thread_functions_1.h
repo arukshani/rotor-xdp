@@ -431,39 +431,39 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 	struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
 														  sizeof(struct ethhdr));
 
-	#if DEBUG == 1
-		if (inner_ip_hdr_tmp->protocol == IPPROTO_TCP) 
-		{
-			struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
-					    sizeof(struct ethhdr) +
-					    sizeof(struct iphdr));
+	// #if DEBUG == 1
+		// if (inner_ip_hdr_tmp->protocol == IPPROTO_TCP) 
+		// {
+		// 	struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
+		// 			    sizeof(struct ethhdr) +
+		// 			    sizeof(struct iphdr));
 
-			seq[time_index] = ntohl(inner_tcp_hdr->seq);
-			// ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
-			src_port[time_index] = ntohs(inner_tcp_hdr->source);
-			// dst_port[time_index] = ntohs(inner_tcp_hdr->dest);
+		// 	seq[time_index] = ntohl(inner_tcp_hdr->seq);
+		// 	// ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
+		// 	src_port[time_index] = ntohs(inner_tcp_hdr->source);
+		// 	// dst_port[time_index] = ntohs(inner_tcp_hdr->dest);
 			
-			// if (ntohl(inner_tcp_hdr->syn)) {
-			// 	is_syn[time_index] = 1;
-			// } 
+		// 	// if (ntohl(inner_tcp_hdr->syn)) {
+		// 	// 	is_syn[time_index] = 1;
+		// 	// } 
 			
-			// if (ntohl(inner_tcp_hdr->ack)){
-			// 	is_ack[time_index] = 1;
-			// } 
+		// 	// if (ntohl(inner_tcp_hdr->ack)){
+		// 	// 	is_ack[time_index] = 1;
+		// 	// } 
 			
-			// if (ntohl(inner_tcp_hdr->fin)){
-			// 	is_fin[time_index] = 1;
-			// } 
+		// 	// if (ntohl(inner_tcp_hdr->fin)){
+		// 	// 	is_fin[time_index] = 1;
+		// 	// } 
 
-			// tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
+		// 	// tcp_rcv_wnd[time_index] = (ntohl(inner_tcp_hdr->window) * 14); //multiply by scale factor 
 
-			timestamp_arr[time_index] = now;
-			// slot[time_index]=0;
-			topo_arr[time_index] = topo;
-			// hop_count[time_index] = 0;
-			// ns_packet_len[time_index] = len; 
-			time_index++;
-		}
+		// 	timestamp_arr[time_index] = now;
+		// 	// slot[time_index]=0;
+		// 	topo_arr[time_index] = topo;
+		// 	// hop_count[time_index] = 0;
+		// 	// ns_packet_len[time_index] = len; 
+		// 	time_index++;
+		// }
 
 		// if (inner_ip_hdr_tmp->protocol == IPPROTO_UDP) 
 		// if (inner_ip_hdr_tmp->protocol == IPPROTO_ICMP) 
@@ -477,7 +477,7 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 		// 	time_index++;
 		// }
 
-	#endif
+	// #endif
 
 	int olen = 0;
 	olen += ETH_HLEN;
@@ -779,8 +779,16 @@ thread_func_veth_to_nic_tx(void *arg)
 				int btx_index = 0;
 				if (local_dest_queue[w] != NULL)
 				{
-					while ((mpmc_queue_available(local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
+					int buffer_occupancy = 0;
+					while ((buffer_occupancy = mpmc_queue_available(local_dest_queue[w])) && (btx_index < MAX_BURST_TX))
 					{
+						#if DEBUG == 1
+							local_buff[local_buff_track] = buffer_occupancy;
+							local_q_num[local_buff_track] = w;
+							buff_time[local_buff_track] = now;
+							local_buff_track++;
+						#endif
+
 						void *obj2;
 						if (mpmc_queue_pull(local_dest_queue[w], &obj2) != NULL) {
 							struct burst_tx *btx2 = (struct burst_tx *)obj2;

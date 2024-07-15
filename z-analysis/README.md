@@ -9,5 +9,7 @@ slot 2 - Receive from NIC and going to VETH
 ```
 scp -o StrictHostKeyChecking=no node-1:/tmp/udp_client_rtt.csv .
 
+## remove control iperf flow
 cat 4-opera-iperf-ss-node-1.txt | sed -e '/51720/ { N; d; }' | less >> test.txt
+cat 1-direct-iperf-ss-node-1.txt | sed -e '/34962/ { N; d; }' | less >> 1-direct-iperf-ss-clean-node-1.txt
 ```

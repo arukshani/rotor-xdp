@@ -775,20 +775,30 @@ int main(int argc, char **argv)
 		// }
 		// fclose(fpt);
 
-		FILE *fpt;
-		fpt = fopen("/tmp/opera_emu_data.csv", "w+");
-		fprintf(fpt,"slot,seq,topo_arr,time_ns,time_part_sec,time_part_nsec,src_port\n");
-		for (z = 0; z < time_index; z++ ) {
-			unsigned long now_ns = get_nsec(&timestamp_arr[z]);
+		// FILE *fpt;
+		// fpt = fopen("/tmp/opera_emu_data.csv", "w+");
+		// fprintf(fpt,"slot,seq,topo_arr,time_ns,time_part_sec,time_part_nsec,src_port\n");
+		// for (z = 0; z < time_index; z++ ) {
+		// 	unsigned long now_ns = get_nsec(&timestamp_arr[z]);
+		// 	// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
+		// 	fprintf(fpt,"%d,%ld,%d,%ld,%ld,%ld,%d\n",0,seq[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,src_port[z]);
+		// }
+		// fclose(fpt);
+
+		FILE *fpt_buff;
+		fpt_buff = fopen("/tmp/local_buff_occupancy.csv", "w+");
+		fprintf(fpt_topo,"local_q_num,buff_size,time_part_sec,time_part_nsec,time_ns\n");
+		for (z = 0; z < local_buff_track; z++ ) {
+			unsigned long now_ns = get_nsec(&buff_time[z]);
 			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
-			fprintf(fpt,"%d,%ld,%d,%ld,%ld,%ld,%d\n",0,seq[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,src_port[z]);
+			fprintf(fpt,"%d,%d,%ld,%ld,%ld\n",local_q_num[z],local_buff[z],buff_time[z].tv_sec,buff_time[z].tv_nsec,now_ns);
 		}
-		fclose(fpt);
+		fclose(fpt_buff);
 
 		FILE *fpt_topo;
 		fpt_topo = fopen("/tmp/topo_change_times.csv", "w+");
 		fprintf(fpt_topo,"prev_topo,curr_topo,time_part_sec,time_part_nsec,time_ns\n");
-		for (z = 0; z < time_index; z++ ) {
+		for (z = 0; z < topo_track_index; z++ ) {
 			unsigned long now_ns = get_nsec(&topo_change_time[z]);
 			// fprintf(fpt,"%ld,%ld,%d,%d,%d,%ld,%ld,%ld,%d\n",seq[z],ack_seq[z],tcp_type[z],slot[z],topo_arr[z],now_ns,timestamp_arr[z].tv_sec,timestamp_arr[z].tv_nsec,hop_count[z]);
 			fprintf(fpt,"%d,%d,%ld,%ld,%ld\n",topo_prev[z],topo_curr[z],topo_change_time[z].tv_sec,topo_change_time[z].tv_nsec,now_ns);
