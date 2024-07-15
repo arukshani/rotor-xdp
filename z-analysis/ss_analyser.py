@@ -16,11 +16,11 @@ import seaborn as sns
 def get_tot(fwd, ret):
     return (fwd+ret)
 
-path = "iperf-data/exp-1/"
-plot_path = "iperf-data/exp-1/"
+path = "iperf-data/exp-3/"
+plot_path = "iperf-data/exp-3/"
 
-trace_file = "1-direct-iperf-ss-node-1.csv"
-plotname = "1-direct-iperf-cwnd-node-1.png"
+trace_file = "direct-iperf-ss-node-1.csv"
+plotname = "direct-iperf-cwnd-node-1.png"
 
 trace_df = pd.read_csv(path+trace_file ,sep=',')
 pos = trace_df.columns.get_loc('time')
@@ -28,7 +28,7 @@ trace_df['elaps_time'] =  trace_df.iloc[1:, pos] - trace_df.iat[0, pos]
 trace_df['elaps_time_us'] =  trace_df['elaps_time'] * 1000000
 # print(trace_df.head(5))
 
-plt.plot(trace_df['elaps_time_us'], trace_df['snd_cwnd'], label = "cwnd", marker="o")
+plt.plot(trace_df['elaps_time_us'], trace_df['snd_cwnd'], label = "cwnd")
 # plt.plot(trace_df['elaps_time_us'], trace_df['rtt_us'], label = "opera-rtt", marker="o")
 
 # fig, ax = plt.subplots()

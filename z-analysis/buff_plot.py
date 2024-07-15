@@ -16,25 +16,26 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "iperf-data/exp-2/"
-plotname = 'iperf-data/exp-2/1-direct-iperf-buff-t0-1000000.png'
+path = "iperf-data/exp-3/"
+plotname = 'iperf-data/exp-3/direct-iperf-lbuff-t2s-2.1s.png'
 
 def read_file(n1_file_name, local_q_num):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
-    n1_df = n1_df.loc[(n1_df['local_q_num'] == local_q_num)]
+    n1_df = n1_df.loc[(n1_df['q_num'] == local_q_num)]
 
     pos = n1_df.columns.get_loc('time_ns')
     n1_df['elaps_time_ns'] =  n1_df.iloc[1:, pos] - n1_df.iat[0, pos]
     n1_df['elaps_time_us'] =  n1_df['elaps_time_ns'] /1000
     n1_df.replace(np.nan, 0, inplace=True)
 
-    mask = (n1_df['elaps_time_us'] > 0) & (n1_df['elaps_time_us'] <= 1000000)
+    mask = (n1_df['elaps_time_us'] > 2000000) & (n1_df['elaps_time_us'] <= 2100000)
     n1_df = n1_df.loc[mask]
     # n1_df = n1_df.head(1000) #0-1200
     # n1_df = n1_df[5001:10000] 
     return n1_df
 
-direct_df = read_file(path+"2-direct-iperf-buff-node-1.csv", 1)
+local_df = read_file(path+"direct-iperf-lbuff-node-1.csv", 1)
+# veth_df = read_file(path+"direct-iperf-vbuff-node-2.csv", 0)
 # topo_direct = pd.read_csv(path+"1-direct-topochange-node-1.csv" ,sep=',')
 
 # df_starting_time = direct_df['time_ns'].iloc[0]
@@ -52,7 +53,8 @@ direct_df = read_file(path+"2-direct-iperf-buff-node-1.csv", 1)
 # topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
 # topo_filtered_data = topo_filtered_data.loc[topo_mask]
 
-plt.plot(direct_df['elaps_time_us'], direct_df['buff_size'], label = "buff_size")
+plt.plot(local_df['elaps_time_us'], local_df['buff_size'], label = "local-node-1")
+# plt.plot(veth_df['elaps_time_us'], veth_df['buff_size'], label = "veth-node-2")
 # plt.plot(sack_df['elaps_time_us'], sack_df['relative_seq'], label = "sack-opera", marker='|')
 
 # periods_topo = topo_filtered_data.elaps_time_us
@@ -82,7 +84,7 @@ plt.legend(fontsize=11)
 plt.xticks(fontsize=11)
 plt.yticks(fontsize=11)
 plt.xlabel('Time (us)', fontsize=11)
-plt.ylabel('Buffer Size', fontsize=11)
+plt.ylabel('Buffer Size (packets)', fontsize=11)
 plt.savefig(plotname)
 # plt.savefig('P-ALL-RTTs.pdf')
 

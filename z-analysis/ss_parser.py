@@ -8,9 +8,9 @@ import fileinput
 
 # print("hello")
 
-path = "iperf-data/exp-1/"
-read_file_name = path+"1-direct-iperf-ss-clean-node-1.txt"
-write_file_name = path+"1-direct-iperf-ss-node-1.csv"
+path = "iperf-data/exp-3/"
+read_file_name = path+"direct-iperf-ss-clean-node-1.txt"
+write_file_name = path+"direct-iperf-ss-node-1.csv"
 
 with open(write_file_name, 'a') as f:
     f.write("{},{},{}\n".format('time','snd_cwnd','rtt_us'))
