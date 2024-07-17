@@ -16,8 +16,8 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "iperf-data/exp-3/"
-plotname = 'iperf-data/exp-3/direct-iperf-lbuff-t2s-2.1s.png'
+path = "iperf-data/opera/exp-1/"
+plotname = 'iperf-data/opera/exp-1/opera-iperf-lbuff.png'
 
 def read_file(n1_file_name, local_q_num):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -28,14 +28,14 @@ def read_file(n1_file_name, local_q_num):
     n1_df['elaps_time_us'] =  n1_df['elaps_time_ns'] /1000
     n1_df.replace(np.nan, 0, inplace=True)
 
-    mask = (n1_df['elaps_time_us'] > 2000000) & (n1_df['elaps_time_us'] <= 2100000)
-    n1_df = n1_df.loc[mask]
+    # mask = (n1_df['elaps_time_us'] > 2000000) & (n1_df['elaps_time_us'] <= 2100000)
+    # n1_df = n1_df.loc[mask]
     # n1_df = n1_df.head(1000) #0-1200
     # n1_df = n1_df[5001:10000] 
     return n1_df
 
-local_df = read_file(path+"direct-iperf-lbuff-node-1.csv", 1)
-# veth_df = read_file(path+"direct-iperf-vbuff-node-2.csv", 0)
+local_df = read_file(path+"opera-iperf-lbuff-node-1.csv", 1)
+# veth_df = read_file(path+"opera-iperf-vbuff-node-2.csv", 0)
 # topo_direct = pd.read_csv(path+"1-direct-topochange-node-1.csv" ,sep=',')
 
 # df_starting_time = direct_df['time_ns'].iloc[0]
@@ -53,7 +53,7 @@ local_df = read_file(path+"direct-iperf-lbuff-node-1.csv", 1)
 # topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
 # topo_filtered_data = topo_filtered_data.loc[topo_mask]
 
-plt.plot(local_df['elaps_time_us'], local_df['buff_size'], label = "local-node-1")
+plt.plot(local_df['elaps_time_us'], local_df['buff_size'], label = "local-node-1(per-dest-q)")
 # plt.plot(veth_df['elaps_time_us'], veth_df['buff_size'], label = "veth-node-2")
 # plt.plot(sack_df['elaps_time_us'], sack_df['relative_seq'], label = "sack-opera", marker='|')
 

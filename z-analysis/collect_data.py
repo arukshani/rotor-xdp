@@ -38,7 +38,7 @@ def gather_data():
         # mydir = os.path.join(
         #     "data/seq/", 
         #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
-        mydir = "iperf-data/exp-4/"
+        mydir = "iperf-data/opera/exp-1/"
         # print(mydir)
         try:
             os.makedirs(mydir)
@@ -55,9 +55,9 @@ def gather_data():
                 proc = subprocess.run(remoteCmd, shell=True)
                 # new_filename = "1-direct-iperf-seq-{}.csv".format(worker['host'])
                 # new_filename = "1-direct-iperf-topochange-{}.csv".format(worker['host'])
-                # new_filename = "direct-iperf-ss-{}.txt".format(worker['host'])
-                new_filename = "direct-iperf-lbuff-{}.csv".format(worker['host'])
-                # new_filename = "direct-iperf-vbuff-{}.csv".format(worker['host'])
+                # new_filename = "opera-iperf-ss-{}.txt".format(worker['host'])
+                new_filename = "opera-iperf-lbuff-{}.csv".format(worker['host'])
+                # new_filename = "opera-iperf-vbuff-{}.csv".format(worker['host'])
                 # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
                 # cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
                 # cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
