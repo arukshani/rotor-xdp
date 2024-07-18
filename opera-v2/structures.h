@@ -336,8 +336,8 @@ struct gre_hdr
 //+++++++++++++SEQ++++++++++++++++++++++++
 // struct timespec timestamp_arr[30000000];
 // uint8_t topo_arr[30000000];
-// __u32 seq[30000000];
-// u16 src_port[30000000];
+__u32 seq[30000000];
+u16 src_port[30000000];
 // long time_index = 0;
 
 // uint32_t node_ip[90000000];

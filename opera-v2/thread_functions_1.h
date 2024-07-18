@@ -424,23 +424,23 @@ static void get_queue_index_for_nic_rx(void *data, struct port_params *params, u
 	}
 }
 
-static int encap_veth(int dest_index, void *data, struct port_params *params, uint32_t len, u64 addr)
+static int encap_veth(int dest_index, void *data, struct port_params *params, uint32_t len, u64 addr, long debug_index)
 {
 	struct iphdr *outer_iphdr;
 	struct ethhdr *outer_eth_hdr;
 	struct iphdr *inner_ip_hdr_tmp = (struct iphdr *)(data +
 														  sizeof(struct ethhdr));
 
-	// #if DEBUG == 1
-		// if (inner_ip_hdr_tmp->protocol == IPPROTO_TCP) 
-		// {
-		// 	struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
-		// 			    sizeof(struct ethhdr) +
-		// 			    sizeof(struct iphdr));
+	#if DEBUG == 1
+		if (inner_ip_hdr_tmp->protocol == IPPROTO_TCP) 
+		{
+			struct tcphdr *inner_tcp_hdr = (struct tcphdr *)(data +
+					    sizeof(struct ethhdr) +
+					    sizeof(struct iphdr));
 
-		// 	seq[time_index] = ntohl(inner_tcp_hdr->seq);
+			seq[debug_index] = ntohl(inner_tcp_hdr->seq);
 		// 	// ack_seq[time_index] = ntohl(inner_tcp_hdr->ack_seq);
-		// 	src_port[time_index] = ntohs(inner_tcp_hdr->source);
+			src_port[debug_index] = ntohs(inner_tcp_hdr->source);
 		// 	// dst_port[time_index] = ntohs(inner_tcp_hdr->dest);
 			
 		// 	// if (ntohl(inner_tcp_hdr->syn)) {
@@ -475,9 +475,9 @@ static int encap_veth(int dest_index, void *data, struct port_params *params, ui
 		// 	topo_arr[time_index] = topo;
 		// 	hop_count[time_index] = 0;
 		// 	time_index++;
-		// }
+		}
 
-	// #endif
+	#endif
 
 	int olen = 0;
 	olen += ETH_HLEN;
@@ -800,7 +800,7 @@ thread_func_veth_to_nic_tx(void *arg)
 								if (pkt != NULL)
 								{
 									// printf("Pull packet %d from local queue %d to nic tx \n", btx2->addr[0], w);
-									int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0]);
+									int new_len = encap_veth(w, pkt, &port_tx->params, btx2->len[0], btx2->addr[0], local_buff_track);
 									btx_collector->addr[btx_index] = btx2->addr[0];
 									btx_collector->len[btx_index] = new_len;
 
