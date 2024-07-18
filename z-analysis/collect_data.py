@@ -32,13 +32,13 @@ def collect_tcp_stat_logs():
             cmd = "mv {}/tcp-stats {}/{}".format(mydir, mydir, new_filename)
             subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
-def gather_data():
+def gather_data(exp_type):
     with open('/tmp/workers.pkl','rb') as f:  
         workers = pickle.load(f)
         # mydir = os.path.join(
         #     "data/seq/", 
         #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
-        mydir = "iperf-data/opera/exp-1/"
+        mydir = "iperf-cubic/"+exp_type+"/exp-1/"
         # print(mydir)
         try:
             os.makedirs(mydir)
@@ -47,23 +47,33 @@ def gather_data():
                 raise  # This was not a "directory exist" error..
         for worker in workers:
             if (worker['host'] == "node-1" or worker['host'] == "node-2"):
-                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
-                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/sender-ss.txt {}'.format(worker['host'], mydir)
-                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/topo_change_times.csv {}'.format(worker['host'], mydir)
-                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/local_buff_occupancy.csv {}'.format(worker['host'], mydir)
-                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/veth_buff_occupancy.csv {}'.format(worker['host'], mydir)
+                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/sender-ss.txt {}'.format(worker['host'], mydir)
                 proc = subprocess.run(remoteCmd, shell=True)
-                # new_filename = "1-direct-iperf-seq-{}.csv".format(worker['host'])
-                # new_filename = "1-direct-iperf-topochange-{}.csv".format(worker['host'])
-                # new_filename = "opera-iperf-ss-{}.txt".format(worker['host'])
-                new_filename = "opera-iperf-lbuff-{}.csv".format(worker['host'])
-                # new_filename = "opera-iperf-vbuff-{}.csv".format(worker['host'])
-                # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
-                # cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
-                # cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
-                cmd = "mv {}/local_buff_occupancy.csv {}/{}".format(mydir, mydir, new_filename)
-                # cmd = "mv {}/veth_buff_occupancy.csv {}/{}".format(mydir, mydir, new_filename)
+                new_filename = "{}-ss-{}.txt".format(exp_type, worker['host'])
+                cmd = "mv {}/sender-ss.txt {}/{}".format(mydir, mydir, new_filename)
                 subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+                
+                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/topo_change_times.csv {}'.format(worker['host'], mydir)
+                proc = subprocess.run(remoteCmd, shell=True)
+                new_filename = "{}-topochange-{}.csv".format(exp_type,worker['host'])
+                cmd = "mv {}/topo_change_times.csv {}/{}".format(mydir, mydir, new_filename)
+                subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+
+                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/local_buff_occupancy.csv {}'.format(worker['host'], mydir)
+                proc = subprocess.run(remoteCmd, shell=True)
+                new_filename = "{}-lbuff-{}.csv".format(exp_type,worker['host'])
+                cmd = "mv {}/local_buff_occupancy.csv {}/{}".format(mydir, mydir, new_filename)
+                subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+
+                remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/veth_buff_occupancy.csv {}'.format(worker['host'], mydir)
+                proc = subprocess.run(remoteCmd, shell=True)
+                new_filename = "{}-vbuff-{}.csv".format(exp_type,worker['host'])
+                cmd = "mv {}/veth_buff_occupancy.csv {}/{}".format(mydir, mydir, new_filename)
+                subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+
+                # remoteCmd = 'scp -o StrictHostKeyChecking=no {}:/tmp/opera_emu_data.csv {}'.format(worker['host'], mydir)
+                # cmd = "mv {}/opera_emu_data.csv {}/{}".format(mydir, mydir, new_filename)
+                
 
 def gather_tdumps():
     with open('/tmp/workers.pkl','rb') as f:  
@@ -92,6 +102,6 @@ def main():
     
 if __name__ == '__main__':
     main()
-    gather_data()
+    gather_data("direct")
     # collect_tcp_stat_logs()
     # gather_tdumps()

@@ -13,42 +13,56 @@ import re
 import numpy as np
 import seaborn as sns
 
-def get_tot(fwd, ret):
-    return (fwd+ret)
+def plot_rtt(trace_df, plot_name):
+    plt.plot(trace_df['elaps_time_us'], trace_df['rtt_us'], label = "rtt")
+    plt.legend(fontsize=11)
+    plt.xticks(fontsize=11)
+    plt.yticks(fontsize=11)
+    plt.xlabel('Time (us)', fontsize=11)
+    plt.ylabel('RTT (us)', fontsize=11)
+    plt.savefig(plot_name)
 
-path = "iperf-data/opera/exp-1/"
-plot_path = "iperf-data/opera/exp-1/"
-trace_file = "opera-iperf-ss-node-1.csv"
-plotname = "opera-iperf-cwnd-t12s-14ss-node-1.png"
+def plot_cwnd_and_ssthresh(trace_df, plot_name):
+    plt.plot(trace_df['elaps_time_us'], trace_df['snd_cwnd'], label = "cwnd")
+    plt.plot(trace_df['elaps_time_us'], trace_df['ssthresh'], label = "ssthresh", linestyle='dashed')
+    plt.legend(fontsize=11)
+    plt.xticks(fontsize=11)
+    plt.yticks(fontsize=11)
+    plt.xlabel('Time (us)', fontsize=11)
+    plt.ylabel('Packets', fontsize=11)
+    plt.savefig(plot_name)
+    # plt.savefig('P-ALL-RTTs.pdf')
 
-# path = "iperf-data/direct/exp-3/"
-# plot_path = "iperf-data/direct/exp-3/"
-# trace_file = "direct-iperf-ss-node-1.csv"
-# plotname = "direct-iperf-cwnd-t0-500ms-node-1.png"
+def get_df(file_path, from_time, to_time):
+    trace_df = pd.read_csv(file_path ,sep=',')
+    pos = trace_df.columns.get_loc('time')
+    trace_df['elaps_time'] =  trace_df.iloc[1:, pos] - trace_df.iat[0, pos]
+    trace_df['elaps_time_us'] =  trace_df['elaps_time'] * 1000000
 
-trace_df = pd.read_csv(path+trace_file ,sep=',')
-pos = trace_df.columns.get_loc('time')
-trace_df['elaps_time'] =  trace_df.iloc[1:, pos] - trace_df.iat[0, pos]
-trace_df['elaps_time_us'] =  trace_df['elaps_time'] * 1000000
-# print(trace_df.head(5))
+    if (to_time != 0):
+        mask = (trace_df['elaps_time_us'] > from_time) & (trace_df['elaps_time_us'] <= to_time)
+        trace_df = trace_df.loc[mask]
+    return trace_df
 
-mask = (trace_df['elaps_time_us'] > 12000000) & (trace_df['elaps_time_us'] <= 14000000)
-trace_df = trace_df.loc[mask]
 
-plt.plot(trace_df['elaps_time_us'], trace_df['snd_cwnd'], label = "cwnd")
-plt.plot(trace_df['elaps_time_us'], trace_df['ssthresh'], label = "ssthresh", linestyle='dashed')
-# plt.plot(trace_df['elaps_time_us'], trace_df['rtt_us'], label = "rtt")
+path = "iperf-cubic/direct/exp-1/"
+trace_file = "direct-ss-node-1.csv"
 
-# fig, ax = plt.subplots()
-# sns.ecdfplot(data=trace_df, x="snd_cwnd", ax=ax, label = "cwnd")
+plot_path = "iperf-cubic/direct/exp-1/plots/"
 
-plt.legend(fontsize=11)
-plt.xticks(fontsize=11)
-plt.yticks(fontsize=11)
-plt.xlabel('time (us)', fontsize=11)
-# plt.ylabel('rtt (us)', fontsize=11)
-plt.ylabel('cwnd (packets)', fontsize=11)
-plt.savefig(plot_path+plotname)
-# plt.savefig('P-ALL-RTTs.pdf')
+from_time = 0
+to_time = 500000
+
+if (to_time == 0):
+    cwnd_plot_name = "direct-cwnd-node-1.png"
+else:
+    cwnd_plot_name = "direct-cwnd-t{}-{}-node-1.png".format(from_time, to_time)
+
+trace_df = get_df(path+trace_file,from_time,to_time)
+plot_cwnd_and_ssthresh(trace_df, plot_path+cwnd_plot_name)
+# plot_rtt(trace_df, plot_path+"direct-rtt-node-1.png")
+
+
+
 
  

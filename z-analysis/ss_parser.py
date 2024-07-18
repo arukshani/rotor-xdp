@@ -8,13 +8,13 @@ import fileinput
 
 # print("hello")
 
-path = "iperf-data/opera/exp-1/"
-read_file_name = path+"opera-iperf-ss-clean-node-1.txt"
-write_file_name = path+"opera-iperf-ss-node-1.csv"
+# path = "iperf-data/opera/exp-1/"
+# read_file_name = path+"opera-iperf-ss-clean-node-1.txt"
+# write_file_name = path+"opera-iperf-ss-node-1.csv"
 
-# path = "iperf-data/direct/exp-5/"
-# read_file_name = path+"direct-iperf-ss-clean-node-1.txt"
-# write_file_name = path+"direct-iperf-ss-node-1.csv"
+path = "iperf-cubic/direct/exp-1/"
+read_file_name = path+"direct-ss-clean-node-1.txt"
+write_file_name = path+"direct-ss-node-1.csv"
 
 with open(write_file_name, 'a') as f:
     f.write("{},{},{},{}\n".format('time','snd_cwnd','rtt_us','ssthresh'))
