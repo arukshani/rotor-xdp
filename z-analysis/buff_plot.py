@@ -16,8 +16,23 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "iperf-data/opera/exp-1/"
-plotname = 'iperf-data/opera/exp-1/opera-iperf-lbuff.png'
+def plot_vbuff(veth_df, plot_name):
+    plt.plot(veth_df['elaps_time_us'], veth_df['buff_size'], label = "veth-node-2(veth-q)")
+    plt.legend(fontsize=11)
+    plt.xticks(fontsize=11)
+    plt.yticks(fontsize=11)
+    plt.xlabel('Time (us)', fontsize=11)
+    plt.ylabel('Buffer Size (packets)', fontsize=11)
+    plt.savefig(plot_name)
+
+def plot_lbuff(local_df, plot_name):
+    plt.plot(local_df['elaps_time_us'], local_df['buff_size'], label = "local-node-1(per-dest-q)")
+    plt.legend(fontsize=11)
+    plt.xticks(fontsize=11)
+    plt.yticks(fontsize=11)
+    plt.xlabel('Time (us)', fontsize=11)
+    plt.ylabel('Buffer Size (packets)', fontsize=11)
+    plt.savefig(plot_name)
 
 def read_file(n1_file_name, local_q_num):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
@@ -28,68 +43,19 @@ def read_file(n1_file_name, local_q_num):
     n1_df['elaps_time_us'] =  n1_df['elaps_time_ns'] /1000
     n1_df.replace(np.nan, 0, inplace=True)
 
-    # mask = (n1_df['elaps_time_us'] > 2000000) & (n1_df['elaps_time_us'] <= 2100000)
-    # n1_df = n1_df.loc[mask]
-    # n1_df = n1_df.head(1000) #0-1200
-    # n1_df = n1_df[5001:10000] 
     return n1_df
 
-local_df = read_file(path+"opera-iperf-lbuff-node-1.csv", 1)
-# veth_df = read_file(path+"opera-iperf-vbuff-node-2.csv", 0)
-# topo_direct = pd.read_csv(path+"1-direct-topochange-node-1.csv" ,sep=',')
+path = "iperf-cubic/direct/exp-1/"
+plot_path = "iperf-cubic/direct/exp-1/plots/"
 
-# df_starting_time = direct_df['time_ns'].iloc[0]
-# topo_starting_time = topo_direct[topo_direct.time_ns < df_starting_time].iloc[-1]['time_ns']
-# topo_filtered_data = topo_direct[topo_direct.time_ns > topo_starting_time]
+# lbuff_file = "direct-lbuff-node-1.csv"
+# lbuff_plot_name = "direct-lbuff-node-1.png"
+# local_df = read_file(path+lbuff_file, 1)
+# plot_lbuff(local_df, plot_path+lbuff_plot_name)
 
-## Elapsed time since seq data starting time
-# topo_filtered_data['elaps_time_ns'] = topo_filtered_data.apply(lambda row: get_elapsed_time(row['time_ns'], df_starting_time), axis=1)
-# topo_filtered_data['elaps_time_us'] =  topo_filtered_data['elaps_time_ns'] /1000
-# print(topo_filtered_data.head(10))
+# vbuff_file = "direct-vbuff-node-2.csv"
+# vbuff_plot_name = "direct-vbuff-node-2.png"
+# veth_df = read_file(path+vbuff_file, 0)
+# plot_vbuff(veth_df, plot_path+vbuff_plot_name)
 
-# dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
-# direct_df = direct_df.loc[dir_mask]
-
-# topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
-# topo_filtered_data = topo_filtered_data.loc[topo_mask]
-
-plt.plot(local_df['elaps_time_us'], local_df['buff_size'], label = "local-node-1(per-dest-q)")
-# plt.plot(veth_df['elaps_time_us'], veth_df['buff_size'], label = "veth-node-2")
-# plt.plot(sack_df['elaps_time_us'], sack_df['relative_seq'], label = "sack-opera", marker='|')
-
-# periods_topo = topo_filtered_data.elaps_time_us
-# periods_label = topo_filtered_data.curr_topo
-# periods_indices = topo_filtered_data.index.values
-# for item in periods_topo:
-#     plt.axvline(item, ymin=0, ymax=1,color='red')
-
-# for i in range(len(periods_indices)):
-#     index = periods_indices[i]
-#     plt.text(y=direct_df['relative_seq'].max(),x=(periods_topo[index]),
-#         s=str(periods_label[index]), color='black', fontsize=7.5)
-
-# periods_dir = direct_df[direct_df.topo_arr.diff()!=0].elaps_time_us
-# labels = sack_df[sack_df.topo_arr.diff()!=0].topo_arr
-# indices = sack_df[sack_df.topo_arr.diff()!=0].index.values
-# for item in periods_dir:
-#     plt.axvline(item, ymin=0, ymax=1,color='black')
-
-# for i in range(len(indices)):
-#     index = indices[i]
-#     # next_index = indices[i+1]
-#     plt.text(y=sack_df['relative_seq'].max(),x=(periods[index]),
-#         s=str(labels[index]), color='black', fontsize=10)
-
-plt.legend(fontsize=11)
-plt.xticks(fontsize=11)
-plt.yticks(fontsize=11)
-plt.xlabel('Time (us)', fontsize=11)
-plt.ylabel('Buffer Size (packets)', fontsize=11)
-plt.savefig(plotname)
-# plt.savefig('P-ALL-RTTs.pdf')
-
-# fig = go.Figure()
-# fig.add_traces(go.Scatter(x=direct_df['elaps_time_us'], y = direct_df['relative_seq'], name="direct", mode='markers'))
-# fig.add_traces(go.Scatter(x=sack_df['elaps_time_us'], y = sack_df['relative_seq'], name="sac-opera", mode='markers'))
-# fig.write_html("multi-plots/plots/rel-seq-all.html")
 
