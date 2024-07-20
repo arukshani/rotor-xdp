@@ -354,9 +354,9 @@ u16 src_port[30000000];
 //+++++++++++++END SEQ++++++++++++++++++++++++
 
 // uint8_t topo_prev[20000000];
-// uint8_t topo_curr[20000000];
-// struct timespec topo_change_time[20000000];
-// long topo_track_index = 0;
+uint8_t topo_curr[20000000];
+struct timespec topo_change_time[20000000];
+long topo_track_index = 0;
 
 int local_buff[30000000];
 int local_q_num[30000000];
