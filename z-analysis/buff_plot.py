@@ -53,9 +53,9 @@ plot_path = "iperf-cubic/direct/exp-1/plots/"
 # local_df = read_file(path+lbuff_file, 1)
 # plot_lbuff(local_df, plot_path+lbuff_plot_name)
 
-# vbuff_file = "direct-vbuff-node-2.csv"
-# vbuff_plot_name = "direct-vbuff-node-2.png"
-# veth_df = read_file(path+vbuff_file, 0)
-# plot_vbuff(veth_df, plot_path+vbuff_plot_name)
+vbuff_file = "direct-vbuff-node-2.csv"
+vbuff_plot_name = "direct-vbuff-node-2.png"
+veth_df = read_file(path+vbuff_file, 0)
+plot_vbuff(veth_df, plot_path+vbuff_plot_name)
 
 

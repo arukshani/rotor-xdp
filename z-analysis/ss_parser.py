@@ -12,7 +12,7 @@ import fileinput
 # read_file_name = path+"opera-iperf-ss-clean-node-1.txt"
 # write_file_name = path+"opera-iperf-ss-node-1.csv"
 
-path = "iperf-cubic/direct/exp-1/"
+path = "iperf-cubic/direct/exp-4/"
 read_file_name = path+"direct-ss-clean-node-1.txt"
 write_file_name = path+"direct-ss-node-1.csv"
 

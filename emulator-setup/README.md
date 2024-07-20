@@ -192,3 +192,7 @@ python3 tcprtt.py -P 5000
     /* RUK: RACK reordering */
     u32 srtt = ts->reordering;
 ```
+
+### disable hystart
+cd /sys/module/tcp_cubic/parameters/
+echo 0 | tee /sys/module/tcp_cubic/parameters/hystart
