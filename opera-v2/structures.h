@@ -363,7 +363,7 @@ struct gre_hdr
 // int local_buff[30000000];
 // int local_q_num[30000000];
 // struct timespec buff_time[30000000];
-// long local_buff_track = 0;
+long local_buff_track = 0;
 
 // int veth_buff[30000000];
 // struct timespec veth_buff_time[30000000];
