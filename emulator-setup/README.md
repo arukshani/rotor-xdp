@@ -75,6 +75,9 @@ echo 1 | tee /proc/sys/net/ipv4/tcp_recovery
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_wmem
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_rmem
 
+echo 4096 16384 4194304 | tee /proc/sys/net/ipv4/tcp_wmem
+echo 4096 131072 6291456 | tee /proc/sys/net/ipv4/tcp_rmem
+
 sudo ethtool -G enp65s0f0np0 rx 2048
 sudo ethtool -G enp65s0f0np0 tx 2048
 

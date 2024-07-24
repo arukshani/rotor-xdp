@@ -11,6 +11,6 @@ scp -o StrictHostKeyChecking=no node-1:/tmp/udp_client_rtt.csv .
 
 ## remove control iperf flow
 cat 4-opera-iperf-ss-node-1.txt | sed -e '/51720/ { N; d; }' | less >> test.txt
-cat direct-ss-node-1.txt | sed -e '/44954/ { N; d; }' | less >> direct-ss-clean-node-1.txt
-cat opera-iperf-ss-node-1.txt | sed -e '/53836/ { N; d; }' | less >> opera-iperf-ss-clean-node-1.txt
+cat direct-ss-node-1.txt | sed -e '/54342/ { N; d; }' | less >> direct-ss-clean-node-1.txt
+cat opera-ss-node-1.txt | sed -e '/45650/ { N; d; }' | less >> opera-ss-clean-node-1.txt
 ```

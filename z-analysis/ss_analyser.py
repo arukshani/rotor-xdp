@@ -23,8 +23,8 @@ def plot_rtt(trace_df, plot_name):
     plt.savefig(plot_name)
 
 def plot_cwnd_and_ssthresh(trace_df, plot_name):
-    plt.plot(trace_df['elaps_time_us'], trace_df['snd_cwnd'], label = "cwnd", marker="o")
-    plt.plot(trace_df['elaps_time_us'], trace_df['ssthresh'], label = "ssthresh", linestyle='dashed', marker="o")
+    plt.plot(trace_df['elaps_time_us'], trace_df['snd_cwnd'], label = "cwnd")
+    plt.plot(trace_df['elaps_time_us'], trace_df['ssthresh'], label = "ssthresh", linestyle='dashed')
     plt.legend(fontsize=11)
     plt.xticks(fontsize=11)
     plt.yticks(fontsize=11)
@@ -51,7 +51,7 @@ trace_file = "direct-ss-node-1.csv"
 plot_path = "iperf-cubic/direct/exp-1/plots/"
 
 from_time = 0
-to_time = 5000000
+to_time = 0
 
 if (to_time == 0):
     cwnd_plot_name = "direct-cwnd-node-1.png"
