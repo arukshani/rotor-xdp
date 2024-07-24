@@ -336,9 +336,10 @@ struct gre_hdr
 //+++++++++++++SEQ++++++++++++++++++++++++
 // struct timespec timestamp_arr[30000000];
 // uint8_t topo_arr[30000000];
-__u32 seq[30000000];
-u16 src_port[30000000];
 // long time_index = 0;
+
+// __u32 seq[30000000];
+// u16 src_port[30000000];
 
 // uint32_t node_ip[90000000];
 // int slot[20000000]; // 0-from_veth, 1-intermediate_node, 2-to_veth
@@ -354,18 +355,19 @@ u16 src_port[30000000];
 //+++++++++++++END SEQ++++++++++++++++++++++++
 
 // uint8_t topo_prev[20000000];
-uint8_t topo_curr[20000000];
-struct timespec topo_change_time[20000000];
-long topo_track_index = 0;
 
-int local_buff[30000000];
-int local_q_num[30000000];
-struct timespec buff_time[30000000];
-long local_buff_track = 0;
+// uint8_t topo_curr[20000000];
+// struct timespec topo_change_time[20000000];
+// long topo_track_index = 0;
 
-int veth_buff[30000000];
-struct timespec veth_buff_time[30000000];
-long veth_buff_track = 0;
+// int local_buff[30000000];
+// int local_q_num[30000000];
+// struct timespec buff_time[30000000];
+// long local_buff_track = 0;
+
+// int veth_buff[30000000];
+// struct timespec veth_buff_time[30000000];
+// long veth_buff_track = 0;
 
 __u32 t1ms;
 struct timespec now;
