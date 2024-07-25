@@ -38,7 +38,7 @@ def gather_data(exp_type):
         # mydir = os.path.join(
         #     "data/seq/", 
         #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
-        mydir = "iperf-cubic/"+exp_type+"/exp-2/"
+        mydir = "iperf-cubic-7/"+exp_type+"/exp-5/"
         # print(mydir)
         try:
             os.makedirs(mydir)
@@ -102,6 +102,6 @@ def main():
     
 if __name__ == '__main__':
     main()
-    gather_data("direct")
+    gather_data("opera")
     # collect_tcp_stat_logs()
     # gather_tdumps()

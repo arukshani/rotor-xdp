@@ -45,18 +45,18 @@ def get_df(file_path, from_time, to_time):
     return trace_df
 
 
-path = "iperf-cubic/direct/exp-1/"
-trace_file = "direct-ss-node-1.csv"
-
-plot_path = "iperf-cubic/direct/exp-1/plots/"
+exp_type = "opera"
+path = "iperf-cubic-7/{}/exp-5/".format(exp_type)
+trace_file = "{}-ss-node-1.csv".format(exp_type)
+plot_path = path+"/plots/"
 
 from_time = 0
 to_time = 0
 
 if (to_time == 0):
-    cwnd_plot_name = "direct-cwnd-node-1.png"
+    cwnd_plot_name = "{}-cwnd-node-1.png".format(exp_type)
 else:
-    cwnd_plot_name = "direct-cwnd-t{}-{}-node-1.png".format(from_time, to_time)
+    cwnd_plot_name = "{}-cwnd-t{}-{}-node-1.png".format(exp_type, from_time, to_time)
 
 trace_df = get_df(path+trace_file,from_time,to_time)
 plot_cwnd_and_ssthresh(trace_df, plot_path+cwnd_plot_name)

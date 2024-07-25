@@ -56,7 +56,7 @@ sysctl -p
 ```
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_wmem
 echo 4096 67108864 1073741824 | tee /proc/sys/net/ipv4/tcp_rmem
-echo 3000 | tee /proc/sys/net/ipv4/tcp_reordering
+echo 4000 | tee /proc/sys/net/ipv4/tcp_reordering
 echo 5000 | tee /proc/sys/net/ipv4/tcp_max_reordering
 echo 0 | tee /proc/sys/net/ipv4/tcp_recovery
 sysctl -p

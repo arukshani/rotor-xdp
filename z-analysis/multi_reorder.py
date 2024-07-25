@@ -17,7 +17,7 @@ import seaborn as sns
 base_path = "iperf-cubic-7/"
 opera_path = base_path+"opera/"
 direct_path = base_path+"direct/"
-plotname = "cwnd_compare_all.png"
+plotname = "reorder_compare_all.png"
 
 def get_df(file_name):
     trace_df = pd.read_csv(file_name ,sep=',')
@@ -37,19 +37,20 @@ opera_2000 = get_df(opera_path+"exp-4/opera-ss-node-1.csv")
 opera_3000 = get_df(opera_path+"exp-1/opera-ss-node-1.csv")
 opera_4000 = get_df(opera_path+"exp-5/opera-ss-node-1.csv")
 
-plt.plot(direct_df['elaps_time_us'], direct_df['snd_cwnd'], label = "direct")
-plt.plot(opera_3['elaps_time_us'], opera_3['snd_cwnd'], label = "opera-reorder(3-5000)")
-plt.plot(opera_1000['elaps_time_us'], opera_1000['snd_cwnd'], label = "opera-reorder(1000-5000)")
-plt.plot(opera_2000['elaps_time_us'], opera_2000['snd_cwnd'], label = "opera-reorder(2000-5000)")
-plt.plot(opera_3000['elaps_time_us'], opera_3000['snd_cwnd'], label = "opera-reorder(3000-5000)")
-plt.plot(opera_4000['elaps_time_us'], opera_4000['snd_cwnd'], label = "opera-reorder(4000-5000)")
+plt.plot(direct_df['elaps_time_us'], direct_df['reordering'], label = "direct")
+plt.plot(opera_3['elaps_time_us'], opera_3['reordering'], label = "opera-reorder(3-5000)")
+plt.plot(opera_1000['elaps_time_us'], opera_1000['reordering'], label = "opera-reorder(1000-5000)")
+plt.plot(opera_2000['elaps_time_us'], opera_2000['reordering'], label = "opera-reorder(2000-5000)")
+plt.plot(opera_3000['elaps_time_us'], opera_3000['reordering'], label = "opera-reorder(3000-5000)")
+plt.plot(opera_4000['elaps_time_us'], opera_4000['reordering'], label = "opera-reorder(4000-5000)")
 
 
-plt.legend(fontsize=7, loc = "upper left", bbox_to_anchor=(0.1,1))
+plt.legend(fontsize=10, loc = "lower center",)
+# plt.legend(fontsize=12)
 plt.xticks(fontsize=12)
 plt.yticks(fontsize=12)
 plt.xlabel('time (us)', fontsize=12)
-plt.ylabel('cwnd (packets)', fontsize=12)
+plt.ylabel('reordering distance (packets)', fontsize=12)
 plt.savefig(base_path+plotname)
 
  
