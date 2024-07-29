@@ -9,7 +9,7 @@ import fileinput
 # print("hello")
 
 exp_type = "direct"
-path = "iperf-cubic-7/{}/exp-2/".format(exp_type)
+path = "iperf-cubic-7/{}/exp-5/".format(exp_type+"-4000")
 read_file_name = path+"{}-ss-clean-node-1.txt".format(exp_type)
 write_file_name = path+"{}-ss-node-1.csv".format(exp_type)
 
@@ -31,6 +31,7 @@ with open(write_file_name, 'a') as f:
             line_parts = line.split()
             time = line_parts[0]
 
+            # snd_cwnd=0
             cwnd_label = line_parts[9].split(':')[0]
             if (cwnd_label == "cwnd"):
                 snd_cwnd = line_parts[9].split(':')[1]

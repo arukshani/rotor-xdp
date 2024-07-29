@@ -16,12 +16,16 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "throughput-2/exp-1/"
-plotname = 'throughput-2/exp-1/seq_compare.png'
+base_path = "iperf-cubic-default/"
+opera_path = base_path+"opera-4000/"
+# plotname = "opera_cwnd_compare_4000.png"
+
+direct_path = base_path+"direct-4000/"
+plotname = "d1_vs_o1_seq_500ms.png"
 
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
-    n1_df = n1_df.loc[(n1_df['slot'] == 0)]
+    # n1_df = n1_df.loc[(n1_df['slot'] == 0)]
     n1_df = n1_df.loc[(n1_df['src_port'] == filter_port)]
 
     pos = n1_df.columns.get_loc('time_ns')
@@ -33,19 +37,17 @@ def read_file(n1_file_name, filter_port):
     n1_df['relative_seq'] =  n1_df.iloc[1:, seq_pos] - n1_df.iat[0, seq_pos]
     n1_df.replace(np.nan, 0, inplace=True)
 
+    mask = (n1_df['elaps_time_us'] > 0) & (n1_df['elaps_time_us'] <= 500000)
+    n1_df = n1_df.loc[mask]
+
     return n1_df
 
-direct_df = read_file(path+"1-direct-seq-node-1.csv", 46440)
-# dir_mask = (direct_df['elaps_time_us'] > 249000) & (direct_df['elaps_time_us'] <= 250000)
-# direct_df = direct_df.loc[dir_mask]
+direct_df1 = read_file(direct_path+"exp-1/direct-lbuff-node-1.csv",52028)
 
-opera_df = read_file(path+"1-opera-seq-node-1.csv", 46022)
-# opera_mask = (opera_df['elaps_time_us'] > 249000) & (opera_df['elaps_time_us'] <= 250000)
-# opera_df = opera_df.loc[opera_mask]
+opera_df1 = read_file(opera_path+"exp-1/opera-lbuff-node-1.csv",52000)
 
-
-plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "direct", marker='|')
-plt.plot(opera_df['elaps_time_us'], opera_df['relative_seq'], label = "opera", marker='|')
+plt.plot(direct_df1['elaps_time_us'], direct_df1['relative_seq'], label = "direct")
+plt.plot(opera_df1['elaps_time_us'], opera_df1['relative_seq'], label = "opera")
 
 
 plt.legend(fontsize=11)
@@ -53,7 +55,7 @@ plt.xticks(fontsize=11)
 plt.yticks(fontsize=11)
 plt.xlabel('Time (us)', fontsize=11)
 plt.ylabel('Relative Sequence Number', fontsize=11)
-plt.savefig(plotname)
+plt.savefig(base_path+plotname)
 # plt.savefig('P-ALL-RTTs.pdf')
 
 # fig = go.Figure()

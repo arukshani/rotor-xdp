@@ -15,9 +15,11 @@ import seaborn as sns
 
 
 base_path = "iperf-cubic-7/"
-opera_path = base_path+"opera/"
-direct_path = base_path+"direct/"
-plotname = "reorder_compare_all.png"
+opera_path = base_path+"opera-4000/"
+plotname = "opera_reorder_compare_4000.png"
+
+direct_path = base_path+"direct-4000/"
+# plotname = "d1_vs_o5_4000.png"
 
 def get_df(file_name):
     trace_df = pd.read_csv(file_name ,sep=',')
@@ -30,20 +32,21 @@ def get_df(file_name):
 
     return trace_df
 
-direct_df = get_df(direct_path+"exp-2/direct-ss-node-1.csv")
-opera_3 = get_df(opera_path+"exp-2/opera-ss-node-1.csv")
-opera_1000 = get_df(opera_path+"exp-3/opera-ss-node-1.csv")
-opera_2000 = get_df(opera_path+"exp-4/opera-ss-node-1.csv")
-opera_3000 = get_df(opera_path+"exp-1/opera-ss-node-1.csv")
-opera_4000 = get_df(opera_path+"exp-5/opera-ss-node-1.csv")
+direct_df = get_df(direct_path+"exp-1/direct-ss-node-1.csv")
 
-plt.plot(direct_df['elaps_time_us'], direct_df['reordering'], label = "direct")
-plt.plot(opera_3['elaps_time_us'], opera_3['reordering'], label = "opera-reorder(3-5000)")
-plt.plot(opera_1000['elaps_time_us'], opera_1000['reordering'], label = "opera-reorder(1000-5000)")
-plt.plot(opera_2000['elaps_time_us'], opera_2000['reordering'], label = "opera-reorder(2000-5000)")
-plt.plot(opera_3000['elaps_time_us'], opera_3000['reordering'], label = "opera-reorder(3000-5000)")
-plt.plot(opera_4000['elaps_time_us'], opera_4000['reordering'], label = "opera-reorder(4000-5000)")
+opera_df1 = get_df(opera_path+"exp-1/opera-ss-node-1.csv")
+opera_df2 = get_df(opera_path+"exp-2/opera-ss-node-1.csv")
+opera_df3 = get_df(opera_path+"exp-3/opera-ss-node-1.csv")
+opera_df4 = get_df(opera_path+"exp-4/opera-ss-node-1.csv")
+opera_df5 = get_df(opera_path+"exp-5/opera-ss-node-1.csv")
 
+plt.plot(direct_df['elaps_time_us'], direct_df['reordering'], label = "direct-1")
+
+plt.plot(opera_df1['elaps_time_us'], opera_df1['reordering'], label = "opera-1")
+plt.plot(opera_df2['elaps_time_us'], opera_df2['reordering'], label = "opera-2")
+plt.plot(opera_df3['elaps_time_us'], opera_df3['reordering'], label = "opera-3")
+plt.plot(opera_df4['elaps_time_us'], opera_df4['reordering'], label = "opera-4")
+plt.plot(opera_df5['elaps_time_us'], opera_df5['reordering'], label = "opera-5")
 
 plt.legend(fontsize=10, loc = "lower center",)
 # plt.legend(fontsize=12)

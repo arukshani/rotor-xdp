@@ -46,7 +46,7 @@ def get_df(file_path, from_time, to_time):
 
 
 exp_type = "opera"
-path = "iperf-cubic-7/{}/exp-5/".format(exp_type)
+path = "iperf-cubic-7/{}/exp-1/".format(exp_type+"-4000")
 trace_file = "{}-ss-node-1.csv".format(exp_type)
 plot_path = path+"/plots/"
 
