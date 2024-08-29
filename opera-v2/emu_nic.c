@@ -226,16 +226,16 @@ static void read_time()
 	time_into_cycle_ns = current_time_ns % cycle_time_ns;
 	topo = (time_into_cycle_ns / slot_time_ns) + 1;
 
-	// #if DEBUG == 1
-	// 	if (prev_topo != topo){
-	// 		// printf("topo: change from %d to %d \n", prev_topo, topo);
-	// 		// topo_prev[topo_track_index] = prev_topo;
-	// 		topo_curr[topo_track_index] = topo;
-	// 		topo_change_time[topo_track_index] = now;
-	// 		prev_topo = topo;
-	// 		topo_track_index++;
-	// 	}
-	// #endif
+	#if DEBUG == 1
+		if (prev_topo != topo){
+			// printf("topo: change from %d to %d \n", prev_topo, topo);
+			// topo_prev[topo_track_index] = prev_topo;
+			topo_curr[topo_track_index] = topo;
+			topo_change_time[topo_track_index] = now;
+			prev_topo = topo;
+			topo_track_index++;
+		}
+	#endif
 }
 
 int main(int argc, char **argv)
