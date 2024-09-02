@@ -8,8 +8,8 @@ import fileinput
 
 # print("hello")
 
-exp_type = "direct"
-path = "iperf-cubic-7/{}/exp-5/".format(exp_type+"-4000")
+exp_type = "opera"
+path = "{}/exp-2/".format(exp_type)
 read_file_name = path+"{}-ss-clean-node-1.txt".format(exp_type)
 write_file_name = path+"{}-ss-node-1.csv".format(exp_type)
 

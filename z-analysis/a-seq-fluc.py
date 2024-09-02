@@ -16,9 +16,6 @@ import seaborn as sns
 def get_elapsed_time(topo_time, df_starting_time):
    return topo_time - df_starting_time
 
-path = "iperf-cubic/direct/exp-1/"
-plotname = "iperf-cubic/direct/exp-1/plots/direct-seq-node-1.png"
-
 def read_file(n1_file_name, filter_port):
     n1_df = pd.read_csv(n1_file_name ,sep=',')
     # n1_df = n1_df.loc[(n1_df['slot'] == 0)]
@@ -33,13 +30,41 @@ def read_file(n1_file_name, filter_port):
     n1_df['relative_seq'] =  n1_df.iloc[1:, seq_pos] - n1_df.iat[0, seq_pos]
     n1_df.replace(np.nan, 0, inplace=True)
 
-    # mask = (n1_df['elaps_time_us'] > 0) & (n1_df['elaps_time_us'] <= 500000)
+    # n1_df['seq_change'] = n1_df['seq'].diff()
+    n1_df.relative_seq = n1_df.relative_seq+np.where(n1_df.relative_seq<0, 4294967295, 0)
+    # n1_df['relative_seq'] = n1_df.seq_change.cumsum()
+    # n1_df['seq_change'] = n1_df['seq_change'].add(4294967295).mod(4294967295).sub(4294967295)
+    # n1_df['relative_seq'] = n1_df.seq_change.cumsum()
+
+    # n1_df['relative_seq'] =  4294967295 + n1_df['relative_seq']
+
+    # mask = (n1_df['elaps_time_us'] > 0) & (n1_df['elaps_time_us'] <= 600000)
     # n1_df = n1_df.loc[mask]
     # n1_df = n1_df.head(1000) #0-1200
     # n1_df = n1_df[5001:10000] 
     return n1_df
 
-direct_df = read_file(path+"direct-lbuff-node-1.csv", 59606)
+exp_type = "opera"
+path = "{}/exp-2/".format(exp_type)
+plot_path = path+"/plots/"
+
+from_time = 0
+to_time = 0
+# to_time = 1000000
+
+if (to_time == 0):
+    seq_plot_name = "{}-seq-node-1.png".format(exp_type)
+else:
+    seq_plot_name = "{}-seq-t{}-{}-node-1.png".format(exp_type, from_time, to_time)
+
+
+exp_df = read_file(path+"opera-lbuff-node-1.csv", 4000)
+plt.plot(exp_df['elaps_time_us'], exp_df['relative_seq'], label = "seq")
+
+
+
+# df_new = direct_df[direct_df['relative_seq'] == 0]
+# print(df_new)
 # topo_direct = pd.read_csv(path+"1-direct-topochange-node-1.csv" ,sep=',')
 
 # df_starting_time = direct_df['time_ns'].iloc[0]
@@ -57,7 +82,7 @@ direct_df = read_file(path+"direct-lbuff-node-1.csv", 59606)
 # topo_mask = (topo_filtered_data['elaps_time_us'] > 249000) & (topo_filtered_data['elaps_time_us'] <= 250000)
 # topo_filtered_data = topo_filtered_data.loc[topo_mask]
 
-plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "seq")
+# plt.plot(direct_df['elaps_time_us'], direct_df['relative_seq'], label = "seq")
 # plt.plot(sack_df['elaps_time_us'], sack_df['relative_seq'], label = "sack-opera", marker='|')
 
 # periods_topo = topo_filtered_data.elaps_time_us
@@ -88,7 +113,9 @@ plt.xticks(fontsize=11)
 plt.yticks(fontsize=11)
 plt.xlabel('Time (us)', fontsize=11)
 plt.ylabel('Relative Sequence Number', fontsize=11)
-plt.savefig(plotname)
+plt.savefig(plot_path+seq_plot_name)
+
+
 # plt.savefig('P-ALL-RTTs.pdf')
 
 # fig = go.Figure()

@@ -46,18 +46,18 @@ def read_file(n1_file_name, local_q_num):
     return n1_df
 
 exp_type = "opera"
-path = "iperf-cubic-7/{}/exp-5/".format(exp_type)
+path = "{}/exp-2/".format(exp_type)
 plot_path = path+"/plots/"
 
 
-# lbuff_file = "{}-lbuff-node-1.csv".format(exp_type)
-# lbuff_plot_name = "{}-lbuff-node-1.png".format(exp_type)
-# local_df = read_file(path+lbuff_file, 1)
-# plot_lbuff(local_df, plot_path+lbuff_plot_name)
+lbuff_file = "{}-lbuff-node-1.csv".format(exp_type)
+lbuff_plot_name = "{}-lbuff-node-1.png".format(exp_type)
+local_df = read_file(path+lbuff_file, 1)
+plot_lbuff(local_df, plot_path+lbuff_plot_name)
 
-vbuff_file = "{}-vbuff-node-2.csv".format(exp_type)
-vbuff_plot_name = "{}-vbuff-node-2.png".format(exp_type)
-veth_df = read_file(path+vbuff_file, 0)
-plot_vbuff(veth_df, plot_path+vbuff_plot_name)
+# vbuff_file = "{}-vbuff-node-2.csv".format(exp_type)
+# vbuff_plot_name = "{}-vbuff-node-2.png".format(exp_type)
+# veth_df = read_file(path+vbuff_file, 0)
+# plot_vbuff(veth_df, plot_path+vbuff_plot_name)
 
 

@@ -46,12 +46,13 @@ def get_df(file_path, from_time, to_time):
 
 
 exp_type = "opera"
-path = "iperf-cubic-7/{}/exp-1/".format(exp_type+"-4000")
+path = "{}/exp-2/".format(exp_type)
 trace_file = "{}-ss-node-1.csv".format(exp_type)
 plot_path = path+"/plots/"
 
 from_time = 0
 to_time = 0
+to_time = 1000000
 
 if (to_time == 0):
     cwnd_plot_name = "{}-cwnd-node-1.png".format(exp_type)
@@ -60,7 +61,7 @@ else:
 
 trace_df = get_df(path+trace_file,from_time,to_time)
 plot_cwnd_and_ssthresh(trace_df, plot_path+cwnd_plot_name)
-# plot_rtt(trace_df, plot_path+"direct-rtt-node-1.png")
+# plot_rtt(trace_df, plot_path+"opera-rtt-node-1.png")
 
 
 
