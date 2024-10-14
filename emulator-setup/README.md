@@ -199,3 +199,13 @@ python3 tcprtt.py -P 5000
 ### disable hystart
 cd /sys/module/tcp_cubic/parameters/
 echo 0 | tee /sys/module/tcp_cubic/parameters/hystart
+
+### Enable BBR
+sudo nano /etc/sysctl.conf
+
+#### Add the following lines to the bottom of the file:
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+
+sudo sysctl -p
+sysctl net.ipv4.tcp_congestion_control
