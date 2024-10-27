@@ -19,7 +19,7 @@
 
 python3 node_health.py -r // read start log
 python3 node_health.py -d // delete logs(start_log)
-python3 node_health.py -c // check emu_nic process state
+python3 node_health.py -p // check emu_nic process state
 ```
 
 ### Throughput Test

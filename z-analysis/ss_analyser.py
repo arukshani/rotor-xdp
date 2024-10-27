@@ -46,13 +46,13 @@ def get_df(file_path, from_time, to_time):
 
 
 exp_type = "opera"
-path = "{}/exp-2/".format(exp_type)
+path = "{}/exp-3-bbr/".format(exp_type)
 trace_file = "{}-ss-node-1.csv".format(exp_type)
 plot_path = path+"/plots/"
 
 from_time = 0
 to_time = 0
-to_time = 1000000
+# to_time = 1000000
 
 if (to_time == 0):
     cwnd_plot_name = "{}-cwnd-node-1.png".format(exp_type)

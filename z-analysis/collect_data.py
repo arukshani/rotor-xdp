@@ -61,7 +61,7 @@ def gather_data(exp_type):
         #     "data/seq/", 
         #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
         # mydir = "iperf-cubic-7/"+exp_type+"/exp-1/"
-        mydir = exp_type+"/exp-2/"
+        mydir = exp_type+"/exp-3-bbr/"
         # print(mydir)
         try:
             os.makedirs(mydir)

@@ -9,7 +9,7 @@ import fileinput
 # print("hello")
 
 exp_type = "opera"
-path = "{}/exp-2/".format(exp_type)
+path = "{}/exp-3-bbr/".format(exp_type)
 read_file_name = path+"{}-ss-clean-node-1.txt".format(exp_type)
 write_file_name = path+"{}-ss-node-1.csv".format(exp_type)
 
@@ -17,7 +17,7 @@ with open(write_file_name, 'a') as f:
     f.write("{},{},{},{},{}\n".format('time','snd_cwnd','rtt_us','ssthresh','reordering'))
     for line in fileinput.input(read_file_name, encoding="utf-8"):
         # if ('iperf3' in line) and ('192.168.1.2:43520' in line):
-        if ('cubic' in line):
+        if ('bbr' in line):
             # print(line)
             # line_parts = line.split()
             # time = line_parts[0]
